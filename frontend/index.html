@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Neuroscope — Live Neuron Circuit Explorer</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header>
+  <div class="logo-area">
+    <div class="logo-icon">🧠</div>
+    <div class="logo-text">
+      <h1>AI Neuroscope</h1>
+      <p>Live Neuron Circuit Explorer</p>
+    </div>
+  </div>
+  <div class="header-tagline">See what the AI is thinking.</div>
+  <div class="model-selector">
+    Model <div class="model-badge" id="model-badge">connecting…</div>
+  </div>
+</header>
+
+<main>
+
+  <!-- LEFT PANEL -->
+  <div class="panel scrollbar-hidden">
+    <div class="panel-title">
+      <div class="panel-title-num">1</div>
+      Input Text
+    </div>
+
+    <textarea id="input-text" placeholder="Type a sentence to analyze..." maxlength="512">The king ruled the kingdom with wisdom and kindness.</textarea>
+    <div class="input-meta">
+      <label class="toggle"><input type="checkbox" id="live-toggle" checked> Live: re-analyze as I type</label>
+      <div class="char-count"><span id="char-num">0</span> / 512</div>
+    </div>
+
+    <button class="run-btn" id="run-btn">▶ Run Analysis</button>
+
+    <div>
+      <div class="examples-label">Try these examples:</div>
+      <div class="examples-grid">
+        <div class="example-chip" data-text="The king ruled the kingdom with wisdom and kindness.">The king ruled…</div>
+        <div class="example-chip" data-text="I love this movie">I love this movie</div>
+        <div class="example-chip" data-text="Oh great, another Monday morning meeting.">Sarcasm</div>
+        <div class="example-chip" data-text="She is a doctor and he is a nurse.">She is a doctor</div>
+        <div class="example-chip" data-text="I hate this terrible, boring film.">Negative review</div>
+        <div class="example-chip" data-text="The cat chased three dogs in London on Friday.">Mixed concepts</div>
+      </div>
+    </div>
+
+    <div class="sub-title">Concept Circuit Finder</div>
+    <div class="hint">Pick a concept to light up its circuit — the heads &amp; neurons that GPT-2 uses for it — across your sentence.</div>
+    <div class="concept-grid" id="concept-grid"></div>
+    <details class="custom-probe">
+      <summary>Custom probe (your own words)</summary>
+      <input id="words-a" type="text" placeholder="side A, e.g. cat, dog, horse" value="cat, dog, horse, bird">
+      <div class="vs">vs</div>
+      <input id="words-b" type="text" placeholder="side B, e.g. car, bus, train" value="car, bus, train, truck">
+      <button class="ghost-btn" id="custom-btn">Find circuit</button>
+    </details>
+    <div id="circuit-box"></div>
+
+    <div class="intensity-box">
+      <div class="intensity-label">Activation Intensity <span class="dim">(σ above typical text)</span></div>
+      <div class="intensity-bar"></div>
+      <div class="intensity-labels"><span>0σ</span><span id="scale-max">—</span></div>
+    </div>
+  </div>
+
+  <!-- CENTER PANEL -->
+  <div class="center-panel">
+    <div class="center-header">
+      <div class="center-title">
+        <div class="live-dot" id="live-dot"></div>
+        2. Model Processing (Live)
+      </div>
+      <div class="seg" id="view-toggle">
+        <button data-view="head" class="active">Attention heads</button>
+        <button data-view="neuron">MLP neurons</button>
+      </div>
+      <div class="token-nav">
+        Token: <span id="token-idx">—</span>
+        <button class="nav-btn" id="prev-btn" aria-label="Previous token">‹</button>
+        <button class="nav-btn" id="next-btn" aria-label="Next token">›</button>
+      </div>
+    </div>
+
+    <div class="token-row" id="token-row">
+      <div class="placeholder">Run analysis to see tokens...</div>
+    </div>
+
+    <div class="network-container" id="network-container">
+      <svg id="network-svg" viewBox="0 0 860 120" preserveAspectRatio="xMidYMin meet">
+        <defs>
+          <filter id="glow">
+            <feGaussianBlur stdDeviation="3" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <filter id="glow-hot">
+            <feGaussianBlur stdDeviation="5" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+        <g id="layer-labels"></g>
+        <g id="token-labels"></g>
+        <g id="wires-layer"></g>
+        <g id="active-path"></g>
+        <g id="nodes-layer"></g>
+      </svg>
+      <div class="neuron-tooltip" id="neuron-tooltip">
+        <div class="tooltip-title" id="tt-title"></div>
+        <div class="tooltip-row">Token: <span id="tt-token"></span></div>
+        <div class="tooltip-row">Activation: <span id="tt-activation"></span></div>
+        <div class="tooltip-concept" id="tt-concept"></div>
+      </div>
+    </div>
+
+    <div class="status-bar">
+      <span id="status-msg">Starting up…</span>
+      <span id="status-nodes">0 neurons visualized</span>
+    </div>
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div class="panel scrollbar-hidden" id="right-panel">
+    <div class="panel-title">
+      <div class="panel-title-num">3</div>
+      Neuron Details
+    </div>
+    <div id="details">
+      <div class="empty-state">
+        <div class="arrow">↖</div>
+        Hover any word token above,<br>or click a node in the circuit<br>to inspect it here.
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<script src="app.js"></script>
+</body>
+</html>
