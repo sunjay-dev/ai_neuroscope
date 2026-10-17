@@ -39,6 +39,7 @@ router = APIRouter()
 
 
 def _get_analysis(analysis_id: str) -> dict:
+    """Fetch a cached analysis by id, or 404 if it expired / never existed."""
     entry = state.cache.get(analysis_id)
     if entry is None:
         raise HTTPException(404, "analysis not found (it may have expired) — re-run the analysis")
@@ -46,6 +47,7 @@ def _get_analysis(analysis_id: str) -> dict:
 
 
 def _r(arr, nd=3):
+    """Round an array to nd decimals and convert it to nested Python lists."""
     return np.round(np.asarray(arr, dtype=np.float64), nd).tolist()
 
 
@@ -58,6 +60,7 @@ class AnalyzeRequest(BaseModel):
 
 @router.post("/api/analyze")
 def analyze(req: AnalyzeRequest):
+    """Analyze one text: per-token activations, concept reads, next-token guesses."""
     text = req.text.strip()
     if not text:
         raise HTTPException(400, "text is required")
@@ -264,6 +267,7 @@ def concept_circuit(req: ConceptRequest):
 
 @router.get("/api/model-info")
 def model_info():
+    """Model dimensions and the concept catalog that drives the dashboard."""
     return {
         "model_name": MODEL_NAME,
         "num_layers": state.dims.num_layers,

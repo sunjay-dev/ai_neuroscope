@@ -41,6 +41,7 @@ class Calibration:
 
 
 def _probe_text(concept: dict, item: str) -> str:
+    """Format one probe text: words get a leading space, sentences don't."""
     return item if concept["kind"] == "sentence" else " " + item
 
 
@@ -57,6 +58,7 @@ def build_calibration(run_texts: Callable[[List[str]], List[np.ndarray]]) -> Cal
     pool_index: dict = {}
 
     def pool_add(text: str) -> int:
+        """Intern a probe text; return its row index in the pool."""
         if text not in pool_index:
             pool_index[text] = len(pool_texts)
             pool_texts.append(text)

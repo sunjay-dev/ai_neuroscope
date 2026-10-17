@@ -32,12 +32,14 @@ CONCEPT_BINARY = {k: CONCEPTS[k]["b"] is not NEUTRAL_WORDS for k in CONCEPT_KEYS
 
 
 def _unit_id(kind: str, layer: int, index: int, dims: Dims) -> int:
+    """(kind, layer, index) -> flat unit id; heads occupy [0, num_head_units)."""
     if kind == "head":
         return layer * dims.num_heads + index
     return dims.num_head_units + layer * dims.mlp_dim + index
 
 
 def _unit_from_id(uid: int, dims: Dims):
+    """Inverse of _unit_id: flat unit id -> (kind, layer, index)."""
     if uid < dims.num_head_units:
         return "head", uid // dims.num_heads, uid % dims.num_heads
     uid -= dims.num_head_units
@@ -55,6 +57,7 @@ def _contrast(a: np.ndarray, b: np.ndarray, unit_sd: np.ndarray):
 
 
 def _selectivity(d: np.ndarray, binary: bool) -> np.ndarray:
+    """Turn Cohen's d into a nonnegative selectivity score."""
     # Binary concepts are meaningful in both directions (feminine vs masculine);
     # unary ones only count when the unit fires *more* for the concept.
     return np.abs(d) if binary else np.maximum(d, 0)
@@ -64,6 +67,7 @@ class Circuit:
     """A concept's most selective heads + neurons, read out as a linear vote."""
 
     def __init__(self, name, side_a, side_b, binary, d, mid, pooled, dims: Dims, calib: np.ndarray):
+        """Pick the most selective heads + neurons and baseline the vote on `calib`."""
         # calib: (tokens, units) ordinary-text reference the vote is z-scored
         # against; dims splits the unit ids into heads vs neurons.
         self.name, self.side_a, self.side_b, self.binary = name, side_a, side_b, binary
@@ -102,6 +106,7 @@ class Circuit:
         return evidence, z, witness
 
     def side_for(self, z: float) -> Optional[str]:
+        """The concept side this z-score detects, or None below DETECT_Z."""
         if z >= DETECT_Z:
             return self.side_a
         if self.binary and z <= -DETECT_Z:
@@ -113,6 +118,7 @@ class Circuit:
 
 
 def _concept_label(ci: int, uid: int, concept_d: np.ndarray) -> dict:
+    """JSON label for one (concept, unit): chosen side + effect size d."""
     key = CONCEPT_KEYS[ci]
     c = CONCEPTS[key]
     d = float(concept_d[ci, uid])
@@ -125,6 +131,7 @@ def _concept_label(ci: int, uid: int, concept_d: np.ndarray) -> dict:
 
 
 def _best_label(uid: int, concept_score: np.ndarray, concept_d: np.ndarray) -> Optional[dict]:
+    """A unit's strongest concept label, or None below LABEL_MIN_D."""
     ci = int(concept_score[:, uid].argmax())
     if concept_score[ci, uid] < LABEL_MIN_D:
         return None

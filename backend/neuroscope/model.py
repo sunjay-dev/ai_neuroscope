@@ -54,6 +54,7 @@ def load() -> None:
 
 
 def _make_head_hook(layer_idx: int, model, dims: Dims):
+    """Build the forward pre-hook that records one layer's per-head write norms."""
     # c_proj is a Conv1D (out = x @ W + b) whose input is the concatenation of
     # all heads' outputs. Splitting W by head gives each head's own write into
     # the residual stream; its norm is how hard that head "fires".
@@ -62,6 +63,7 @@ def _make_head_hook(layer_idx: int, model, dims: Dims):
     )
 
     def hook(_module, args):
+        """Record this layer's per-head write norms as (batch, seq, heads)."""
         x = args[0]
         b, s, _ = x.shape
         z = x.view(b, s, dims.num_heads, dims.d_head)
@@ -71,13 +73,16 @@ def _make_head_hook(layer_idx: int, model, dims: Dims):
 
 
 def _make_mlp_hook(layer_idx: int):
+    """Build the forward hook that records one layer's MLP activations."""
     def hook(_module, _inp, out):
+        """Capture this layer's (batch, seq, mlp_dim) activation tensor."""
         _mlp_acts[layer_idx] = out.detach()
 
     return hook
 
 
 def _encode(text: str) -> List[int]:
+    """Tokenize text, prefixed with BOS."""
     # A leading BOS token absorbs GPT-2's "attention sink" outlier activations,
     # which would otherwise land on (and drown out) the user's first word.
     return [state.bos] + state.tokenizer.encode(text)

@@ -48,6 +48,7 @@ class Dims:
 
     @property
     def d_head(self) -> int:
+        """Per-head width of the residual stream (d_model / num_heads)."""
         return self.d_model // self.num_heads
 
     @property

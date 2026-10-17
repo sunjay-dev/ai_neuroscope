@@ -29,6 +29,7 @@ from .neuroscope.concepts import CONCEPTS
 
 @asynccontextmanager
 async def lifespan(_app: FastAPI):
+    """Startup: load the model, run the probes, build the circuits — then serve."""
     model.load()
     print(f"[neuroscope] loaded {MODEL_NAME}; running concept probes…", flush=True)
     state.calibration = probing.build_calibration(model._run_texts)
