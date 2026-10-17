@@ -16,6 +16,7 @@ served until startup has completed.
 
 from contextlib import asynccontextmanager
 from pathlib import Path
+from time import perf_counter
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -31,10 +32,15 @@ from .neuroscope.concepts import CONCEPTS
 async def lifespan(_app: FastAPI):
     """Startup: load the model, run the probes, build the circuits — then serve."""
     model.load()
-    print(f"[neuroscope] loaded {MODEL_NAME}; running concept probes…", flush=True)
-    state.calibration = probing.build_calibration(model._run_texts)
+    print(f"[neuroscope] loaded {MODEL_NAME}; building concept probes…", flush=True)
+    t0 = perf_counter()
+    # ~15 s of forward passes the first time; afterwards the disk cache makes
+    # this a load of numpy arrays (see neuroscope/probing.py).
+    state.calibration, cache_hit = probing.get_calibration(model._run_texts)
     circuits.build_circuits(state.calibration)
-    print(f"[neuroscope] probed {len(state.calibration.pool_texts)} texts across {len(CONCEPTS)} concepts; ready.", flush=True)
+    secs = perf_counter() - t0
+    how = "calibration cache" if cache_hit else f"{len(state.calibration.pool_texts)} probe texts"
+    print(f"[neuroscope] probed {how} in {secs:.1f}s across {len(CONCEPTS)} concepts; ready.", flush=True)
     yield
 
 
