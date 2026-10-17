@@ -39,7 +39,7 @@ backend spends ~15s running the concept probes before it starts serving.
 
 ## How it works
 
-**Backend** (`backend/app.py`, `backend/concepts.py`) — GPT-2 small via Hugging Face
+**Backend** (`backend/app.py`, `backend/neuroscope/`) — GPT-2 small via Hugging Face
 Transformers, dissected with PyTorch hooks:
 
 - **Attention heads**: a forward pre-hook on each layer's `attn.c_proj` splits the
