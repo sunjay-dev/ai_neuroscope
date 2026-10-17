@@ -4,6 +4,8 @@ Uses a fake `run_texts` runner (deterministic per-text activation matrices), so
 everything here runs in seconds with no model, no torch, and no weights.
 """
 
+import json
+
 import numpy as np
 import pytest
 
@@ -159,3 +161,73 @@ def test_unwritable_cache_dir_does_not_fail_startup(calib, tmp_path, monkeypatch
     assert probing.save_calibration(calib) is False
     # and the calibration we built in-memory is still perfectly usable
     assert calib.pool.ndim == 2
+
+
+# ------------------------------------------------- review regressions (PR #2)
+
+
+def test_namespaced_model_id_still_caches(calib, isolated_cache, monkeypatch):
+    # NEUROSCOPE_MODEL may be a repo id like "openai-community/gpt2". The raw
+    # name used to land in the filename, so the path pointed into a nested
+    # directory that save_calibration never created: save failed, and every
+    # boot re-probed forever.
+    monkeypatch.setattr(config, "MODEL_NAME", "openai-community/gpt2")
+    assert probing.save_calibration(calib) is True
+    for path in isolated_cache.iterdir():
+        assert "/" not in path.name, path
+    loaded = probing.load_cached_calibration(DIMS)
+    assert loaded is not None
+    np.testing.assert_allclose(loaded.unit_mu, calib.unit_mu)
+
+
+def test_distinct_model_ids_get_distinct_files(calib, isolated_cache, monkeypatch):
+    # the filename is sanitized, but the digest still hashes the full model ID,
+    # so two namespaced ids must never share a cache entry
+    monkeypatch.setattr(config, "MODEL_NAME", "openai-community/gpt2")
+    key_a = probing._cache_key()
+    monkeypatch.setattr(config, "MODEL_NAME", "other-community/gpt2")
+    key_b = probing._cache_key()
+    assert key_a != key_b
+
+
+def _write_meta(isolated_cache, **overrides):
+    """Rewrite only meta.json, leaving the npz untouched."""
+    _, meta_path = probing._cache_paths()
+    meta = json.loads(meta_path.read_text())
+    meta.update(overrides)
+    meta_path.write_text(json.dumps(meta))
+
+
+def test_meta_missing_pool_texts_is_a_miss_not_a_crash(calib, isolated_cache):
+    # A KeyError here escaped the miss handler and crashed startup outright.
+    probing.save_calibration(calib)
+    _drop_meta_key(calib, isolated_cache, "pool_texts")
+    assert probing.load_cached_calibration(DIMS) is None
+
+
+def _drop_meta_key(calib, isolated_cache, key):
+    _, meta_path = probing._cache_paths()
+    meta = json.loads(meta_path.read_text())
+    meta.pop(key, None)
+    meta_path.write_text(json.dumps(meta))
+
+
+def test_short_pool_texts_is_a_miss(calib, isolated_cache):
+    # npz and meta.json are two separate atomic writes; a crash between them
+    # can pair new arrays with old metadata. Cardinality must be cross-checked.
+    probing.save_calibration(calib)
+    _write_meta(isolated_cache, pool_texts=["only one text"])
+    assert probing.load_cached_calibration(DIMS) is None
+
+
+def test_out_of_range_concept_index_is_a_miss(calib, isolated_cache):
+    probing.save_calibration(calib)
+    _write_meta(isolated_cache, concept_sides={"gender": [[9999], [0]]})
+    assert probing.load_cached_calibration(DIMS) is None
+
+
+def test_non_object_meta_is_a_miss(calib, isolated_cache):
+    probing.save_calibration(calib)
+    _, meta_path = probing._cache_paths()
+    meta_path.write_text('"just a string"')
+    assert probing.load_cached_calibration(DIMS) is None

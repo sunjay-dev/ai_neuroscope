@@ -5,6 +5,10 @@ services:
       dockerfile: backend/Dockerfile
     environment:
       - NEUROSCOPE_MODEL=${NEUROSCOPE_MODEL:-gpt2}
+      # Compose only forwards variables a service declares, so without this line
+      # `make rebuild-cache` (which sets it on the host) would never reach the
+      # container and would silently re-use the existing calibration.
+      - NEUROSCOPE_REBUILD_CACHE=${NEUROSCOPE_REBUILD_CACHE:-0}
     volumes:
       - hf-cache:/root/.cache/huggingface
     ports:

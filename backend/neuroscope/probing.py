@@ -14,6 +14,7 @@ instead of re-probing. Nothing here runs at import time.
 import hashlib
 import json
 import os
+import re
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Callable, Dict, List, Optional, Tuple
@@ -122,20 +123,29 @@ def _cache_paths() -> Tuple[Path, Path]:
 
 
 def _cache_key() -> str:
-    """Hash model name + probe data: editing concepts.py invalidates the cache."""
+    """Hash model name + probe data: editing concepts.py invalidates the cache.
+
+    The digest covers the full model ID, so namespaced IDs like
+    `openai-community/gpt2` stay distinct; the filename only carries a
+    path-sanitized copy, because a raw `/` in MODEL_NAME would otherwise turn
+    the cache path into a nested directory save_calibration() never creates.
+    """
     payload = json.dumps(
         {"model": config.MODEL_NAME, "concepts": CONCEPTS, "calibration": CALIBRATION_SENTENCES},
         sort_keys=True,
     )
     digest = hashlib.sha256(payload.encode("utf-8")).hexdigest()[:16]
-    return f"calibration-v{CACHE_VERSION}-{config.MODEL_NAME}-{digest}"
+    safe_model = re.sub(r"[^A-Za-z0-9._-]", "-", config.MODEL_NAME)
+    return f"calibration-v{CACHE_VERSION}-{safe_model}-{digest}"
 
 
 def load_cached_calibration(dims: Dims) -> Optional[Calibration]:
     """A previously probed Calibration, or None if missing/stale/malformed.
 
-    Shape and concept-key checks guard against a cache written by a different
-    model or truncated mid-write, even if the key somehow matched.
+    Every check AND the reconstruction below run inside the try: a damaged
+    cache (missing metadata keys, mismatched array/metadata sizes from a crash
+    between the two atomic writes, wrong shapes) must degrade to a re-probe,
+    never to a startup crash.
     """
     if config.REBUILD_CACHE:
         return None
@@ -146,15 +156,32 @@ def load_cached_calibration(dims: Dims) -> Optional[Calibration]:
         with np.load(npz_path, allow_pickle=False) as data:
             arrays = {k: data[k] for k in ("pool", "calib", "unit_mu", "unit_sd", "pool_word_idx")}
         meta = json.loads(meta_path.read_text())
-    except Exception:  # unreadable/truncated cache — treat as absent, re-probe
-        return None
 
-    expected_units = dims.num_head_units + dims.num_layers * dims.mlp_dim
-    if meta.get("cache_version") != CACHE_VERSION or meta.get("model") != config.MODEL_NAME:
-        return None
-    if any(arrays[k].shape[-1] != expected_units for k in ("pool", "calib", "unit_mu", "unit_sd")):
-        return None
-    if set(meta.get("concept_sides", {})) != set(CONCEPTS):
+        expected_units = dims.num_head_units + dims.num_layers * dims.mlp_dim
+        if meta.get("cache_version") != CACHE_VERSION or meta.get("model") != config.MODEL_NAME:
+            return None
+        if any(arrays[k].shape[-1] != expected_units for k in ("pool", "calib", "unit_mu", "unit_sd")):
+            return None
+        if set(meta.get("concept_sides", {})) != set(CONCEPTS):
+            return None
+
+        pool_texts = meta["pool_texts"]
+        concept_sides = {k: (list(v[0]), list(v[1])) for k, v in meta["concept_sides"].items()}
+        pool_word_idx = arrays["pool_word_idx"]
+
+        # npz and meta.json are replaced by two separate atomic writes, so a
+        # crash between them can pair new arrays with old metadata. Cross-check
+        # their shared cardinality rather than trusting either alone.
+        n_pool = arrays["pool"].shape[0]
+        if len(pool_texts) != n_pool:
+            return None
+        if len(pool_word_idx) and (pool_word_idx.min() < 0 or pool_word_idx.max() >= n_pool):
+            return None
+        for a_side, b_side in concept_sides.values():
+            for idx in (*a_side, *b_side):
+                if not 0 <= int(idx) < n_pool:
+                    return None
+    except Exception:  # unreadable/truncated/malformed cache — treat as absent
         return None
 
     return Calibration(
@@ -162,9 +189,9 @@ def load_cached_calibration(dims: Dims) -> Optional[Calibration]:
         calib=arrays["calib"],
         unit_mu=arrays["unit_mu"],
         unit_sd=arrays["unit_sd"],
-        pool_texts=meta["pool_texts"],
-        pool_word_idx=arrays["pool_word_idx"],
-        concept_sides={k: (list(v[0]), list(v[1])) for k, v in meta["concept_sides"].items()},
+        pool_texts=pool_texts,
+        pool_word_idx=pool_word_idx,
+        concept_sides=concept_sides,
     )
 
 
