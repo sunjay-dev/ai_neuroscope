@@ -76,7 +76,7 @@ Transformers, dissected with PyTorch hooks:
   text (≥ 1.6σ = detected). That is how "king" → Royalty → *Layer 2 · Head 7* comes
   from real measurements, not a lookup table.
 
-**Frontend** (`frontend/`) — vanilla JS, three panels:
+**Frontend** (`frontend/`) — React + Vite + Tailwind CSS + shadcn + TypeScript, three panels:
 
 1. **Input** — type (live mode re-analyzes as you type) or pick an example; the
    **Concept Circuit Finder** lights up a concept's heads + neurons across the

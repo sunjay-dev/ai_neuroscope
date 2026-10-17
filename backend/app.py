@@ -63,4 +63,5 @@ _frontend_dir = Path(__file__).resolve().parent.parent / "frontend"
 if _frontend_dir.is_dir():
     # Present in local/single-container dev; absent in the backend-only Docker
     # image, where nginx serves the frontend and proxies /api/* here instead.
-    app.mount("/", StaticFiles(directory=str(_frontend_dir), html=True), name="frontend")
+    _static_dir = _frontend_dir / "dist" if (_frontend_dir / "dist").is_dir() else _frontend_dir
+    app.mount("/", StaticFiles(directory=str(_static_dir), html=True), name="frontend")

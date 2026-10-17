@@ -1,0 +1,99 @@
+@import "tailwindcss";
+
+:root {
+  --bg: #0d0f1a;
+  --panel: #131627;
+  --panel-border: #1e2235;
+  --panel-hover: #1a1f35;
+  --text: #e8eaf6;
+  --text-muted: #8892b0;
+  --text-dim: #4a5568;
+  --accent: #7c6af0;
+  --accent-glow: rgba(124, 106, 240, 0.35);
+  --accent2: #c47af0;
+  --pink: #f072b8;
+  --cyan: #50d8ff;
+  --green: #43d9ad;
+  --yellow: #f0c060;
+  --red: #ff6b6b;
+  --token-bg: #1a1f35;
+  --well: #0a0c14;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+button {
+  font-family: inherit;
+}
+
+/* Animations */
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+@keyframes wire-flow {
+  from { stroke-dashoffset: 12; }
+  to { stroke-dashoffset: 0; }
+}
+
+.wire-flow {
+  animation: wire-flow 0.6s linear infinite;
+}
+
+.live-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--text-dim);
+}
+
+.live-dot.on {
+  background: var(--green);
+  box-shadow: 0 0 6px var(--green);
+  animation: pulse-dot 2s infinite;
+}
+
+.live-dot.busy {
+  background: var(--yellow);
+  box-shadow: 0 0 8px var(--yellow);
+  animation: pulse-dot 0.5s infinite;
+}
+
+/* Scrollbars */
+.scrollbar-hidden::-webkit-scrollbar, .network-container::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+.scrollbar-hidden::-webkit-scrollbar-track {
+  background: transparent;
+}
+.scrollbar-hidden::-webkit-scrollbar-thumb, .network-container::-webkit-scrollbar-thumb {
+  background: var(--panel-border);
+  border-radius: 2px;
+}
+
+/* Media query for narrow screens */
+@media (max-width: 1100px) {
+  body {
+    overflow: auto;
+    height: auto;
+  }
+}
