@@ -2,7 +2,7 @@
 # but `make test` is the gate to run before committing backend changes.
 
 COMPOSE ?= docker compose
-# Bare interpreter for the test container, same tag as backend/Dockerfile.
+# Bare interpreter for the test container, same tag as Dockerfile.
 PY_IMAGE := python:3.12-slim
 
 .PHONY: up down restart ps logs test rebuild-cache

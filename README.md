@@ -18,20 +18,18 @@ uvicorn backend.app:app --reload --port 8420
 Open http://127.0.0.1:8420 — the backend serves the frontend directly, no separate
 build step.
 
-### Option B: Docker Compose (separate frontend/backend containers)
+### Option B: Docker Compose (single container)
 
 ```bash
 docker compose up --build
 ```
 
-Open http://127.0.0.1:3000. This runs two containers:
-- `backend` — FastAPI + GPT-2, API only, on an internal port (also published on 8000
-  for direct API testing).
-- `frontend` — nginx serving the static dashboard and reverse-proxying `/api/*` to
-  `backend`, so the browser only ever talks to one origin.
+Open http://127.0.0.1:3000. This runs a single container via multi-stage Dockerfile:
+- Multi-stage build compiles the React/Vite/Tailwind frontend and bundles it into the backend image.
+- FastAPI serves both the GPT-2 analysis API (`/api/*`) and the static frontend dashboard on port 3000 (mapped to container port 8000).
 
 Model weights are cached in a named Docker volume (`hf-cache`), so restarting the
-containers doesn't re-download them. To use a different model, set `NEUROSCOPE_MODEL`
+container doesn't re-download them. To use a different model, set `NEUROSCOPE_MODEL`
 in your shell before `docker compose up` (see below).
 
 The first run downloads GPT-2's weights (~500MB) from Hugging Face, then spends
