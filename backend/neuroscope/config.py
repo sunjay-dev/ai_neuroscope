@@ -11,6 +11,7 @@ from __future__ import annotations
 import os
 from collections import OrderedDict
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import TYPE_CHECKING, Any, Optional
 
 if TYPE_CHECKING:  # annotation only; probing imports config at runtime
@@ -27,6 +28,21 @@ CIRCUIT_HEADS = 6
 CIRCUIT_NEURONS = 12
 LABEL_MIN_D = 2.0  # effect size below this is reported as "no clear concept"
 DETECT_Z = 1.6  # circuit reading this far above ordinary text = concept detected
+
+# ------------------------------------------------------------------- caching
+# The startup probes (~15 s of forward passes over ~278 texts) are cached to
+# disk, keyed by model name + a hash of the probe data, so restarts skip
+# straight to loading the arrays. Default location sits inside the HF cache
+# volume mounted by docker-compose.yml (hf-cache -> /root/.cache/huggingface),
+# so the cache survives container recreation. Override with NEUROSCOPE_CACHE_DIR;
+# set NEUROSCOPE_REBUILD_CACHE=1 to force a re-probe.
+CACHE_DIR = Path(
+    os.environ.get(
+        "NEUROSCOPE_CACHE_DIR",
+        str(Path.home() / ".cache" / "huggingface" / "neuroscope"),
+    )
+)
+REBUILD_CACHE = os.environ.get("NEUROSCOPE_REBUILD_CACHE", "").lower() in ("1", "true", "yes")
 
 
 # ---------------------------------------------------------------------- state
