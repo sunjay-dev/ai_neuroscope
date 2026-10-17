@@ -84,7 +84,7 @@ def isolated_cache(tmp_path, monkeypatch):
 
 
 def test_cache_round_trip(calib, isolated_cache):
-    assert probing.save_calibration(calib) is True
+    assert probing.save_calibration(calib, DIMS) is True
     assert len(list(isolated_cache.iterdir())) == 2  # npz + meta.json
 
     loaded = probing.load_cached_calibration(DIMS)
@@ -123,32 +123,48 @@ def test_get_calibration_miss_then_hit_never_reprobes(isolated_cache):
 
 def test_save_creates_missing_cache_dirs(calib, tmp_path, monkeypatch):
     monkeypatch.setattr(config, "CACHE_DIR", tmp_path / "missing" / "nested")  # ok, mkdir
-    assert probing.save_calibration(calib) is True
+    assert probing.save_calibration(calib, DIMS) is True
     assert probing.load_cached_calibration(DIMS) is not None
 
 
 def test_model_change_invalidates_cache(calib, isolated_cache, monkeypatch):
-    probing.save_calibration(calib)
+    probing.save_calibration(calib, DIMS)
     monkeypatch.setattr(config, "MODEL_NAME", "distilgpt2")
     assert probing.load_cached_calibration(DIMS) is None
 
 
 def test_rebuild_flag_bypasses_cache(calib, isolated_cache, monkeypatch):
-    probing.save_calibration(calib)
+    probing.save_calibration(calib, DIMS)
     monkeypatch.setattr(config, "REBUILD_CACHE", True)
     assert probing.load_cached_calibration(DIMS) is None
 
 
 def test_dims_mismatch_invalidates_cache(calib, isolated_cache):
-    # a cache written for a different architecture must not be loaded even if
-    # the key somehow matched
-    probing.save_calibration(calib)
-    other = Dims(num_layers=3, num_heads=3, d_model=24, mlp_dim=6)
+    # A cache from a different architecture must not be loaded even if the key
+    # somehow matched. Deliberately uses a layout with the SAME total unit
+    # count (4Lx2H + 4 neurons = 8+16 = 24, vs this suite's 3Lx3H + 5 neurons
+    # = 9+15 = 24): only the recorded head/neuron split can tell them apart,
+    # so a total-only check would wrongly accept it.
+    probing.save_calibration(calib, DIMS)
+    other = Dims(num_layers=4, num_heads=2, d_model=24, mlp_dim=4)
+    total = lambda d: d.num_head_units + d.num_layers * d.mlp_dim
+    assert total(other) == total(DIMS)
+    assert other.num_head_units != DIMS.num_head_units
     assert probing.load_cached_calibration(other) is None
 
 
+def test_missing_dims_metadata_is_a_miss(calib, isolated_cache):
+    # caches written before the layout field existed must miss, not KeyError
+    probing.save_calibration(calib, DIMS)
+    _, meta_path = probing._cache_paths()
+    meta = json.loads(meta_path.read_text())
+    meta.pop("dims")
+    meta_path.write_text(json.dumps(meta))
+    assert probing.load_cached_calibration(DIMS) is None
+
+
 def test_truncated_cache_is_treated_as_absent(calib, isolated_cache):
-    probing.save_calibration(calib)
+    probing.save_calibration(calib, DIMS)
     npz_path, _ = probing._cache_paths()
     npz_path.write_bytes(b"not a real npz")  # simulate a corrupt/partial write
     assert probing.load_cached_calibration(DIMS) is None
@@ -158,7 +174,7 @@ def test_unwritable_cache_dir_does_not_fail_startup(calib, tmp_path, monkeypatch
     blocked = tmp_path / "blocked"
     blocked.write_text("")  # a file where the dir should be -> mkdir raises
     monkeypatch.setattr(config, "CACHE_DIR", blocked / "cache")
-    assert probing.save_calibration(calib) is False
+    assert probing.save_calibration(calib, DIMS) is False
     # and the calibration we built in-memory is still perfectly usable
     assert calib.pool.ndim == 2
 
@@ -172,7 +188,7 @@ def test_namespaced_model_id_still_caches(calib, isolated_cache, monkeypatch):
     # directory that save_calibration never created: save failed, and every
     # boot re-probed forever.
     monkeypatch.setattr(config, "MODEL_NAME", "openai-community/gpt2")
-    assert probing.save_calibration(calib) is True
+    assert probing.save_calibration(calib, DIMS) is True
     for path in isolated_cache.iterdir():
         assert "/" not in path.name, path
     loaded = probing.load_cached_calibration(DIMS)
@@ -200,7 +216,7 @@ def _write_meta(isolated_cache, **overrides):
 
 def test_meta_missing_pool_texts_is_a_miss_not_a_crash(calib, isolated_cache):
     # A KeyError here escaped the miss handler and crashed startup outright.
-    probing.save_calibration(calib)
+    probing.save_calibration(calib, DIMS)
     _drop_meta_key(calib, isolated_cache, "pool_texts")
     assert probing.load_cached_calibration(DIMS) is None
 
@@ -215,19 +231,27 @@ def _drop_meta_key(calib, isolated_cache, key):
 def test_short_pool_texts_is_a_miss(calib, isolated_cache):
     # npz and meta.json are two separate atomic writes; a crash between them
     # can pair new arrays with old metadata. Cardinality must be cross-checked.
-    probing.save_calibration(calib)
+    probing.save_calibration(calib, DIMS)
     _write_meta(isolated_cache, pool_texts=["only one text"])
     assert probing.load_cached_calibration(DIMS) is None
 
 
 def test_out_of_range_concept_index_is_a_miss(calib, isolated_cache):
-    probing.save_calibration(calib)
-    _write_meta(isolated_cache, concept_sides={"gender": [[9999], [0]]})
+    # Every concept key must stay present: the key-set check runs BEFORE the
+    # index-bounds check, so dropping keys here would make this test pass
+    # without ever reaching the bounds logic it claims to cover (verified by
+    # deleting the bounds check and watching the old version still pass).
+    probing.save_calibration(calib, DIMS)
+    _, meta_path = probing._cache_paths()
+    meta = json.loads(meta_path.read_text())
+    side = meta["concept_sides"]["gender"]
+    side[0][0] = 9999  # one index out of range, all keys otherwise intact
+    meta_path.write_text(json.dumps(meta))
     assert probing.load_cached_calibration(DIMS) is None
 
 
 def test_non_object_meta_is_a_miss(calib, isolated_cache):
-    probing.save_calibration(calib)
+    probing.save_calibration(calib, DIMS)
     _, meta_path = probing._cache_paths()
     meta_path.write_text('"just a string"')
     assert probing.load_cached_calibration(DIMS) is None

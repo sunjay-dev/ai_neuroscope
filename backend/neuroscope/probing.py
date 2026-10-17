@@ -160,6 +160,13 @@ def load_cached_calibration(dims: Dims) -> Optional[Calibration]:
         expected_units = dims.num_head_units + dims.num_layers * dims.mlp_dim
         if meta.get("cache_version") != CACHE_VERSION or meta.get("model") != config.MODEL_NAME:
             return None
+        # Head/neuron layout must match exactly, not just the total: the arrays
+        # are laid out heads ++ neurons, so a same-total split (3Lx3H+5 vs
+        # 4Lx2H+4 neurons, both 24 units) would be read back as the wrong
+        # heads. Files written before this field existed simply miss and
+        # re-probe once, which is why CACHE_VERSION stays put.
+        if meta.get("dims") != _dims_record(dims):
+            return None
         if any(arrays[k].shape[-1] != expected_units for k in ("pool", "calib", "unit_mu", "unit_sd")):
             return None
         if set(meta.get("concept_sides", {})) != set(CONCEPTS):
@@ -195,13 +202,18 @@ def load_cached_calibration(dims: Dims) -> Optional[Calibration]:
     )
 
 
-def save_calibration(cal: Calibration) -> bool:
+def save_calibration(cal: Calibration, dims: Dims) -> bool:
     """Persist a Calibration atomically (write to .tmp, then os.replace).
 
     Writes both files before either becomes visible, so a crash mid-save can't
     leave a matching .npz with a stale .meta.json. Returns False on a
     read-only/missing cache dir rather than failing startup — the probe result
     itself is still valid, it just won't be reused.
+
+    `dims` is recorded alongside the arrays: the unit vectors are laid out as
+    heads ++ neurons, so a cache is only usable if the head/neuron split that
+    wrote it matches the one reading it. The total unit count alone does not
+    prove that (e.g. 3Lx3H + 5 neurons and 4Lx2H + 4 neurons both total 24).
     """
     npz_path, meta_path = _cache_paths()
     tmp_npz, tmp_meta = npz_path.with_suffix(".npz.tmp"), meta_path.with_suffix(".json.tmp")
@@ -221,6 +233,7 @@ def save_calibration(cal: Calibration) -> bool:
                 {
                     "cache_version": CACHE_VERSION,
                     "model": config.MODEL_NAME,
+                    "dims": _dims_record(dims),
                     "pool_texts": cal.pool_texts,
                     "concept_sides": {k: [list(a), list(b)] for k, (a, b) in cal.concept_sides.items()},
                 }
@@ -238,6 +251,16 @@ def save_calibration(cal: Calibration) -> bool:
         return False
 
 
+def _dims_record(dims: Dims) -> dict:
+    """The layout fields a cache is only valid for, as stored in meta.json."""
+    return {
+        "num_layers": dims.num_layers,
+        "num_heads": dims.num_heads,
+        "d_model": dims.d_model,
+        "mlp_dim": dims.mlp_dim,
+    }
+
+
 def get_calibration(run_texts: Callable[[List[str]], List[np.ndarray]], dims: Dims = None):
     """The Calibration for this model, from disk cache or a fresh probe.
 
@@ -248,5 +271,5 @@ def get_calibration(run_texts: Callable[[List[str]], List[np.ndarray]], dims: Di
     if cached is not None:
         return cached, True
     cal = build_calibration(run_texts, dims)
-    save_calibration(cal)
+    save_calibration(cal, dims)
     return cal, False
