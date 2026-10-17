@@ -24,7 +24,7 @@ build step.
 docker compose up --build
 ```
 
-Open http://127.0.0.1:8420. This runs two containers:
+Open http://127.0.0.1:3000. This runs two containers:
 - `backend` — FastAPI + GPT-2, API only, on an internal port (also published on 8000
   for direct API testing).
 - `frontend` — nginx serving the static dashboard and reverse-proxying `/api/*` to
@@ -34,8 +34,28 @@ Model weights are cached in a named Docker volume (`hf-cache`), so restarting th
 containers doesn't re-download them. To use a different model, set `NEUROSCOPE_MODEL`
 in your shell before `docker compose up` (see below).
 
-The first run downloads GPT-2's weights (~500MB) from Hugging Face. On startup the
-backend spends ~15s running the concept probes before it starts serving.
+The first run downloads GPT-2's weights (~500MB) from Hugging Face, then spends
+~15s running the concept probes. Those probe results are cached to disk inside
+the `hf-cache` volume, so a restart skips straight to loading the arrays
+(~0.5s) instead of re-probing. Force a fresh probe with `make rebuild-cache`
+(or `NEUROSCOPE_REBUILD_CACHE=1`), and note that editing
+`backend/neuroscope/concepts.py` invalidates the cache automatically.
+
+## Tests
+
+```bash
+make test
+```
+
+Runs the suite in a bare `python:3.12-slim` container with numpy + pytest only —
+no torch, no model weights. That is deliberate: it means the pure logic in
+`neuroscope/circuits.py` and `neuroscope/probing.py` stays importable and
+testable without any model, and a passing run proves nothing has grown a hidden
+torch dependency.
+
+Dependency versions in `requirements.txt` are pinned to a tested set. To bump
+one, change a single pin, `docker compose up --build`, run `make test`, then
+re-run an analysis and check the numbers are still sane.
 
 ## How it works
 
