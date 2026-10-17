@@ -1,5 +1,69 @@
-fastapi>=0.110
-uvicorn[standard]>=0.29
-transformers>=4.40
-torch>=2.2
-numpy>=1.26
+# Pinned to the versions the Docker image was tested against (pip freeze of a
+# known-good build). The old open ranges (`fastapi>=0.110`, ...) let a routine
+# image rebuild silently pick up a new transformers/pydantic that breaks the
+# GPT-2 dissection internals this code depends on (attn_implementation="eager",
+# the Conv1D weight layout in neuroscope/model.py, mlp.c_proj weights).
+#
+# To upgrade: bump ONE pin, `docker compose up --build`, run `make test`, then
+# re-run the API parity check. Never re-resolve the whole set at once.
+#
+# Note for the plain-python path (README option A): `torch==2.14.1` resolves to
+# the default PyPI build, which drags in CUDA deps on Linux. The Dockerfile
+# pre-installs the CPU wheel (2.14.1+cpu) from download.pytorch.org, which
+# satisfies this pin, so containers stay lean.
+
+# --- web framework ---
+fastapi==0.143.3
+starlette==1.8.0
+pydantic==2.14.1
+pydantic-core==2.50.1
+annotated-types==0.8.0
+typing-extensions==4.16.0
+anyio==4.15.1
+h11==0.16.0
+idna==3.20
+
+# --- server (uvicorn[standard] and its extras, pinned individually) ---
+uvicorn==0.54.0
+uvloop==0.23.0
+websockets==17.2
+watchfiles==1.3.0
+httptools==0.9.0
+python-dotenv==1.2.4
+PyYAML==6.0.3
+
+# --- model stack: the versions to re-verify carefully on any bump ---
+torch==2.14.1
+transformers==5.20.1
+tokenizers==0.23.3
+huggingface-hub==2.2.0
+safetensors==0.8.0
+hf-xet==1.7.0
+httpx2==2.13.1
+httpcore2==2.13.1
+filelock==3.32.3
+fsspec==2026.7.0
+regex==2026.9.29
+tqdm==4.70.1
+packaging==26.3
+mpmath==1.3.0
+networkx==3.6.1
+sympy==1.14.0
+truststore==0.10.5
+
+# --- numerics ---
+numpy==2.5.4
+
+# --- transitives pulled in by the above; pinned so rebuilds are byte-reproducible ---
+Jinja2==3.1.6
+MarkupSafe==3.0.3
+Markdown-it-py==4.2.0
+Pygments==2.21.0
+mdurl==0.1.2
+annotated-doc==0.0.5
+click==8.5.0
+opentelemetry-api==1.45.1
+rich==15.0.0
+shellingham==1.5.4
+typer==0.27.3
+typing-inspection==0.4.4
