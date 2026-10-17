@@ -1,3 +1,11 @@
+FROM node:22-alpine AS frontend-builder
+
+WORKDIR /app/frontend
+COPY frontend/package*.json ./
+RUN npm install
+COPY frontend/ ./
+RUN npm run build
+
 FROM python:3.12-slim
 
 WORKDIR /app
@@ -9,6 +17,7 @@ RUN pip install --no-cache-dir --index-url https://download.pytorch.org/whl/cpu 
     pip install --no-cache-dir -r requirements.txt
 
 COPY backend/ ./backend
+COPY --from=frontend-builder /app/frontend/dist ./frontend/dist
 
 ENV NEUROSCOPE_MODEL=gpt2
 EXPOSE 8000
