@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef, useEffect } from "react";
 import { ActiveCircuit, AnalysisResponse, Selection } from "../types";
 import { conceptColor, showTok } from "../constants";
 
@@ -15,30 +15,46 @@ export const TokenRow: React.FC<TokenRowProps> = ({
   sel,
   onSelectToken,
 }) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // Auto-scroll selected token into view if out of bounds
+  useEffect(() => {
+    if (sel && containerRef.current) {
+      const activeEl = containerRef.current.querySelector(`[data-idx="${sel.t}"]`);
+      if (activeEl) {
+        activeEl.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+      }
+    }
+  }, [sel?.t]);
+
   if (!analysis) {
     return (
       <div
         id="token-row"
-        className="flex flex-wrap gap-1.5 px-5 py-3 bg-[#131627] border-b border-[#1e2235] shrink-0 max-h-[140px] overflow-y-auto max-[1100px]:px-4"
+        className="flex items-center px-6 py-3 bg-[#0a0c13] border-b border-white/[0.08] shrink-0"
       >
-        <div className="text-[#4a5568] text-[12px] py-[3px]">
-          Run analysis to see tokens...
-        </div>
+        <span className="text-slate-500 text-xs font-mono">
+          Awaiting input forward pass…
+        </span>
       </div>
     );
   }
 
   return (
     <div
+      ref={containerRef}
       id="token-row"
-      className="flex flex-wrap gap-1.5 px-5 py-3 bg-[#131627] border-b border-[#1e2235] shrink-0 max-h-[140px] overflow-y-auto max-[1100px]:px-4"
+      className="flex items-center gap-1.5 px-6 py-2.5 bg-[#0a0c13] border-b border-white/[0.08] shrink-0 overflow-x-auto custom-scrollbar select-none"
     >
+      <span className="text-[10px] font-mono uppercase tracking-wider text-slate-500 mr-1.5 shrink-0">
+        Tokens:
+      </span>
       {analysis.tokens.map((tok, i) => {
         const isSelected = sel?.t === i;
         let title = "";
         let inlineStyle: React.CSSProperties = {};
         let isTinted = false;
-        let dotColor: string | null = null;
+        let conceptBadge: { name: string; color: string; z?: number } | null = null;
 
         if (circuit) {
           const s = circuit.data.token_scores[i] ?? 0;
@@ -47,45 +63,59 @@ export const TokenRow: React.FC<TokenRowProps> = ({
           if (s > 0 || circuit.data.binary) {
             const color = conceptColor(circuit.key, side);
             inlineStyle = {
-              background: `color-mix(in srgb, ${color} ${Math.round(alpha * 100)}%, #1a1f35)`,
+              backgroundColor: `color-mix(in srgb, ${color} ${Math.round(alpha * 100)}%, #141724)`,
+              borderColor: `color-mix(in srgb, ${color} ${Math.round(alpha * 80) + 20}%, transparent)`,
             };
             isTinted = true;
           }
-          title = `${circuit.data.name}: ${s >= 0 ? "+" : ""}${s}σ vs ordinary text`;
+          title = `${circuit.data.name}: ${s >= 0 ? "+" : ""}${s.toFixed(2)}σ evidence vs ordinary text`;
         } else {
           const found = analysis.token_concepts[i];
           if (found && found.length > 0) {
             const c = found[0];
             const sideIdx = c.z < 0 ? 1 : 0;
-            dotColor = conceptColor(c.key, sideIdx);
-            title = found.map((x) => `${x.name}: ${x.side} (${x.z}σ)`).join("\n");
+            const color = conceptColor(c.key, sideIdx);
+            conceptBadge = { name: c.name, color, z: c.z };
+            title = found.map((x) => `${x.name}: ${x.side} (${x.z.toFixed(2)}σ)`).join("\n");
           }
         }
 
+        const tokenText = showTok(tok);
+
         return (
-          <div
+          <button
             key={i}
+            type="button"
             data-idx={i}
-            className={`relative py-[5px] px-2.5 rounded-[5px] text-[12px] font-mono cursor-pointer transition-all border ${
+            className={`group relative flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-mono transition-all duration-150 shrink-0 border cursor-pointer ${
               isSelected
-                ? "border-[#7c6af0] text-white font-medium shadow-[0_0_0_1px_#7c6af0,0_0_12px_rgba(124,106,240,0.35)]"
+                ? "bg-indigo-600/20 text-white font-semibold border-indigo-500/80 shadow-[0_0_12px_rgba(99,102,241,0.3)] ring-1 ring-indigo-500/50"
                 : isTinted
-                ? "border-[#1e2235] text-[#e8eaf6] hover:border-[#7c6af0]"
-                : "bg-[#1a1f35] border-[#1e2235] text-[#8892b0] hover:border-[#7c6af0] hover:text-[#e8eaf6]"
+                ? "text-slate-100 hover:border-indigo-400"
+                : "bg-white/[0.03] border-white/[0.08] text-slate-300 hover:border-white/[0.2] hover:bg-white/[0.06] hover:text-white"
             }`}
             style={inlineStyle}
             title={title}
             onMouseEnter={() => onSelectToken(i)}
             onClick={() => onSelectToken(i)}
           >
-            {showTok(tok)}
-            {dotColor && (
+            <span className="text-[10px] text-slate-500 group-hover:text-slate-400 transition-colors">
+              #{i}
+            </span>
+            <span className="tracking-tight">{tokenText}</span>
+            {conceptBadge && (
               <span
-                className="absolute -top-[3px] -right-[3px] w-2 h-2 rounded-full border border-[#131627]"
-                style={{ background: dotColor }}
+                className="w-1.5 h-1.5 rounded-full shrink-0 shadow-sm"
+                style={{ 
+                  backgroundColor: conceptBadge.color,
+                  boxShadow: `0 0 6px ${conceptBadge.color}`
+                }}
               />
             )}
-          </div>
+            {isSelected && (
+              <span className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-indigo-500 rotate-45 shadow-sm" />
+            )}
+          </button>
         );
       })}
     </div>

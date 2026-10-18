@@ -1,38 +1,38 @@
 import { ActiveCircuit, AnalysisResponse, CircuitUnit, Selection, ViewKind } from "../types";
 
-export const LABEL_X = 100;
-export const X0 = 145;
-export const COL_W = 62;
-export const TOP = 62;
-export const ROW_H = 34;
+export const LABEL_X = 110;
+export const X0 = 155;
+export const COL_W = 64;
+export const TOP = 64;
+export const ROW_H = 36;
 
 export const CONCEPT_COLORS: Record<string, string[]> = {
-  gender: ["#f072b8", "#50d8ff"],
-  sentiment: ["#43d9ad", "#ff6b6b"],
-  sarcasm: ["#f0c060", "#8892b0"],
-  royalty: ["#c47af0"],
-  profession: ["#50d8ff"],
-  place: ["#7c9eff"],
-  time: ["#ff9f6b"],
-  animal: ["#a3e66b"],
-  number: ["#ff6b6b"],
-  custom: ["#f0c060", "#50d8ff"],
+  gender: ["#f43f5e", "#0ea5e9"],
+  sentiment: ["#10b981", "#ef4444"],
+  sarcasm: ["#f59e0b", "#94a3b8"],
+  royalty: ["#a855f7"],
+  profession: ["#06b6d4"],
+  place: ["#3b82f6"],
+  time: ["#f97316"],
+  animal: ["#84cc16"],
+  number: ["#ec4899"],
+  custom: ["#f59e0b", "#06b6d4"],
 };
 
 export const RAMP = [
-  [45, 53, 85],
-  [124, 106, 240],
-  [196, 122, 240],
-  [240, 114, 184],
+  [30, 37, 56],    // Low / baseline activity (dark slate indigo)
+  [99, 102, 241],  // 1-2σ: Electric Indigo
+  [168, 85, 247],  // 2-3σ: Modern Purple
+  [244, 63, 94],   // 3-4σ+: Electric Rose/Pink
 ];
 
 export const BAR_COLORS = [
-  "#7c6af0",
-  "#c47af0",
-  "#f072b8",
-  "#50d8ff",
-  "#43d9ad",
-  "#f0c060",
+  "#6366f1",
+  "#0ea5e9",
+  "#10b981",
+  "#f59e0b",
+  "#ec4899",
+  "#8b5cf6",
 ];
 
 export function conceptColor(key: string, side = 0): string {

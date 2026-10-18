@@ -15,7 +15,12 @@ import {
   unitZ,
 } from "../constants";
 import { getUnitDetails } from "../api/client";
-import { Badge } from "./ui/badge";
+import { 
+  Network, 
+  Cpu, 
+  Sparkles, 
+  Compass
+} from "lucide-react";
 
 interface RightPanelProps {
   analysis: AnalysisResponse | null;
@@ -69,32 +74,34 @@ export const RightPanel: React.FC<RightPanelProps> = ({
 
   if (!a || !sel) {
     return (
-      <div
+      <aside
         id="right-panel"
-        className="bg-[#131627] border-l border-[#1e2235] p-5 overflow-y-auto flex flex-col gap-3.5 scrollbar-hidden max-[1100px]:border-l-0 max-[1100px]:border-b max-[1100px]:p-4 max-[1100px]:overflow-visible"
+        className="bg-[#0e111a] border-l border-white/[0.08] p-5 overflow-y-auto flex flex-col gap-4 custom-scrollbar select-none max-[1100px]:border-l-0 max-[1100px]:border-b max-[1100px]:p-4 max-[1100px]:overflow-visible"
       >
-        <div className="flex items-center gap-2 text-[13px] font-medium text-[#8892b0] uppercase tracking-[0.8px] pb-3 border-b border-[#1e2235]">
-          <Badge variant="num">3</Badge>
-          Neuron Details
+        <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-slate-300 pb-3 border-b border-white/[0.06]">
+          <span className="flex items-center justify-center w-4 h-4 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-[10px] text-indigo-400 font-mono">
+            3
+          </span>
+          <span>Unit Inspector</span>
         </div>
-        <div id="details">
-          <div className="text-center py-[30px] text-[#4a5568] text-[13px] leading-[1.7]">
-            <div className="text-[24px] mb-2 text-[#7c6af0]">↖</div>
-            Hover any word token above,
-            <br />
-            or click a node in the circuit
-            <br />
-            to inspect it here.
+        <div id="details" className="my-auto flex flex-col items-center justify-center text-center p-6 space-y-3">
+          <div className="w-12 h-12 rounded-xl bg-white/[0.02] border border-white/[0.08] flex items-center justify-center text-slate-400 shadow-inner">
+            <Compass className="w-6 h-6 text-indigo-400/80 animate-pulse" />
+          </div>
+          <div className="space-y-1">
+            <h3 className="text-xs font-medium text-slate-200">No Unit Selected</h3>
+            <p className="text-[11px] text-slate-400 max-w-[200px] leading-relaxed">
+              Hover any word above or click a node in the circuit web to inspect its activations.
+            </p>
           </div>
         </div>
-      </div>
+      </aside>
     );
   }
 
   const tok = showTok(a.tokens[sel.t]);
   const zNow = unitData?.sentence_z?.[sel.t];
   const z = zNow !== undefined ? zNow : unitZ(a, sel.kind, sel.layer, sel.index, sel.t);
-
   const r = sel.reason || { type: "manual" as const };
 
   // Sibling units
@@ -103,28 +110,30 @@ export const RightPanel: React.FC<RightPanelProps> = ({
       const vals = a.head_z[sel.layer].map((row) => row[sel.t]);
       const vmax = Math.max(3, ...vals);
       return (
-        <div className="flex flex-col gap-1.5">
-          <div className="text-[11px] text-[#8892b0] uppercase tracking-[0.7px]">
-            All {a.num_heads} heads in layer {sel.layer} on “{tok}”
+        <div className="space-y-1.5 p-3 rounded-lg bg-white/[0.02] border border-white/[0.06]">
+          <div className="flex items-center justify-between text-[10px] font-mono uppercase tracking-wider text-slate-400">
+            <span>Layer {sel.layer} Heads on "{tok}"</span>
+            <span className="text-slate-500">{a.num_heads} units</span>
           </div>
           <div
-            className="grid gap-[3px]"
+            className="grid gap-1 pt-1"
             style={{ gridTemplateColumns: `repeat(${a.num_heads}, 1fr)` }}
           >
             {vals.map((v, h) => (
-              <div
+              <button
                 key={h}
-                className={`h-[22px] rounded-[4px] cursor-pointer text-[9px] font-mono text-white/75 flex items-center justify-center border ${
-                  h === sel.index ? "border-white" : "border-transparent"
+                type="button"
+                className={`h-6 rounded cursor-pointer text-[9px] font-mono text-white/90 flex items-center justify-center border transition-all ${
+                  h === sel.index ? "border-white ring-1 ring-white/60 font-bold scale-105 z-10" : "border-transparent hover:border-white/40"
                 }`}
-                title={`Head ${h}: ${v.toFixed(2)}σ`}
-                style={{ background: rampColor(Math.max(0, v) / vmax) }}
+                title={`Head ${h}: ${(v >= 0 ? "+" : "") + v.toFixed(2)}σ`}
+                style={{ backgroundColor: rampColor(Math.max(0, v) / vmax) }}
                 onClick={() =>
                   onSelect({ ...sel, index: h, reason: { type: "manual" } })
                 }
               >
                 {h}
-              </div>
+              </button>
             ))}
           </div>
         </div>
@@ -132,25 +141,27 @@ export const RightPanel: React.FC<RightPanelProps> = ({
     } else {
       const tops = a.neuron_top[sel.layer]?.[sel.t] || [];
       return (
-        <div className="flex flex-col gap-1.5">
-          <div className="text-[11px] text-[#8892b0] uppercase tracking-[0.7px]">
-            Top neurons in layer {sel.layer} on “{tok}”
+        <div className="space-y-1.5 p-3 rounded-lg bg-white/[0.02] border border-white/[0.06]">
+          <div className="flex items-center justify-between text-[10px] font-mono uppercase tracking-wider text-slate-400">
+            <span>Top Layer {sel.layer} Neurons on "{tok}"</span>
+            <span className="text-slate-500">{tops.length} ranked</span>
           </div>
-          <div className="flex flex-wrap gap-1.5">
+          <div className="flex flex-wrap gap-1 pt-1">
             {tops.map((n) => (
-              <span
+              <button
                 key={n.neuron}
-                className={`py-1 px-2 bg-[#1a1f35] border border-[#1e2235] rounded-[5px] text-[11px] font-mono cursor-pointer transition-colors ${
+                type="button"
+                className={`px-2 py-0.5 rounded text-[10px] font-mono border transition-all ${
                   n.neuron === sel.index
-                    ? "text-[#e8eaf6] border-[#c47af0]"
-                    : "text-[#8892b0] hover:border-[#7c6af0] hover:text-[#e8eaf6]"
+                    ? "bg-purple-500/20 text-purple-200 border-purple-500/50 font-semibold shadow-sm"
+                    : "bg-white/[0.04] border-white/[0.06] text-slate-400 hover:text-white hover:border-white/[0.15]"
                 }`}
                 onClick={() =>
                   onSelect({ ...sel, index: n.neuron, reason: { type: "manual" } })
                 }
               >
                 N{n.neuron} · {n.z.toFixed(1)}σ
-              </span>
+              </button>
             ))}
           </div>
         </div>
@@ -172,126 +183,138 @@ export const RightPanel: React.FC<RightPanelProps> = ({
   const preds = a.predictions[sel.t] || [];
 
   return (
-    <div
+    <aside
       id="right-panel"
-      className="bg-[#131627] border-l border-[#1e2235] p-5 overflow-y-auto flex flex-col gap-3.5 scrollbar-hidden max-[1100px]:border-l-0 max-[1100px]:border-b max-[1100px]:p-4 max-[1100px]:overflow-visible"
+      className="bg-[#0e111a] border-l border-white/[0.08] p-4 overflow-y-auto flex flex-col gap-4 custom-scrollbar select-none max-[1100px]:border-l-0 max-[1100px]:border-b max-[1100px]:p-4 max-[1100px]:overflow-visible"
     >
-      <div className="flex items-center gap-2 text-[13px] font-medium text-[#8892b0] uppercase tracking-[0.8px] pb-3 border-b border-[#1e2235]">
-        <Badge variant="num">3</Badge>
-        Neuron Details
+      {/* Title */}
+      <div className="flex items-center justify-between pb-3 border-b border-white/[0.06]">
+        <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-slate-300">
+          <span className="flex items-center justify-center w-4 h-4 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-[10px] text-indigo-400 font-mono">
+            3
+          </span>
+          <span>Unit Deep Dive</span>
+        </div>
+        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-white/[0.04] border border-white/[0.08] text-slate-400 uppercase">
+          {sel.kind}
+        </span>
       </div>
 
-      <div id="details" className="flex flex-col gap-4">
-        {/* Header */}
-        <div>
-          <div className="text-[16px] font-semibold text-[#c47af0]">
-            {unitName(sel.kind, sel.layer, sel.index)}
-          </div>
-          <div className="text-[12px] text-[#8892b0] mt-[3px]">
-            {sel.kind === "head" ? "Attention head" : "MLP neuron"} on token{" "}
-            <b className="text-[#e8eaf6] font-mono font-medium">“{tok}”</b> (#{sel.t + 1})
-          </div>
-        </div>
-
-        {/* Why this node explanation */}
-        {r.type === "concept" && (
-          <div
-            className="rounded-[7px] p-[9px_11px] text-[12px] leading-[1.5] text-[#8892b0]"
-            style={{
-              background: `color-mix(in srgb, ${conceptColor(
-                r.concept.key,
-                r.concept.z < 0 ? 1 : 0
-              )} 10%, transparent)`,
-              border: `1px solid color-mix(in srgb, ${conceptColor(
-                r.concept.key,
-                r.concept.z < 0 ? 1 : 0
-              )} 40%, transparent)`,
-            }}
-          >
-            <strong className="text-[#e8eaf6]">
-              {r.concept.name} detected → {r.concept.side}
-            </strong>{" "}
-            ({r.concept.z}σ vs ordinary text). This {sel.kind} is the member of the{" "}
-            {r.concept.name.toLowerCase()} circuit firing hardest on “{tok}”.
-          </div>
-        )}
-        {r.type === "circuit" && circuit && (
-          <div
-            className="rounded-[7px] p-[9px_11px] text-[12px] leading-[1.5] text-[#8892b0]"
-            style={{
-              background: `color-mix(in srgb, ${conceptColor(
-                circuit.key
-              )} 10%, transparent)`,
-              border: `1px solid color-mix(in srgb, ${conceptColor(
-                circuit.key
-              )} 40%, transparent)`,
-            }}
-          >
-            Member of the{" "}
-            <strong className="text-[#e8eaf6]">{circuit.data.name}</strong> circuit.
-          </div>
-        )}
-        {r.type === "max" && (
-          <div className="rounded-[7px] p-[9px_11px] text-[12px] leading-[1.5] text-[#8892b0] bg-[color-mix(in_srgb,#7c6af0_10%,transparent)] border border-[color-mix(in_srgb,#7c6af0_40%,transparent)]">
-            No concept circuit fires on “{tok}”; showing the{" "}
-            <strong className="text-[#e8eaf6]">
-              most intensely firing {sel.kind}
-            </strong>{" "}
-            for it instead.
-          </div>
-        )}
-
-        {/* Activation */}
-        <div className="flex flex-col gap-1.5">
-          <div className="text-[11px] text-[#8892b0] uppercase tracking-[0.7px]">
-            Activation
-          </div>
-          <div className="flex items-center gap-2">
-            <div
-              className="text-[15px] font-semibold font-mono text-[#e8eaf6] min-w-[54px]"
-              id="act-num"
-            >
-              {z === null ? "…" : `${z.toFixed(2)}σ`}
+      <div id="details" className="space-y-4">
+        {/* Unit Identity & Hero Activation */}
+        <div className="rounded-lg bg-white/[0.02] border border-white/[0.06] p-3.5 space-y-3">
+          <div className="flex items-start justify-between gap-2">
+            <div>
+              <h2 className="text-sm font-semibold text-slate-100 flex items-center gap-1.5">
+                {sel.kind === "head" ? (
+                  <Network className="w-4 h-4 text-sky-400 shrink-0" />
+                ) : (
+                  <Cpu className="w-4 h-4 text-purple-400 shrink-0" />
+                )}
+                <span>{unitName(sel.kind, sel.layer, sel.index)}</span>
+              </h2>
+              <p className="text-[11px] text-slate-400 mt-0.5">
+                Evaluated at token{" "}
+                <span className="text-slate-200 font-mono font-medium">"{tok}"</span>{" "}
+                <span className="text-slate-500 font-mono">(#{sel.t + 1})</span>
+              </p>
             </div>
-            <div className="flex-1 h-2.5 bg-[#1a1f35] rounded-[5px] overflow-hidden">
+            <div className="text-right">
+              <div id="act-num" className="text-base font-mono font-bold text-indigo-300">
+                {z === null ? "—" : `${z >= 0 ? "+" : ""}${z.toFixed(2)}σ`}
+              </div>
+              <span className="text-[9.5px] font-mono text-slate-500 uppercase">Activation</span>
+            </div>
+          </div>
+
+          {/* Activation Meter */}
+          <div className="space-y-1">
+            <div className="h-2 bg-black/40 border border-white/[0.06] rounded-full overflow-hidden">
               <div
-                className="h-full bg-gradient-to-r from-[#7c6af0] to-[#f072b8] rounded-[5px] transition-[width] duration-500 ease-[cubic-bezier(.4,0,.2,1)]"
                 id="act-fill"
+                className="h-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-full transition-all duration-300"
                 style={{
-                  width: `${
-                    z === null ? 0 : Math.max(0, Math.min(z / 10, 1)) * 100
-                  }%`,
+                  width: `${z === null ? 0 : Math.max(0, Math.min(z / 8, 1)) * 100}%`,
                 }}
               />
             </div>
+            <div className="flex justify-between text-[9px] font-mono text-slate-500">
+              <span>Baseline 0.0σ</span>
+              <span>4.0σ</span>
+              <span>8.0σ+</span>
+            </div>
           </div>
-          <div className="text-[11px] text-[#4a5568]">
-            σ = standard deviations above this {sel.kind}'s typical activity on ordinary text
-            {sel.kind === "head"
-              ? " (norm of the head's write into the residual stream)"
-              : ""}
-            .
-          </div>
+
+          {/* Attribution explanation */}
+          {r.type === "concept" && (
+            <div
+              className="rounded-md p-2.5 text-[11px] leading-relaxed border"
+              style={{
+                backgroundColor: `color-mix(in srgb, ${conceptColor(
+                  r.concept.key,
+                  r.concept.z < 0 ? 1 : 0
+                )} 10%, transparent)`,
+                borderColor: `color-mix(in srgb, ${conceptColor(
+                  r.concept.key,
+                  r.concept.z < 0 ? 1 : 0
+                )} 30%, transparent)`,
+              }}
+            >
+              <div className="font-semibold text-slate-200 flex items-center gap-1 mb-0.5">
+                <Sparkles className="w-3 h-3 text-indigo-400 shrink-0" />
+                <span>{r.concept.name} Detected → {r.concept.side} ({r.concept.z.toFixed(1)}σ)</span>
+              </div>
+              <p className="text-slate-400">
+                This {sel.kind} is the core member of the {r.concept.name.toLowerCase()} circuit firing hardest on "{tok}".
+              </p>
+            </div>
+          )}
+          {r.type === "circuit" && circuit && (
+            <div
+              className="rounded-md p-2.5 text-[11px] leading-relaxed border"
+              style={{
+                backgroundColor: `color-mix(in srgb, ${conceptColor(circuit.key)} 10%, transparent)`,
+                borderColor: `color-mix(in srgb, ${conceptColor(circuit.key)} 30%, transparent)`,
+              }}
+            >
+              <span className="font-semibold text-slate-200">
+                {circuit.data.name} Circuit Member
+              </span>
+              <p className="text-slate-400 mt-0.5">
+                Active within the isolated {circuit.data.name.toLowerCase()} mechanism.
+              </p>
+            </div>
+          )}
+          {r.type === "max" && (
+            <div className="rounded-md p-2.5 text-[11px] leading-relaxed bg-white/[0.03] border border-white/[0.08] text-slate-400">
+              <span className="text-slate-300 font-medium">Layer Salience Peak:</span>{" "}
+              No single concept circuit dominates "{tok}"; showing the most active {sel.kind} for this token.
+            </div>
+          )}
         </div>
 
-        {/* Siblings */}
+        {/* Sibling Units in Layer */}
         {renderSiblings()}
 
-        {/* Async Unit Dissection */}
+        {/* Async Detailed Dissection */}
         <div id="unit-async">
           {loadingUnit ? (
-            <div className="text-[#4a5568] text-[12px]">Dissecting {sel.kind}…</div>
+            <div className="p-4 rounded-lg bg-white/[0.02] border border-white/[0.06] text-center text-xs text-slate-400 space-y-2">
+              <div className="w-4 h-4 rounded-full border-2 border-indigo-400/40 border-t-indigo-400 animate-spin mx-auto" />
+              <span>Dissecting unit weights &amp; calibration…</span>
+            </div>
           ) : unitError ? (
-            <div className="text-[#4a5568] text-[12px]">
-              Couldn't load details: {unitError}
+            <div className="p-3 rounded-lg bg-rose-500/10 border border-rose-500/20 text-xs text-rose-300">
+              Could not dissect unit: {unitError}
             </div>
           ) : unitData ? (
-            <div className="flex flex-col gap-4">
-              {/* Influence */}
+            <div className="space-y-4">
+              {/* Attention Destinations (where this head looks) */}
               {sel.kind === "head" ? (
-                <div className="flex flex-col gap-1.5">
-                  <div className="text-[11px] text-[#8892b0] uppercase tracking-[0.7px]">
-                    Top influencing tokens (where this head looks)
+                <div className="p-3 rounded-lg bg-white/[0.02] border border-white/[0.06] space-y-2">
+                  <div className="flex items-center justify-between text-[10px] font-mono uppercase tracking-wider text-slate-400">
+                    <span>Attention Targets (where it looks)</span>
+                    <span className="text-slate-500">Weight (w)</span>
                   </div>
                   {(() => {
                     const row = a.attention[sel.layer]?.[sel.index]?.[sel.t] || [];
@@ -302,76 +325,77 @@ export const RightPanel: React.FC<RightPanelProps> = ({
                       .slice(0, 5);
                     const sink = a.attention_sink[sel.layer]?.[sel.index]?.[sel.t] || 0;
                     return (
-                      <>
+                      <div className="space-y-1.5 pt-0.5">
                         {ranked.map((x, i) => (
-                          <div key={x.j} className="flex items-center gap-2">
-                            <div
-                              className="text-[12px] font-mono text-[#e8eaf6] min-w-[70px] max-w-[90px] truncate"
-                              title={showTok(a.tokens[x.j])}
-                            >
+                          <div key={x.j} className="flex items-center gap-2 text-xs">
+                            <span className="text-[11px] font-mono text-slate-300 min-w-[70px] max-w-[85px] truncate">
                               {showTok(a.tokens[x.j])}
-                            </div>
-                            <div className="flex-1 h-1.5 bg-[#1a1f35] rounded-[3px] overflow-hidden">
+                            </span>
+                            <div className="flex-1 h-1.5 bg-black/40 rounded-full overflow-hidden">
                               <div
-                                className="h-full rounded-[3px] transition-[width] duration-500 ease-[cubic-bezier(.4,0,.2,1)]"
+                                className="h-full rounded-full transition-all duration-300"
                                 style={{
                                   width: `${Math.max(0, Math.min(100, x.w * 100)).toFixed(0)}%`,
-                                  background: BAR_COLORS[i % BAR_COLORS.length],
+                                  backgroundColor: BAR_COLORS[i % BAR_COLORS.length],
                                 }}
                               />
                             </div>
-                            <div className="text-[11px] font-mono text-[#8892b0] min-w-[40px] text-right">
-                              {x.w.toFixed(2)}
-                            </div>
+                            <span className="text-[10px] font-mono text-slate-400 min-w-[36px] text-right">
+                              {(x.w * 100).toFixed(0)}%
+                            </span>
                           </div>
                         ))}
-                        <div className="text-[11px] text-[#4a5568]">
-                          {(sink * 100).toFixed(0)}% parked on the start-of-text “attention sink”.
-                        </div>
-                      </>
+                        {sink > 0.05 && (
+                          <div className="text-[10px] text-slate-500 pt-1 border-t border-white/[0.04]">
+                            {(sink * 100).toFixed(0)}% absorbed by start-of-text attention sink.
+                          </div>
+                        )}
+                      </div>
                     );
                   })()}
                 </div>
               ) : (
-                <div className="flex flex-col gap-1.5">
-                  <div className="text-[11px] text-[#8892b0] uppercase tracking-[0.7px]">
-                    This neuron across the sentence
+                <div className="p-3 rounded-lg bg-white/[0.02] border border-white/[0.06] space-y-2">
+                  <div className="flex items-center justify-between text-[10px] font-mono uppercase tracking-wider text-slate-400">
+                    <span>Neuron Sentence Trajectory</span>
+                    <span className="text-slate-500">σ</span>
                   </div>
-                  {unitData.sentence_z.map((v, j) => {
-                    const vmax = Math.max(1, ...unitData.sentence_z);
-                    const pct = (Math.max(0, v) / vmax) * 100;
-                    return (
-                      <div key={j} className="flex items-center gap-2">
-                        <div
-                          className="text-[12px] font-mono text-[#e8eaf6] min-w-[70px] max-w-[90px] truncate"
-                          title={showTok(a.tokens[j])}
-                        >
-                          {showTok(a.tokens[j])}
+                  <div className="space-y-1.5 pt-0.5">
+                    {unitData.sentence_z.map((v, j) => {
+                      const vmax = Math.max(1, ...unitData.sentence_z);
+                      const pct = (Math.max(0, v) / vmax) * 100;
+                      const isCurrent = j === sel.t;
+                      return (
+                        <div key={j} className="flex items-center gap-2 text-xs">
+                          <span className={`text-[11px] font-mono min-w-[70px] max-w-[85px] truncate ${isCurrent ? "text-pink-300 font-semibold" : "text-slate-400"}`}>
+                            {showTok(a.tokens[j])}
+                          </span>
+                          <div className="flex-1 h-1.5 bg-black/40 rounded-full overflow-hidden">
+                            <div
+                              className="h-full rounded-full transition-all duration-300"
+                              style={{
+                                width: `${Math.max(0, Math.min(100, pct)).toFixed(0)}%`,
+                                backgroundColor: isCurrent ? "#ec4899" : "#6366f1",
+                              }}
+                            />
+                          </div>
+                          <span className={`text-[10px] font-mono min-w-[36px] text-right ${isCurrent ? "text-pink-300 font-semibold" : "text-slate-400"}`}>
+                            {v.toFixed(1)}σ
+                          </span>
                         </div>
-                        <div className="flex-1 h-1.5 bg-[#1a1f35] rounded-[3px] overflow-hidden">
-                          <div
-                            className="h-full rounded-[3px] transition-[width] duration-500 ease-[cubic-bezier(.4,0,.2,1)]"
-                            style={{
-                              width: `${Math.max(0, Math.min(100, pct)).toFixed(0)}%`,
-                              background: j === sel.t ? "#f072b8" : "#7c6af0",
-                            }}
-                          />
-                        </div>
-                        <div className="text-[11px] font-mono text-[#8892b0] min-w-[40px] text-right">
-                          {v.toFixed(1)}σ
-                        </div>
-                      </div>
-                    );
-                  })}
+                      );
+                    })}
+                  </div>
                 </div>
               )}
 
-              {/* Possible Concept */}
-              <div className="flex flex-col gap-1.5">
-                <div className="text-[11px] text-[#8892b0] uppercase tracking-[0.7px]">
-                  Possible concept
+              {/* Concept Affinity & Cohen's d */}
+              <div className="p-3 rounded-lg bg-white/[0.02] border border-white/[0.06] space-y-2.5">
+                <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400">
+                  Concept Selectivity (Cohen's d)
                 </div>
-                <div className="bg-[rgba(80,216,255,0.05)] border border-[rgba(80,216,255,0.2)] rounded-[7px] p-[10px_12px] text-[12px] text-[#8892b0] leading-[1.5]">
+
+                <div className="p-2.5 rounded-md bg-sky-500/[0.05] border border-sky-500/20 text-[11px] text-slate-300 leading-relaxed">
                   {(() => {
                     const label = unitData.label;
                     const reasonKey =
@@ -383,108 +407,95 @@ export const RightPanel: React.FC<RightPanelProps> = ({
                     const focus = reasonKey && unitData.all_concepts[reasonKey];
 
                     if (focus) {
-                      const also =
-                        label && label.key !== reasonKey
-                          ? ` It is polysemantic: its strongest probe match is actually ${label.name} → ${label.side} (d=${label.d}).`
-                          : "";
                       return (
-                        <>
-                          <strong className="text-[#50d8ff]">
+                        <div>
+                          <span className="font-semibold text-sky-400">
                             {focus.name} → {focus.side}
-                          </strong>
-                          <br />
-                          <br />
-                          Selectivity on the {focus.name.toLowerCase()} probe: d={focus.d} (Cohen's d), which ranks it among the top{" "}
-                          {sel.kind === "head" ? "heads" : "neurons"} of the whole model for this concept.
-                          {also}
-                        </>
+                          </span>
+                          <p className="text-slate-400 mt-1">
+                            Selectivity d={focus.d.toFixed(2)}, placing this unit among the model's primary circuits for this concept.
+                          </p>
+                        </div>
                       );
                     } else if (label) {
-                      const meta = info?.concepts.find((c) => c.key === label.key);
-                      const vs = meta?.binary
-                        ? `than ${label.side === meta.side_a ? meta.side_b : meta.side_a} words`
-                        : "than ordinary nouns";
                       return (
-                        <>
-                          <strong className="text-[#50d8ff]">
+                        <div>
+                          <span className="font-semibold text-sky-400">
                             {label.name} → {label.side}
-                          </strong>
-                          <br />
-                          <br />
-                          On the probe sets this {sel.kind} fires{" "}
-                          {Math.abs(label.d).toFixed(1)} pooled standard deviations more for {label.side} {vs} (Cohen's d).
-                        </>
+                          </span>
+                          <p className="text-slate-400 mt-1">
+                            Fires {Math.abs(label.d).toFixed(1)} pooled standard deviations more for {label.side} words.
+                          </p>
+                        </div>
                       );
                     } else {
-                      const top = unitData.concepts[0];
                       return (
-                        <>
-                          <strong className="text-[#50d8ff]">
-                            No single dominant concept
-                          </strong>
-                          <br />
-                          <br />
-                          Strongest probe match is {top?.name} → {top?.side} (d={top?.d}), below the d ≥ 2 bar. Most heads/neurons are polysemantic or syntactic (position, punctuation, previous-token tracking).
-                        </>
+                        <div>
+                          <span className="font-semibold text-slate-300">Polysemantic / Syntactic</span>
+                          <p className="text-slate-400 mt-1">
+                            No single concept exceeded d ≥ 2.0. Likely encodes positional, syntactic, or multi-modal features.
+                          </p>
+                        </div>
                       );
                     }
                   })()}
                 </div>
 
-                {/* Other concepts bar rows */}
-                {unitData.concepts.map((c, i) => (
-                  <div key={c.key} className="flex items-center gap-2">
-                    <div
-                      className="text-[12px] font-mono text-[#e8eaf6] min-w-[70px] max-w-[90px] truncate"
-                      title={c.name}
-                    >
-                      {c.name}
+                {/* Concept breakdown */}
+                <div className="space-y-1.5">
+                  {unitData.concepts.slice(0, 4).map((c, i) => (
+                    <div key={c.key} className="flex items-center gap-2 text-xs">
+                      <span className="text-[11px] font-mono text-slate-300 min-w-[70px] max-w-[85px] truncate">
+                        {c.name}
+                      </span>
+                      <div className="flex-1 h-1.5 bg-black/40 rounded-full overflow-hidden">
+                        <div
+                          className="h-full rounded-full transition-all duration-300"
+                          style={{
+                            width: `${Math.max(0, Math.min(100, (c.score / 4) * 100)).toFixed(0)}%`,
+                            backgroundColor: BAR_COLORS[i % BAR_COLORS.length],
+                          }}
+                        />
+                      </div>
+                      <span className="text-[10px] font-mono text-slate-400 min-w-[36px] text-right">
+                        d={c.d.toFixed(1)}
+                      </span>
                     </div>
-                    <div className="flex-1 h-1.5 bg-[#1a1f35] rounded-[3px] overflow-hidden">
-                      <div
-                        className="h-full rounded-[3px] transition-[width] duration-500 ease-[cubic-bezier(.4,0,.2,1)]"
-                        style={{
-                          width: `${Math.max(0, Math.min(100, (c.score / 4) * 100)).toFixed(0)}%`,
-                          background: BAR_COLORS[i % BAR_COLORS.length],
-                        }}
-                      />
-                    </div>
-                    <div className="text-[11px] font-mono text-[#8892b0] min-w-[40px] text-right">
-                      d={c.d}
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              {/* Similar Activations */}
-              <div className="flex flex-col gap-1.5">
-                <div className="text-[11px] text-[#8892b0] uppercase tracking-[0.7px]">
-                  Similar activations (probe words that fire it most)
-                </div>
-                <div className="flex flex-wrap gap-1.5">
-                  {unitData.top_words.map((w) => (
-                    <span
-                      key={w.word}
-                      className="py-1 px-2.5 bg-[#1a1f35] border border-[#1e2235] rounded-[5px] text-[11px] text-[#8892b0] font-mono"
-                    >
-                      <b className="text-[#e8eaf6] font-medium">{w.word}</b>{" "}
-                      {w.z.toFixed(1)}σ
-                    </span>
                   ))}
                 </div>
               </div>
 
-              {/* Promotes */}
-              {unitData.promotes && unitData.promotes.length > 0 && (
-                <div className="flex flex-col gap-1.5">
-                  <div className="text-[11px] text-[#8892b0] uppercase tracking-[0.7px]">
-                    Pushes the next-word prediction toward
+              {/* Similar probe words */}
+              {unitData.top_words && unitData.top_words.length > 0 && (
+                <div className="p-3 rounded-lg bg-white/[0.02] border border-white/[0.06] space-y-2">
+                  <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400">
+                    Probed Calibration Words
                   </div>
-                  <div className="flex flex-wrap gap-1.5">
+                  <div className="flex flex-wrap gap-1">
+                    {unitData.top_words.map((w) => (
+                      <span
+                        key={w.word}
+                        className="px-2 py-0.5 rounded bg-white/[0.04] border border-white/[0.06] text-[10px] font-mono text-slate-300"
+                      >
+                        <span className="text-white font-medium">{w.word}</span>{" "}
+                        <span className="text-indigo-400">{w.z.toFixed(1)}σ</span>
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Promotes next tokens (for neurons) */}
+              {unitData.promotes && unitData.promotes.length > 0 && (
+                <div className="p-3 rounded-lg bg-white/[0.02] border border-white/[0.06] space-y-2">
+                  <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400">
+                    Promotes Next-Word Logits
+                  </div>
+                  <div className="flex flex-wrap gap-1">
                     {unitData.promotes.map((p, idx) => (
                       <span
                         key={idx}
-                        className="py-1 px-2.5 bg-[#1a1f35] border border-[#1e2235] rounded-[5px] text-[11px] text-[#8892b0] font-mono"
+                        className="px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/20 text-[10px] font-mono text-emerald-300"
                       >
                         {showTok(p)}
                       </span>
@@ -496,74 +507,70 @@ export const RightPanel: React.FC<RightPanelProps> = ({
           ) : null}
         </div>
 
-        {/* Concept read-out for this token across top 5 circuits */}
-        <div className="flex flex-col gap-1.5">
-          <div className="text-[11px] text-[#8892b0] uppercase tracking-[0.7px]">
-            Concept read-out for “{tok}”
+        {/* Global Concept Read-out across sentence for this token */}
+        <div className="p-3 rounded-lg bg-white/[0.02] border border-white/[0.06] space-y-2">
+          <div className="flex items-center justify-between text-[10px] font-mono uppercase tracking-wider text-slate-400">
+            <span>Overall Concept Read-out</span>
+            <span className="text-slate-500">Z-score</span>
           </div>
-          {readout.map(({ key, meta, v }) => {
-            const maxAbs = 6;
-            const pct = Math.min(Math.abs(v) / maxAbs, 1) * 50;
-            const left = v >= 0 ? 50 : 50 - pct;
-            return (
-              <div key={key} className="flex items-center gap-2">
-                <div
-                  className="text-[12px] font-mono text-[#e8eaf6] min-w-[70px] max-w-[90px] truncate"
-                  title={meta?.name}
-                >
-                  {meta?.name}
+          <div className="space-y-1.5 pt-0.5">
+            {readout.map(({ key, meta, v }) => {
+              const maxAbs = 5;
+              const pct = Math.min(Math.abs(v) / maxAbs, 1) * 50;
+              const left = v >= 0 ? 50 : 50 - pct;
+              return (
+                <div key={key} className="flex items-center gap-2 text-xs">
+                  <span className="text-[11px] font-mono text-slate-300 min-w-[70px] max-w-[85px] truncate">
+                    {meta?.name}
+                  </span>
+                  <div className="flex-1 h-1.5 bg-black/40 rounded-full overflow-hidden relative before:content-[''] before:absolute before:left-1/2 before:top-0 before:bottom-0 before:w-[1px] before:bg-white/20">
+                    <div
+                      className="absolute top-0 h-full rounded-full transition-all duration-300"
+                      style={{
+                        left: `${left}%`,
+                        width: `${pct}%`,
+                        backgroundColor: v >= 0 ? conceptColor(key, 0) : conceptColor(key, 1),
+                      }}
+                    />
+                  </div>
+                  <span className="text-[10px] font-mono text-slate-400 min-w-[36px] text-right">
+                    {v > 0 ? "+" : ""}{v.toFixed(1)}σ
+                  </span>
                 </div>
-                <div className="flex-1 h-1.5 bg-[#1a1f35] rounded-[3px] overflow-hidden relative before:content-[''] before:absolute before:left-1/2 before:top-0 before:bottom-0 before:w-[1px] before:bg-[#4a5568]">
-                  <div
-                    className="absolute top-0 h-full rounded-[3px] transition-[width,left] duration-500 ease-[cubic-bezier(.4,0,.2,1)]"
-                    style={{
-                      left: `${left}%`,
-                      width: `${pct}%`,
-                      background: v >= 0 ? conceptColor(key, 0) : conceptColor(key, 1),
-                    }}
-                  />
-                </div>
-                <div className="text-[11px] font-mono text-[#8892b0] min-w-[40px] text-right">
-                  {v > 0 ? "+" : ""}
-                  {v.toFixed(1)}σ
-                </div>
-              </div>
-            );
-          })}
-          <div className="text-[11px] text-[#4a5568]">
-            Circuit reading vs ordinary text; |σ| ≥ 1.6 counts as detected. For two-sided concepts, right = first side (feminine, positive, sarcastic).
+              );
+            })}
           </div>
         </div>
 
-        {/* Predictions */}
-        <div className="flex flex-col gap-1.5">
-          <div className="text-[11px] text-[#8892b0] uppercase tracking-[0.7px]">
-            Model's next-word guess after “{tok}”
+        {/* Next Word Prediction distribution */}
+        <div className="p-3 rounded-lg bg-white/[0.02] border border-white/[0.06] space-y-2">
+          <div className="flex items-center justify-between text-[10px] font-mono uppercase tracking-wider text-slate-400">
+            <span>Next-Word Prediction</span>
+            <span className="text-slate-500">Probability</span>
           </div>
-          {preds.map((p, i) => (
-            <div key={i} className="flex items-center gap-2">
-              <div
-                className="text-[12px] font-mono text-[#e8eaf6] min-w-[70px] max-w-[90px] truncate"
-                title={showTok(p.token)}
-              >
-                {showTok(p.token)}
+          <div className="space-y-1.5 pt-0.5">
+            {preds.map((p, i) => (
+              <div key={i} className="flex items-center gap-2 text-xs">
+                <span className="text-[11px] font-mono text-slate-300 min-w-[70px] max-w-[85px] truncate">
+                  "{showTok(p.token)}"
+                </span>
+                <div className="flex-1 h-1.5 bg-black/40 rounded-full overflow-hidden">
+                  <div
+                    className="h-full rounded-full transition-all duration-300"
+                    style={{
+                      width: `${Math.max(0, Math.min(100, p.p * 100)).toFixed(0)}%`,
+                      backgroundColor: BAR_COLORS[i % BAR_COLORS.length],
+                    }}
+                  />
+                </div>
+                <span className="text-[10px] font-mono text-slate-400 min-w-[36px] text-right">
+                  {(p.p * 100).toFixed(0)}%
+                </span>
               </div>
-              <div className="flex-1 h-1.5 bg-[#1a1f35] rounded-[3px] overflow-hidden">
-                <div
-                  className="h-full rounded-[3px] transition-[width] duration-500 ease-[cubic-bezier(.4,0,.2,1)]"
-                  style={{
-                    width: `${Math.max(0, Math.min(100, p.p * 100)).toFixed(0)}%`,
-                    background: BAR_COLORS[i % BAR_COLORS.length],
-                  }}
-                />
-              </div>
-              <div className="text-[11px] font-mono text-[#8892b0] min-w-[40px] text-right">
-                {(p.p * 100).toFixed(0)}%
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
-    </div>
+    </aside>
   );
 };

@@ -22,6 +22,7 @@ import { Header } from "./components/Header";
 import { LeftPanel } from "./components/LeftPanel";
 import { CenterPanel } from "./components/CenterPanel";
 import { RightPanel } from "./components/RightPanel";
+import { HelpModal } from "./components/HelpModal";
 
 export const App: React.FC = () => {
   const [modelInfo, setModelInfo] = useState<ModelInfo | null>(null);
@@ -38,11 +39,12 @@ export const App: React.FC = () => {
   const [sel, setSel] = useState<Selection | null>(null);
   const [revealed, setRevealed] = useState<number>(Infinity);
   const [circuit, setCircuit] = useState<ActiveCircuit | null>(null);
+  const [helpOpen, setHelpOpen] = useState(false);
 
   const [statusMsg, setStatusMsg] = useState<{ text: string; isError?: boolean }>({
-    text: "Starting up…",
+    text: "Connecting to GPT-2…",
   });
-  const [statusNodes, setStatusNodes] = useState("0 neurons visualized");
+  const [statusNodes, setStatusNodes] = useState("0 units visualized");
 
   const textRef = useRef<string>(text);
   textRef.current = text;
@@ -94,9 +96,9 @@ export const App: React.FC = () => {
 
         if (curRevealed < a.num_layers - 1) {
           setStatus(
-            `Processing layer ${curRevealed + 1} / ${a.num_layers} — attention heads, then MLP neurons…`
+            `Streaming forward pass: Layer ${curRevealed + 1} / ${a.num_layers}…`
           );
-          sweepTimerRef.current = window.setTimeout(step, 90);
+          sweepTimerRef.current = window.setTimeout(step, 80);
           return;
         }
 
@@ -107,23 +109,23 @@ export const App: React.FC = () => {
 
         const found = a.token_concepts
           .map((c, i) =>
-            c.length ? `“${showTok(a.tokens[i])}” → ${c[0].name}` : null
+            c.length ? `"${showTok(a.tokens[i])}" → ${c[0].name}` : null
           )
           .filter(Boolean);
 
         if (a.truncated) {
           setStatus(
-            `Only the first ${a.tokens.length} tokens were analyzed. Hover any word.`
+            `Truncated: only first ${a.tokens.length} tokens analyzed. Hover any token to inspect.`
           );
         } else if (found.length) {
           setStatus(
-            `Analysis complete — concepts detected: ${found
+            `Analysis ready · concepts detected: ${found
               .slice(0, 4)
-              .join(", ")}${found.length > 4 ? "…" : ""}. Hover any word.`
+              .join(", ")}${found.length > 4 ? "…" : ""}. Hover any token or node.`
           );
         } else {
           setStatus(
-            "Analysis complete — no strong concept detected; hover any word to see what fires."
+            "Forward pass complete · hover any token or click a node to inspect mechanistic activations."
           );
         }
       };
@@ -146,7 +148,7 @@ export const App: React.FC = () => {
         return;
       }
       if (!quiet) {
-        setStatus(`Tracing the ${key === "custom" ? "custom" : key} circuit…`);
+        setStatus(`Extracting ${key === "custom" ? "custom" : key} circuit subnetwork…`);
       }
 
       const body = custom
@@ -167,15 +169,15 @@ export const App: React.FC = () => {
           const newSel = bestSelection(a, viewRef.current, newCircuit, t);
           setSel(newSel);
           setStatus(
-            `${data.name} circuit: ${data.heads.length} heads + ${data.neurons.length} neurons. Strongest on “${showTok(
+            `${data.name} circuit: ${data.heads.length} heads + ${data.neurons.length} neurons. Max evidence on "${showTok(
               a.tokens[t]
-            )}”.`
+            )}".`
           );
         }
       } catch (err: unknown) {
         setCircuit(null);
         setStatus(
-          `Error: ${err instanceof Error ? err.message : String(err)}`,
+          `Circuit extraction error: ${err instanceof Error ? err.message : String(err)}`,
           true
         );
       }
@@ -222,9 +224,9 @@ export const App: React.FC = () => {
         }
 
         setStatusNodes(
-          `${a.tokens.length} tokens × ${a.num_layers} layers · ${
+          `${a.tokens.length} tokens × ${a.num_layers}L · ${
             a.num_heads
-          } heads + ${a.mlp_dim.toLocaleString()} neurons per layer`
+          }H + ${a.mlp_dim.toLocaleString()} MLP/L`
         );
         startCascade(a);
       } catch (err: unknown) {
@@ -241,17 +243,16 @@ export const App: React.FC = () => {
 
   // Initial load
   useEffect(() => {
-    setStatus("Connecting to the model…");
+    setStatus("Connecting to GPT-2 backend…");
     getModelInfo()
       .then((info) => {
         setModelInfo(info);
-        // Run initial analysis
         executeAnalysis({ force: true });
       })
       .catch((err) => {
         setModelError(err.message);
         setStatus(
-          `Backend not reachable (${err.message}). Is the server running?`,
+          `Backend connection failed (${err.message}). Verify the API server is active.`,
           true
         );
       });
@@ -265,7 +266,7 @@ export const App: React.FC = () => {
     }
     debounceTimerRef.current = window.setTimeout(() => {
       executeAnalysis();
-    }, 650);
+    }, 600);
 
     return () => {
       if (debounceTimerRef.current) {
@@ -305,7 +306,7 @@ export const App: React.FC = () => {
     }
   }, []);
 
-  // Keyboard navigation
+  // Keyboard navigation & Shortcuts
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       const activeEl = document.activeElement;
@@ -317,6 +318,11 @@ export const App: React.FC = () => {
       } else if (e.key === "ArrowRight") {
         e.preventDefault();
         handleNavToken(1);
+      } else if (e.key === "?") {
+        e.preventDefault();
+        setHelpOpen((prev) => !prev);
+      } else if (e.key === "Escape") {
+        setHelpOpen(false);
       }
     };
 
@@ -372,13 +378,17 @@ export const App: React.FC = () => {
 
   const scaleMaxVal = scaleMax(analysis, view, circuit);
   const scaleMaxLabel = circuit
-    ? "4σ+ (circuit evidence)"
+    ? "4.0σ+ (evidence)"
     : `${scaleMaxVal.toFixed(1)}σ+`;
 
   return (
-    <div className="h-full flex flex-col overflow-hidden bg-[#0d0f1a] text-[#e8eaf6]">
-      <Header info={modelInfo} error={modelError} />
-      <main className="grid grid-cols-[300px_minmax(0,1fr)_320px] flex-1 min-h-0 overflow-hidden max-[1100px]:flex max-[1100px]:flex-col max-[1100px]:overflow-visible">
+    <div className="h-full flex flex-col overflow-hidden bg-[#08090d] text-slate-100 font-sans antialiased">
+      <Header 
+        info={modelInfo} 
+        error={modelError} 
+        onOpenHelp={() => setHelpOpen(true)}
+      />
+      <main className="grid grid-cols-[310px_minmax(0,1fr)_330px] flex-1 min-h-0 overflow-hidden max-[1100px]:flex max-[1100px]:flex-col max-[1100px]:overflow-visible">
         <LeftPanel
           text={text}
           setText={setText}
@@ -421,6 +431,11 @@ export const App: React.FC = () => {
           onSelect={(newSel) => setSel(newSel)}
         />
       </main>
+
+      <HelpModal 
+        isOpen={helpOpen} 
+        onClose={() => setHelpOpen(false)} 
+      />
     </div>
   );
 };

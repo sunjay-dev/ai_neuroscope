@@ -5,23 +5,37 @@ import { cn } from "@/lib/utils";
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   asChild?: boolean;
-  variant?: "default" | "gradient" | "ghost" | "nav" | "segment";
+  variant?: "default" | "primary" | "secondary" | "outline" | "ghost" | "nav" | "gradient";
+  size?: "default" | "sm" | "lg" | "icon";
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant = "default", asChild = false, ...props }, ref) => {
+  ({ className, variant = "default", size = "default", asChild = false, ...props }, ref) => {
     const Comp = asChild ? Slot : "button";
     return (
       <Comp
         className={cn(
-          "inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-colors focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50",
-          variant === "default" && "bg-accent text-white hover:bg-accent/90",
+          "inline-flex items-center justify-center whitespace-nowrap text-xs font-medium transition-all duration-150 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-indigo-400 disabled:pointer-events-none disabled:opacity-40 select-none cursor-pointer",
+          // Sizes
+          size === "default" && "h-8 px-3 rounded-md",
+          size === "sm" && "h-7 px-2.5 rounded-md text-[11px]",
+          size === "lg" && "h-9 px-4 rounded-lg text-sm",
+          size === "icon" && "h-7 w-7 rounded-md p-0",
+          // Variants
+          variant === "default" &&
+            "bg-indigo-600 hover:bg-indigo-500 text-white shadow-sm hover:shadow-indigo-500/20 active:scale-[0.98]",
+          variant === "primary" &&
+            "bg-indigo-600 hover:bg-indigo-500 text-white shadow-sm hover:shadow-indigo-500/20 active:scale-[0.98]",
           variant === "gradient" &&
-            "w-full py-[11px] bg-gradient-to-br from-[#7c6af0] to-[#c47af0] text-white font-semibold rounded-[8px] hover:opacity-90 active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-wait",
+            "bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white font-semibold shadow-md shadow-indigo-500/20 hover:opacity-95 hover:shadow-indigo-500/30 active:scale-[0.98]",
+          variant === "secondary" &&
+            "bg-white/[0.06] hover:bg-white/[0.1] text-slate-200 border border-white/[0.08] hover:border-white/[0.15] active:scale-[0.98]",
+          variant === "outline" &&
+            "border border-white/[0.12] bg-transparent text-slate-300 hover:bg-white/[0.05] hover:text-white hover:border-white/[0.2]",
           variant === "ghost" &&
-            "w-full py-2 px-2.5 rounded-[6px] bg-transparent border border-[#7c6af0] text-[#c47af0] text-[12px] hover:bg-[#1a1f35] transition-colors",
+            "bg-transparent text-slate-400 hover:text-slate-100 hover:bg-white/[0.06]",
           variant === "nav" &&
-            "w-[26px] h-[26px] bg-[#1a1f35] border border-[#1e2235] rounded-[5px] text-[#e8eaf6] text-[14px] hover:border-[#7c6af0] hover:text-[#7c6af0] transition-colors",
+            "h-7 w-7 rounded-md bg-white/[0.04] border border-white/[0.08] text-slate-400 hover:text-white hover:bg-white/[0.08] hover:border-white/[0.16] active:scale-95",
           className
         )}
         ref={ref}
