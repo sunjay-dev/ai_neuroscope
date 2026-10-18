@@ -83,9 +83,9 @@ export const RightPanel: React.FC<RightPanelProps> = ({
     return (
       <aside
         id="right-panel"
-        className="w-[390px] bg-white border-l border-slate-200 p-6 overflow-y-auto flex flex-col gap-5 custom-scrollbar select-none shrink-0 max-[1100px]:w-full max-[1100px]:border-l-0 max-[1100px]:border-b"
+        className="w-[390px] bg-white border-l border-slate-200 p-8 overflow-y-auto flex flex-col gap-6 custom-scrollbar select-none shrink-0 max-[1100px]:w-full max-[1100px]:border-l-0 max-[1100px]:border-b"
       >
-        <div className="flex items-center justify-between pb-4 border-b border-slate-200">
+        <div className="flex items-center justify-between pb-5 border-b border-slate-200">
           <div className="flex items-center gap-2.5 text-xs font-bold uppercase tracking-wider text-slate-800">
             <span className="flex items-center justify-center w-5 h-5 rounded-full bg-indigo-50 border border-indigo-200 text-xs text-indigo-600 font-mono font-bold">
               3
@@ -124,7 +124,7 @@ export const RightPanel: React.FC<RightPanelProps> = ({
       const vals = a.head_z[sel.layer].map((row) => row[sel.t]);
       const vmax = Math.max(3, ...vals);
       return (
-        <div className="space-y-2 p-4 rounded-xl bg-slate-50 border border-slate-200">
+        <div className="space-y-3 p-5 rounded-xl bg-slate-50 border border-slate-200">
           <div className="flex items-center justify-between text-xs font-mono uppercase tracking-wider text-slate-600 font-semibold">
             <span>Layer {sel.layer} Heads on "{tok}"</span>
             <span className="text-slate-400">{a.num_heads} units</span>
@@ -158,7 +158,7 @@ export const RightPanel: React.FC<RightPanelProps> = ({
     } else {
       const tops = a.neuron_top[sel.layer]?.[sel.t] || [];
       return (
-        <div className="space-y-2 p-4 rounded-xl bg-slate-50 border border-slate-200">
+        <div className="space-y-3 p-5 rounded-xl bg-slate-50 border border-slate-200">
           <div className="flex items-center justify-between text-xs font-mono uppercase tracking-wider text-slate-600 font-semibold">
             <span>Top Layer {sel.layer} Neurons on "{tok}"</span>
             <span className="text-slate-400">{tops.length} ranked</span>
@@ -205,7 +205,7 @@ export const RightPanel: React.FC<RightPanelProps> = ({
       className="w-[390px] bg-white border-l border-slate-200 flex flex-col custom-scrollbar select-none shrink-0 max-[1100px]:w-full max-[1100px]:border-l-0 max-[1100px]:border-b shadow-2xs"
     >
       {/* Header */}
-      <div className="flex items-center justify-between px-6 py-3.5 border-b border-slate-200">
+      <div className="flex items-center justify-between px-7 py-4 border-b border-slate-200">
         <div className="flex items-center gap-2">
           <span className="text-xs font-bold uppercase tracking-wider text-slate-900">
             Unit Inspector
@@ -222,7 +222,7 @@ export const RightPanel: React.FC<RightPanelProps> = ({
       </div>
 
       {/* Tabs (Clean Shadcn UI TabsList) */}
-      <div className="px-6 py-2.5 border-b border-slate-200 bg-slate-50/60">
+      <div className="px-7 py-3 border-b border-slate-200 bg-slate-50/60">
         <TabsList className="w-full grid grid-cols-3">
           <TabsTrigger
             active={activeTab === "flow"}
@@ -246,9 +246,9 @@ export const RightPanel: React.FC<RightPanelProps> = ({
       </div>
 
       {/* Body */}
-      <div id="details" className="p-6 overflow-y-auto space-y-5 custom-scrollbar flex-1 bg-white">
+      <div id="details" className="p-7 overflow-y-auto space-y-6 custom-scrollbar flex-1 bg-white">
         {/* Unit Identity Card (Shared) */}
-        <div className="rounded-xl bg-slate-50 border border-slate-200 p-4 space-y-3.5 shadow-2xs">
+        <div className="rounded-xl bg-slate-50 border border-slate-200 p-5 space-y-4 shadow-2xs">
           <div className="flex items-start justify-between gap-3">
             <div>
               <h2 className="text-sm font-bold text-slate-900 flex items-center gap-2">
@@ -335,7 +335,7 @@ export const RightPanel: React.FC<RightPanelProps> = ({
 
         {/* Tab 1: Flow & Weights */}
         {activeTab === "flow" && (
-          <div className="space-y-4">
+          <div className="space-y-5">
             {/* Sibling Units in Layer */}
             {renderSiblings()}
 
@@ -352,7 +352,7 @@ export const RightPanel: React.FC<RightPanelProps> = ({
                 </div>
               ) : unitData ? (
                 sel.kind === "head" ? (
-                  <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-3">
+                  <div className="p-5 rounded-xl bg-slate-50 border border-slate-200 space-y-3.5">
                     <div className="flex items-center justify-between text-xs font-mono uppercase tracking-wider text-slate-600 font-semibold">
                       <span>Attention Targets (where it looks)</span>
                       <span className="text-slate-400">Weight</span>
@@ -396,7 +396,7 @@ export const RightPanel: React.FC<RightPanelProps> = ({
                     })()}
                   </div>
                 ) : (
-                  <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-3">
+                  <div className="p-5 rounded-xl bg-slate-50 border border-slate-200 space-y-3.5">
                     <div className="flex items-center justify-between text-xs font-mono uppercase tracking-wider text-slate-600 font-semibold">
                       <span>Neuron Sentence Trajectory</span>
                       <span className="text-slate-400">σ</span>
@@ -436,10 +436,10 @@ export const RightPanel: React.FC<RightPanelProps> = ({
 
         {/* Tab 2: Concept Probes */}
         {activeTab === "concepts" && (
-          <div className="space-y-4">
+          <div className="space-y-5">
             {unitData && (
               <>
-                <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-3">
+                <div className="p-5 rounded-xl bg-slate-50 border border-slate-200 space-y-3.5">
                   <div className="text-xs font-mono uppercase tracking-wider text-slate-600 font-semibold">
                     Dominant Concept Feature
                   </div>
@@ -495,7 +495,7 @@ export const RightPanel: React.FC<RightPanelProps> = ({
 
                 {/* Probed words */}
                 {unitData.top_words && unitData.top_words.length > 0 && (
-                  <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-3">
+                  <div className="p-5 rounded-xl bg-slate-50 border border-slate-200 space-y-3.5">
                     <div className="text-xs font-mono uppercase tracking-wider text-slate-600 font-semibold">
                       Probed Calibration Words
                     </div>
@@ -516,7 +516,7 @@ export const RightPanel: React.FC<RightPanelProps> = ({
             )}
 
             {/* Overall Concept Readout on token */}
-            <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-3">
+            <div className="p-5 rounded-xl bg-slate-50 border border-slate-200 space-y-3.5">
               <div className="flex items-center justify-between text-xs font-mono uppercase tracking-wider text-slate-600 font-semibold">
                 <span>Token Concept Read-out</span>
                 <span className="text-slate-400">Z-score</span>
@@ -554,9 +554,9 @@ export const RightPanel: React.FC<RightPanelProps> = ({
 
         {/* Tab 3: Predictions */}
         {activeTab === "predictions" && (
-          <div className="space-y-4">
+          <div className="space-y-5">
             {/* Next Word Prediction distribution */}
-            <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-3">
+            <div className="p-5 rounded-xl bg-slate-50 border border-slate-200 space-y-3.5">
               <div className="flex items-center justify-between text-xs font-mono uppercase tracking-wider text-slate-600 font-semibold">
                 <span>Next-Word Prediction after "{tok}"</span>
                 <span className="text-slate-400">Prob</span>
@@ -586,7 +586,7 @@ export const RightPanel: React.FC<RightPanelProps> = ({
 
             {/* Promotes (for neurons) */}
             {unitData?.promotes && unitData.promotes.length > 0 && (
-              <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-3">
+              <div className="p-5 rounded-xl bg-slate-50 border border-slate-200 space-y-3.5">
                 <div className="text-xs font-mono uppercase tracking-wider text-slate-600 font-semibold">
                   Neuron Promotes Next-Word Logits
                 </div>

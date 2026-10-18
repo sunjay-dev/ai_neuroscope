@@ -80,14 +80,14 @@ export const Header: React.FC<HeaderProps> = ({
   return (
     <header className="flex flex-col bg-white border-b border-slate-200 shrink-0 select-none z-30 shadow-2xs">
       {/* Top Bar: Brand, Studio Tabs & Global Actions */}
-      <div className="flex items-center justify-between gap-4 px-6 py-2.5 max-[1100px]:px-4">
+      <div className="flex items-center justify-between gap-5 px-8 py-3.5 max-[1100px]:px-5">
         {/* Brand */}
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center text-white shadow-xs">
-            <Sparkles className="w-4 h-4 text-white" />
+        <div className="flex items-center gap-3.5">
+          <div className="w-9 h-9 rounded-xl bg-indigo-600 flex items-center justify-center text-white shadow-xs">
+            <Sparkles className="w-4.5 h-4.5 text-white" />
           </div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-sm font-bold tracking-tight text-slate-900 m-0">
+          <div className="flex items-center gap-2.5">
+            <h1 className="text-[15px] font-bold tracking-tight text-slate-900 m-0">
               AI Neuroscope
             </h1>
             <Badge variant="secondary" className="text-[11px] py-0 px-2 font-mono text-slate-600">
@@ -226,8 +226,8 @@ export const Header: React.FC<HeaderProps> = ({
       </div>
 
       {/* Primary Prompt Command Bar */}
-      <div className="px-6 pb-2.5 pt-0.5 flex items-center gap-3 max-[1100px]:px-4">
-        <div className="flex-1 h-10 flex items-center gap-2.5 bg-slate-50 border border-slate-200 rounded-lg px-3.5 py-1 focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-500/20 focus-within:bg-white transition-all shadow-2xs">
+      <div className="px-8 pb-4 pt-2 flex items-center gap-4 max-[1100px]:px-5">
+        <div className="flex-1 h-12 flex items-center gap-3 bg-slate-50 border border-slate-200 rounded-xl px-4 py-1 focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-500/20 focus-within:bg-white transition-all shadow-2xs">
           <input
             id="input-text"
             type="text"
@@ -241,7 +241,7 @@ export const Header: React.FC<HeaderProps> = ({
                 onRun(true);
               }
             }}
-            className="flex-1 bg-transparent text-xs text-slate-900 placeholder:text-slate-400 focus:outline-none font-sans"
+            className="flex-1 bg-transparent text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none font-sans"
           />
 
           <span className="text-xs font-mono text-slate-400 bg-white border border-slate-200 px-2 py-0.5 rounded shrink-0">
@@ -311,7 +311,7 @@ export const Header: React.FC<HeaderProps> = ({
           id="run-btn"
           disabled={busy}
           onClick={() => onRun(true)}
-          className="gap-1.5 px-4 h-10 font-semibold shadow-xs shrink-0 cursor-pointer"
+          className="gap-2 px-5 h-12 font-semibold shadow-xs shrink-0 cursor-pointer rounded-xl"
         >
           {busy ? (
             <>

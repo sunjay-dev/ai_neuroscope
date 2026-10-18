@@ -1,10 +1,10 @@
 import { ActiveCircuit, AnalysisResponse, CircuitUnit, Selection, ViewKind } from "../types";
 
-export const LABEL_X = 110;
-export const X0 = 155;
-export const COL_W = 64;
-export const TOP = 64;
-export const ROW_H = 36;
+export const LABEL_X = 132;
+export const X0 = 178;
+export const COL_W = 84;
+export const TOP = 78;
+export const ROW_H = 46;
 
 export const CONCEPT_COLORS: Record<string, string[]> = {
   gender: ["#e11d48", "#0284c7"],

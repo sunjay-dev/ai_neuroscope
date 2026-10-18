@@ -46,9 +46,9 @@ export const ConceptStudioView: React.FC<ConceptStudioViewProps> = ({
   };
 
   return (
-    <div className="flex-1 flex flex-col overflow-auto bg-slate-50 p-8 custom-scrollbar select-none">
+    <div className="flex-1 flex flex-col overflow-auto bg-slate-50 p-10 custom-scrollbar select-none">
       {/* Header Banner */}
-      <div className="flex items-center justify-between pb-5 border-b border-slate-200 mb-8 max-w-6xl mx-auto w-full">
+      <div className="flex items-center justify-between pb-6 border-b border-slate-200 mb-10 max-w-6xl mx-auto w-full">
         <div>
           <h2 className="text-base font-bold text-slate-900 flex items-center gap-2">
             <Compass className="w-5 h-5 text-indigo-600" />
@@ -71,7 +71,7 @@ export const ConceptStudioView: React.FC<ConceptStudioViewProps> = ({
         )}
       </div>
 
-      <div className="grid grid-cols-3 gap-5 max-w-6xl mx-auto w-full mb-10 max-[1000px]:grid-cols-2 max-[700px]:grid-cols-1">
+      <div className="grid grid-cols-3 gap-6 max-w-6xl mx-auto w-full mb-12 max-[1000px]:grid-cols-2 max-[700px]:grid-cols-1">
         {concepts.map((c) => {
           const isActive = circuit?.key === c.key;
           const color = conceptColor(c.key);
@@ -80,14 +80,14 @@ export const ConceptStudioView: React.FC<ConceptStudioViewProps> = ({
             <div
               key={c.key}
               onClick={() => onSelectConcept(c.key)}
-              className={`p-6 rounded-2xl border transition-all duration-200 cursor-pointer flex flex-col justify-between ${
+              className={`p-7 rounded-2xl border transition-all duration-200 cursor-pointer flex flex-col justify-between ${
                 isActive
                   ? "bg-indigo-50/70 border-indigo-500 ring-2 ring-indigo-400 shadow-md scale-[1.01]"
                   : "bg-white border-slate-200 hover:border-slate-300 hover:shadow-md shadow-2xs"
               }`}
             >
               <div>
-                <div className="flex items-center justify-between mb-2.5">
+                <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2.5">
                     <span
                       className="w-3 h-3 rounded-full shadow-2xs"
@@ -103,7 +103,7 @@ export const ConceptStudioView: React.FC<ConceptStudioViewProps> = ({
                   )}
                 </div>
 
-                <div className="text-xs font-mono text-slate-500 mb-3.5">
+                <div className="text-xs font-mono text-slate-500 mb-4">
                   {c.binary ? (
                     <span>
                       {c.side_a} <span className="text-slate-400">↔</span> {c.side_b}
@@ -115,7 +115,7 @@ export const ConceptStudioView: React.FC<ConceptStudioViewProps> = ({
                   )}
                 </div>
 
-                <div className="flex flex-wrap gap-1.5 mb-5">
+                <div className="flex flex-wrap gap-1.5 mb-6">
                   {c.examples.map((ex, i) => (
                     <span
                       key={i}
@@ -140,17 +140,17 @@ export const ConceptStudioView: React.FC<ConceptStudioViewProps> = ({
       </div>
 
       {/* Custom Contrastive Probe Section */}
-      <div className="max-w-6xl mx-auto w-full p-7 rounded-2xl bg-white border border-slate-200 shadow-sm">
-        <div className="flex items-center gap-2.5 mb-2">
+      <div className="max-w-6xl mx-auto w-full p-8 rounded-2xl bg-white border border-slate-200 shadow-sm">
+        <div className="flex items-center gap-2.5 mb-2.5">
           <Sparkles className="w-5 h-5 text-indigo-600" />
           <h3 className="text-sm font-bold text-slate-900">Custom Contrastive Probe Studio</h3>
         </div>
-        <p className="text-xs text-slate-600 mb-5 max-w-2xl leading-relaxed">
+        <p className="text-xs text-slate-600 mb-6 max-w-2xl leading-relaxed">
           Calibrate a real-time probe vector by contrasting two semantic word classes. The backend runs forward passes on both groups to extract circuit units dedicated to your concept.
         </p>
 
-        <form onSubmit={handleRunCustom} className="space-y-5">
-          <div className="grid grid-cols-2 gap-5 max-[700px]:grid-cols-1">
+        <form onSubmit={handleRunCustom} className="space-y-6">
+          <div className="grid grid-cols-2 gap-6 max-[700px]:grid-cols-1">
             <div className="space-y-2">
               <label className="text-xs font-semibold text-slate-700">
                 Word Set A (Target Concept)
