@@ -5,6 +5,7 @@ import {
   ModelInfo,
   Selection,
   ViewKind,
+  WorkspaceTab,
 } from "./types";
 import {
   bestSelection,
@@ -21,7 +22,6 @@ import {
 import { Header } from "./components/Header";
 import { CenterPanel } from "./components/CenterPanel";
 import { RightPanel } from "./components/RightPanel";
-import { ConceptModal } from "./components/ConceptModal";
 import { HelpModal } from "./components/HelpModal";
 
 export const App: React.FC = () => {
@@ -40,9 +40,12 @@ export const App: React.FC = () => {
   const [revealed, setRevealed] = useState<number>(Infinity);
   const [circuit, setCircuit] = useState<ActiveCircuit | null>(null);
 
+  // Studio Workspace Active Tab
+  const [activeTab, setActiveTab] = useState<WorkspaceTab>("flow");
+  const [isPlaying, setIsPlaying] = useState(false);
+
   // Modals & Panels
   const [helpOpen, setHelpOpen] = useState(false);
-  const [circuitModalOpen, setCircuitModalOpen] = useState(false);
   const [isInspectorOpen, setIsInspectorOpen] = useState(true);
 
   const [statusMsg, setStatusMsg] = useState<{ text: string; isError?: boolean }>({
@@ -56,6 +59,7 @@ export const App: React.FC = () => {
   const lastTextRef = useRef<string | null>(null);
   const sweepTimerRef = useRef<number | null>(null);
   const debounceTimerRef = useRef<number | null>(null);
+  const playTimerRef = useRef<number | null>(null);
   const analysisRef = useRef<AnalysisResponse | null>(null);
   analysisRef.current = analysis;
 
@@ -102,7 +106,7 @@ export const App: React.FC = () => {
           setStatus(
             `Streaming forward pass: Layer ${curRevealed + 1} / ${a.num_layers}…`
           );
-          sweepTimerRef.current = window.setTimeout(step, 80);
+          sweepTimerRef.current = window.setTimeout(step, 60);
           return;
         }
 
@@ -310,6 +314,30 @@ export const App: React.FC = () => {
     }
   }, []);
 
+  // Playback Step-Through
+  const togglePlay = useCallback(() => {
+    setIsPlaying((prev) => !prev);
+  }, []);
+
+  useEffect(() => {
+    if (!isPlaying) {
+      if (playTimerRef.current) clearInterval(playTimerRef.current);
+      return;
+    }
+
+    playTimerRef.current = window.setInterval(() => {
+      const a = analysisRef.current;
+      if (!a) return;
+      const cur = selRef.current ? selRef.current.t : 0;
+      const nextT = (cur + 1) % a.tokens.length;
+      setSel(bestSelection(a, viewRef.current, circuitRef.current, nextT));
+    }, 1200);
+
+    return () => {
+      if (playTimerRef.current) clearInterval(playTimerRef.current);
+    };
+  }, [isPlaying]);
+
   // Node selection from NetworkSvg
   const handleSelectNode = useCallback(
     (t: number, l: number) => {
@@ -324,7 +352,22 @@ export const App: React.FC = () => {
         index: c.index,
         reason: { type: circuitRef.current ? "circuit" : "manual" },
       });
-      // Automatically reveal inspector if closed
+      setIsInspectorOpen(true);
+    },
+    []
+  );
+
+  // Select head from HeadMatrixView
+  const handleSelectHead = useCallback(
+    (layer: number, head: number) => {
+      const currentT = selRef.current ? selRef.current.t : 0;
+      setSel({
+        t: currentT,
+        layer,
+        kind: "head",
+        index: head,
+        reason: { type: circuitRef.current ? "circuit" : "manual" },
+      });
       setIsInspectorOpen(true);
     },
     []
@@ -342,24 +385,31 @@ export const App: React.FC = () => {
       } else if (e.key === "ArrowRight") {
         e.preventDefault();
         handleNavToken(1);
+      } else if (e.key === " ") {
+        e.preventDefault();
+        togglePlay();
+      } else if (e.key === "1") {
+        setActiveTab("flow");
+      } else if (e.key === "2") {
+        setActiveTab("heads");
+      } else if (e.key === "3") {
+        setActiveTab("predictions");
+      } else if (e.key === "4") {
+        setActiveTab("circuits");
       } else if (e.key === "?") {
         e.preventDefault();
         setHelpOpen((prev) => !prev);
       } else if (e.key.toLowerCase() === "i" && !e.metaKey && !e.ctrlKey) {
         e.preventDefault();
         setIsInspectorOpen((prev) => !prev);
-      } else if (e.key.toLowerCase() === "c" && !e.metaKey && !e.ctrlKey) {
-        e.preventDefault();
-        setCircuitModalOpen((prev) => !prev);
       } else if (e.key === "Escape") {
         setHelpOpen(false);
-        setCircuitModalOpen(false);
       }
     };
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [handleNavToken]);
+  }, [handleNavToken, togglePlay]);
 
   const scaleMaxVal = scaleMax(analysis, view, circuit);
   const scaleMaxLabel = circuit
@@ -367,8 +417,8 @@ export const App: React.FC = () => {
     : `${scaleMaxVal.toFixed(1)}σ+`;
 
   return (
-    <div className="h-full flex flex-col overflow-hidden bg-[#08090d] text-slate-100 font-sans antialiased">
-      {/* Sleek Top Command Bar */}
+    <div className="h-full flex flex-col overflow-hidden bg-[#07080d] text-slate-100 font-sans antialiased">
+      {/* Studio Top Command Deck */}
       <Header 
         info={modelInfo} 
         error={modelError} 
@@ -379,17 +429,20 @@ export const App: React.FC = () => {
         busy={busy}
         onRun={(force, textOverride) => executeAnalysis({ force, textOverride })}
         circuit={circuit}
-        onOpenCircuitModal={() => setCircuitModalOpen(true)}
         onClearCircuit={clearCircuit}
         isInspectorOpen={isInspectorOpen}
         onToggleInspector={() => setIsInspectorOpen(!isInspectorOpen)}
         onOpenHelp={() => setHelpOpen(true)}
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
       />
 
       {/* Main Spacious Workbench */}
       <main className="flex flex-1 min-h-0 overflow-hidden max-[1100px]:flex-col max-[1100px]:overflow-visible">
-        {/* Center Canvas: Full width when Inspector is closed, or flex-1 */}
+        {/* Center Panel (Hosts Flow, 144 Heads Matrix, Predictions, or Concept Studio) */}
         <CenterPanel
+          activeTab={activeTab}
+          info={modelInfo}
           analysis={analysis}
           circuit={circuit}
           view={view}
@@ -401,10 +454,19 @@ export const App: React.FC = () => {
           statusMsg={statusMsg}
           statusNodes={statusNodes}
           scaleMaxLabel={scaleMaxLabel}
+          isPlaying={isPlaying}
+          onTogglePlay={togglePlay}
           onSelectToken={handleSelectToken}
           onSelectNode={handleSelectNode}
+          onSelectHead={handleSelectHead}
           onNavToken={handleNavToken}
           onClearCircuit={clearCircuit}
+          onSelectConcept={(key) =>
+            circuit?.key === key ? clearCircuit() : loadCircuit(key)
+          }
+          onCustomConcept={(wordsA, wordsB) =>
+            loadCircuit("custom", { a: wordsA, b: wordsB })
+          }
         />
 
         {/* Right Inspector: Clean collapsible drawer */}
@@ -420,21 +482,7 @@ export const App: React.FC = () => {
         )}
       </main>
 
-      {/* Modals */}
-      <ConceptModal
-        isOpen={circuitModalOpen}
-        onClose={() => setCircuitModalOpen(false)}
-        info={modelInfo}
-        circuit={circuit}
-        onSelectConcept={(key) =>
-          circuit?.key === key ? clearCircuit() : loadCircuit(key)
-        }
-        onCustomConcept={(wordsA, wordsB) =>
-          loadCircuit("custom", { a: wordsA, b: wordsB })
-        }
-        onClearCircuit={clearCircuit}
-      />
-
+      {/* Help Modal */}
       <HelpModal 
         isOpen={helpOpen} 
         onClose={() => setHelpOpen(false)} 

@@ -112,6 +112,8 @@ export interface UnitDetailResponse {
 
 export type ViewKind = "head" | "neuron";
 
+export type WorkspaceTab = "flow" | "heads" | "predictions" | "circuits";
+
 export type SelectionReason =
   | { type: "circuit" }
   | { type: "concept"; concept: TokenConcept }

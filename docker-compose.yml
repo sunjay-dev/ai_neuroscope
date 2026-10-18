@@ -9,6 +9,7 @@ services:
       - NEUROSCOPE_REBUILD_CACHE=${NEUROSCOPE_REBUILD_CACHE:-0}
     volumes:
       - hf-cache:/root/.cache/huggingface
+      - ./frontend/dist:/app/frontend/dist:ro
     ports:
       - "3000:8000"
     healthcheck:

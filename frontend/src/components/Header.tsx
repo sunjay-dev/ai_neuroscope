@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { ActiveCircuit, ModelInfo } from "../types";
+import { ActiveCircuit, ModelInfo, WorkspaceTab } from "../types";
 import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
 import { 
@@ -10,9 +10,11 @@ import {
   SidebarOpen, 
   SidebarClose, 
   ChevronDown, 
-  X
+  X,
+  Network,
+  Grid,
+  TrendingUp
 } from "lucide-react";
-import { conceptColor } from "../constants";
 
 interface HeaderProps {
   info: ModelInfo | null;
@@ -24,11 +26,12 @@ interface HeaderProps {
   busy: boolean;
   onRun: (force?: boolean, textOverride?: string) => void;
   circuit: ActiveCircuit | null;
-  onOpenCircuitModal: () => void;
   onClearCircuit: () => void;
   isInspectorOpen: boolean;
   onToggleInspector: () => void;
   onOpenHelp: () => void;
+  activeTab: WorkspaceTab;
+  onTabChange: (tab: WorkspaceTab) => void;
 }
 
 const PRESETS = [
@@ -50,11 +53,12 @@ export const Header: React.FC<HeaderProps> = ({
   busy,
   onRun,
   circuit,
-  onOpenCircuitModal,
   onClearCircuit,
   isInspectorOpen,
   onToggleInspector,
   onOpenHelp,
+  activeTab,
+  onTabChange,
 }) => {
   const [presetOpen, setPresetOpen] = useState(false);
   const presetRef = useRef<HTMLDivElement>(null);
@@ -73,13 +77,13 @@ export const Header: React.FC<HeaderProps> = ({
   }, [presetOpen]);
 
   return (
-    <header className="flex flex-col bg-[#0c0e17] border-b border-white/[0.08] shrink-0 select-none z-30">
-      {/* Top Bar: Brand, Model Specs & Utilities */}
-      <div className="flex items-center justify-between gap-4 px-6 py-2.5 max-[1100px]:px-4">
+    <header className="flex flex-col bg-[#0b0d15] border-b border-white/[0.08] shrink-0 select-none z-30">
+      {/* Top Bar: Brand, Studio Tabs & Global Controls */}
+      <div className="flex items-center justify-between gap-4 px-6 py-2 max-[1100px]:px-4">
         {/* Brand */}
         <div className="flex items-center gap-3">
           <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-indigo-500 via-purple-600 to-pink-500 p-[1px] shadow-sm shadow-indigo-500/20">
-            <div className="w-full h-full bg-[#0c0e17] rounded-[7px] flex items-center justify-center">
+            <div className="w-full h-full bg-[#0b0d15] rounded-[7px] flex items-center justify-center">
               <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
             </div>
           </div>
@@ -93,71 +97,114 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
         </div>
 
-        {/* Center: Model Status */}
-        <div 
-          id="model-badge" 
-          className="flex items-center gap-2 px-3 py-1 rounded-full bg-white/[0.03] border border-white/[0.08] text-xs font-mono max-[900px]:hidden"
-        >
-          {error ? (
-            <>
-              <span className="w-1.5 h-1.5 rounded-full bg-rose-500" />
-              <span className="text-rose-400">Model Offline</span>
-            </>
-          ) : info ? (
-            <>
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.8)] pulse-live" />
-              <span className="text-slate-300 font-medium">{info.model_name}</span>
-              <span className="text-slate-500">·</span>
-              <span className="text-slate-400 text-[11px]">{info.num_layers}L × {info.num_heads}H</span>
-              <span className="text-slate-500">·</span>
-              <span className="text-slate-400 text-[11px]">{info.mlp_dim.toLocaleString()} MLP</span>
-            </>
-          ) : (
-            <>
-              <span className="w-1.5 h-1.5 rounded-full bg-amber-400 pulse-busy" />
-              <span className="text-slate-400">Connecting…</span>
-            </>
-          )}
-        </div>
+        {/* Studio View Navigation Tabs */}
+        <nav className="flex items-center p-1 rounded-xl bg-black/40 border border-white/[0.08] max-[900px]:hidden">
+          <button
+            type="button"
+            onClick={() => onTabChange("flow")}
+            className={`flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-medium transition-all cursor-pointer ${
+              activeTab === "flow"
+                ? "bg-indigo-600 text-white shadow-sm shadow-indigo-600/30 font-semibold"
+                : "text-slate-400 hover:text-slate-200"
+            }`}
+          >
+            <Network className="w-3.5 h-3.5" />
+            <span>Circuit Flow</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => onTabChange("heads")}
+            className={`flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-medium transition-all cursor-pointer ${
+              activeTab === "heads"
+                ? "bg-indigo-600 text-white shadow-sm shadow-indigo-600/30 font-semibold"
+                : "text-slate-400 hover:text-slate-200"
+            }`}
+          >
+            <Grid className="w-3.5 h-3.5" />
+            <span>144 Heads Matrix</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => onTabChange("predictions")}
+            className={`flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-medium transition-all cursor-pointer ${
+              activeTab === "predictions"
+                ? "bg-indigo-600 text-white shadow-sm shadow-indigo-600/30 font-semibold"
+                : "text-slate-400 hover:text-slate-200"
+            }`}
+          >
+            <TrendingUp className="w-3.5 h-3.5" />
+            <span>Predictions &amp; Entropy</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => onTabChange("circuits")}
+            className={`flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-medium transition-all cursor-pointer ${
+              activeTab === "circuits"
+                ? "bg-indigo-600 text-white shadow-sm shadow-indigo-600/30 font-semibold"
+                : "text-slate-400 hover:text-slate-200"
+            }`}
+          >
+            <Compass className="w-3.5 h-3.5" />
+            <span>Concept Circuits</span>
+            {circuit && (
+              <span className="w-2 h-2 rounded-full bg-sky-400 animate-pulse ml-0.5" />
+            )}
+          </button>
+        </nav>
 
         {/* Right Tools */}
         <div className="flex items-center gap-2 text-xs">
-          {/* Circuit Filter Button */}
-          <Button
-            variant={circuit ? "default" : "secondary"}
-            size="sm"
-            onClick={onOpenCircuitModal}
-            className={`gap-1.5 text-xs h-7 px-2.5 transition-all ${
-              circuit 
-                ? "bg-indigo-600/30 text-indigo-300 border border-indigo-500/50 shadow-sm" 
-                : "text-slate-300 hover:text-white"
-            }`}
-            title="Open Concept Circuit Catalog"
-          >
-            <Compass className="w-3.5 h-3.5" style={{ color: circuit ? conceptColor(circuit.key) : undefined }} />
-            <span>
-              {circuit ? `${circuit.data.name} Circuit` : "Concept Circuits"}
-            </span>
-          </Button>
-
+          {/* Active circuit chip in header */}
           {circuit && (
-            <button
-              id="clear-circuit"
-              onClick={onClearCircuit}
-              className="w-5 h-5 rounded-full bg-white/[0.08] hover:bg-rose-500/20 hover:text-rose-300 text-slate-400 flex items-center justify-center transition-colors"
-              title="Clear active circuit"
-              aria-label="Clear active circuit"
-            >
-              <X className="w-3 h-3" />
-            </button>
+            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border bg-sky-500/10 border-sky-500/30 text-sky-300">
+              <span className="w-1.5 h-1.5 rounded-full bg-sky-400" />
+              <span>{circuit.data.name}</span>
+              <button
+                id="clear-circuit"
+                onClick={onClearCircuit}
+                className="hover:text-white transition-colors ml-1 cursor-pointer"
+                title="Clear circuit filter"
+                aria-label="Clear active circuit"
+              >
+                <X className="w-3 h-3" />
+              </button>
+            </div>
           )}
+
+          {/* Model Status Pill */}
+          <div 
+            id="model-badge" 
+            className="flex items-center gap-2 px-2.5 py-1 rounded-lg bg-white/[0.03] border border-white/[0.08] text-xs font-mono max-[1100px]:hidden"
+          >
+            {error ? (
+              <>
+                <span className="w-1.5 h-1.5 rounded-full bg-rose-500" />
+                <span className="text-rose-400 text-[11px]">Offline</span>
+              </>
+            ) : info ? (
+              <>
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.8)] pulse-live" />
+                <span className="text-slate-300 font-medium text-[11px]">{info.model_name}</span>
+                <span className="text-slate-500">·</span>
+                <span className="text-slate-400 text-[10px]">{info.num_layers}L × {info.num_heads}H</span>
+              </>
+            ) : (
+              <>
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-400 pulse-busy" />
+                <span className="text-slate-400 text-[11px]">Connecting…</span>
+              </>
+            )}
+          </div>
 
           {/* Inspector Panel Toggle Button */}
           <Button
             variant={isInspectorOpen ? "default" : "secondary"}
             size="sm"
             onClick={onToggleInspector}
-            className={`gap-1.5 text-xs h-7 px-2.5 transition-all ${
+            className={`gap-1.5 text-xs h-7 px-2.5 transition-all cursor-pointer ${
               isInspectorOpen
                 ? "bg-indigo-600 text-white font-medium"
                 : "text-slate-300 hover:text-white"
@@ -177,7 +224,7 @@ export const Header: React.FC<HeaderProps> = ({
             variant="ghost"
             size="sm"
             onClick={onOpenHelp}
-            className="text-slate-400 hover:text-slate-200 gap-1 text-xs h-7 px-2"
+            className="text-slate-400 hover:text-slate-200 gap-1 text-xs h-7 px-2 cursor-pointer"
             title="Keyboard Shortcuts & Guide (?)"
           >
             <HelpCircle className="w-3.5 h-3.5" />
@@ -201,7 +248,7 @@ export const Header: React.FC<HeaderProps> = ({
       </div>
 
       {/* Primary Prompt Command Bar */}
-      <div className="px-6 pb-2.5 pt-0.5 flex items-center gap-3 max-[1100px]:px-4">
+      <div className="px-6 pb-2 pt-0.5 flex items-center gap-3 max-[1100px]:px-4">
         <div className="flex-1 flex items-center gap-2 bg-black/40 border border-white/[0.1] rounded-lg px-3 py-1.5 focus-within:border-indigo-500/80 focus-within:ring-1 focus-within:ring-indigo-500/40 transition-all shadow-inner">
           <input
             id="input-text"
@@ -227,7 +274,7 @@ export const Header: React.FC<HeaderProps> = ({
           <div ref={presetRef} className="relative shrink-0">
             <button
               type="button"
-              className="flex items-center gap-1 px-2 py-0.5 rounded text-[11px] text-slate-400 hover:text-slate-200 bg-white/[0.04] hover:bg-white/[0.08] transition-colors"
+              className="flex items-center gap-1 px-2 py-0.5 rounded text-[11px] text-slate-400 hover:text-slate-200 bg-white/[0.04] hover:bg-white/[0.08] transition-colors cursor-pointer"
               onClick={() => setPresetOpen(!presetOpen)}
             >
               <span>Presets</span>
@@ -243,7 +290,7 @@ export const Header: React.FC<HeaderProps> = ({
                   <button
                     key={p.label}
                     type="button"
-                    className="w-full text-left flex items-center gap-2 px-2.5 py-1.5 rounded-md text-xs text-slate-300 hover:text-white hover:bg-white/[0.08] transition-colors group"
+                    className="w-full text-left flex items-center gap-2 px-2.5 py-1.5 rounded-md text-xs text-slate-300 hover:text-white hover:bg-white/[0.08] transition-colors group cursor-pointer"
                     onClick={() => {
                       setText(p.text);
                       onRun(true, p.text);
@@ -286,7 +333,7 @@ export const Header: React.FC<HeaderProps> = ({
           id="run-btn"
           disabled={busy}
           onClick={() => onRun(true)}
-          className="gap-1.5 px-3.5 h-8 font-medium shadow-sm shadow-indigo-500/25 shrink-0"
+          className="gap-1.5 px-3.5 h-8 font-medium shadow-sm shadow-indigo-500/25 shrink-0 cursor-pointer"
         >
           {busy ? (
             <>
