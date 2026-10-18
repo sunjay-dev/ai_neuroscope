@@ -19,9 +19,9 @@ import {
   runAnalyze,
 } from "./api/client";
 import { Header } from "./components/Header";
-import { LeftPanel } from "./components/LeftPanel";
 import { CenterPanel } from "./components/CenterPanel";
 import { RightPanel } from "./components/RightPanel";
+import { ConceptModal } from "./components/ConceptModal";
 import { HelpModal } from "./components/HelpModal";
 
 export const App: React.FC = () => {
@@ -39,7 +39,11 @@ export const App: React.FC = () => {
   const [sel, setSel] = useState<Selection | null>(null);
   const [revealed, setRevealed] = useState<number>(Infinity);
   const [circuit, setCircuit] = useState<ActiveCircuit | null>(null);
+
+  // Modals & Panels
   const [helpOpen, setHelpOpen] = useState(false);
+  const [circuitModalOpen, setCircuitModalOpen] = useState(false);
+  const [isInspectorOpen, setIsInspectorOpen] = useState(true);
 
   const [statusMsg, setStatusMsg] = useState<{ text: string; isError?: boolean }>({
     text: "Connecting to GPT-2…",
@@ -306,6 +310,26 @@ export const App: React.FC = () => {
     }
   }, []);
 
+  // Node selection from NetworkSvg
+  const handleSelectNode = useCallback(
+    (t: number, l: number) => {
+      const a = analysisRef.current;
+      if (!a) return;
+      const c = cellInfo(a, viewRef.current, circuitRef.current, selRef.current, t, l);
+      if (c.index === null) return;
+      setSel({
+        t,
+        layer: l,
+        kind: c.kind,
+        index: c.index,
+        reason: { type: circuitRef.current ? "circuit" : "manual" },
+      });
+      // Automatically reveal inspector if closed
+      setIsInspectorOpen(true);
+    },
+    []
+  );
+
   // Keyboard navigation & Shortcuts
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -321,60 +345,21 @@ export const App: React.FC = () => {
       } else if (e.key === "?") {
         e.preventDefault();
         setHelpOpen((prev) => !prev);
+      } else if (e.key.toLowerCase() === "i" && !e.metaKey && !e.ctrlKey) {
+        e.preventDefault();
+        setIsInspectorOpen((prev) => !prev);
+      } else if (e.key.toLowerCase() === "c" && !e.metaKey && !e.ctrlKey) {
+        e.preventDefault();
+        setCircuitModalOpen((prev) => !prev);
       } else if (e.key === "Escape") {
         setHelpOpen(false);
+        setCircuitModalOpen(false);
       }
     };
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [handleNavToken]);
-
-  // Node selection from NetworkSvg
-  const handleSelectNode = useCallback(
-    (t: number, l: number) => {
-      const a = analysisRef.current;
-      if (!a) return;
-      const c = cellInfo(a, viewRef.current, circuitRef.current, selRef.current, t, l);
-      if (c.index === null) return;
-      setSel({
-        t,
-        layer: l,
-        kind: c.kind,
-        index: c.index,
-        reason: { type: circuitRef.current ? "circuit" : "manual" },
-      });
-    },
-    []
-  );
-
-  // Unit selection from LeftPanel circuit list
-  const handleSelectUnitFromCircuit = useCallback(
-    (kind: ViewKind, layer: number, index: number) => {
-      const a = analysisRef.current;
-      const c = circuitRef.current;
-      if (!a || !c) return;
-      const u = [...c.data.heads, ...c.data.neurons].find(
-        (x) => x.kind === kind && x.layer === layer && x.index === index
-      );
-      if (!u) return;
-
-      let t = 0;
-      u.evidence.forEach((v, i) => {
-        if (v > u.evidence[t]) t = i;
-      });
-
-      setView(kind);
-      setSel({
-        t,
-        layer,
-        kind,
-        index,
-        reason: { type: "circuit" },
-      });
-    },
-    []
-  );
 
   const scaleMaxVal = scaleMax(analysis, view, circuit);
   const scaleMaxLabel = circuit
@@ -383,31 +368,27 @@ export const App: React.FC = () => {
 
   return (
     <div className="h-full flex flex-col overflow-hidden bg-[#08090d] text-slate-100 font-sans antialiased">
+      {/* Sleek Top Command Bar */}
       <Header 
         info={modelInfo} 
         error={modelError} 
+        text={text}
+        setText={setText}
+        live={live}
+        setLive={setLive}
+        busy={busy}
+        onRun={(force, textOverride) => executeAnalysis({ force, textOverride })}
+        circuit={circuit}
+        onOpenCircuitModal={() => setCircuitModalOpen(true)}
+        onClearCircuit={clearCircuit}
+        isInspectorOpen={isInspectorOpen}
+        onToggleInspector={() => setIsInspectorOpen(!isInspectorOpen)}
         onOpenHelp={() => setHelpOpen(true)}
       />
-      <main className="grid grid-cols-[310px_minmax(0,1fr)_330px] flex-1 min-h-0 overflow-hidden max-[1100px]:flex max-[1100px]:flex-col max-[1100px]:overflow-visible">
-        <LeftPanel
-          text={text}
-          setText={setText}
-          live={live}
-          setLive={setLive}
-          busy={busy}
-          onRun={(force, textOverride) => executeAnalysis({ force, textOverride })}
-          info={modelInfo}
-          circuit={circuit}
-          onSelectConcept={(key) =>
-            circuit?.key === key ? clearCircuit() : loadCircuit(key)
-          }
-          onCustomConcept={(wordsA, wordsB) =>
-            loadCircuit("custom", { a: wordsA, b: wordsB })
-          }
-          onClearCircuit={clearCircuit}
-          scaleMaxLabel={scaleMaxLabel}
-          onSelectUnitFromCircuit={handleSelectUnitFromCircuit}
-        />
+
+      {/* Main Spacious Workbench */}
+      <main className="flex flex-1 min-h-0 overflow-hidden max-[1100px]:flex-col max-[1100px]:overflow-visible">
+        {/* Center Canvas: Full width when Inspector is closed, or flex-1 */}
         <CenterPanel
           analysis={analysis}
           circuit={circuit}
@@ -419,18 +400,40 @@ export const App: React.FC = () => {
           busy={busy}
           statusMsg={statusMsg}
           statusNodes={statusNodes}
+          scaleMaxLabel={scaleMaxLabel}
           onSelectToken={handleSelectToken}
           onSelectNode={handleSelectNode}
           onNavToken={handleNavToken}
+          onClearCircuit={clearCircuit}
         />
-        <RightPanel
-          analysis={analysis}
-          info={modelInfo}
-          circuit={circuit}
-          sel={sel}
-          onSelect={(newSel) => setSel(newSel)}
-        />
+
+        {/* Right Inspector: Clean collapsible drawer */}
+        {isInspectorOpen && (
+          <RightPanel
+            analysis={analysis}
+            info={modelInfo}
+            circuit={circuit}
+            sel={sel}
+            onSelect={(newSel) => setSel(newSel)}
+            onClose={() => setIsInspectorOpen(false)}
+          />
+        )}
       </main>
+
+      {/* Modals */}
+      <ConceptModal
+        isOpen={circuitModalOpen}
+        onClose={() => setCircuitModalOpen(false)}
+        info={modelInfo}
+        circuit={circuit}
+        onSelectConcept={(key) =>
+          circuit?.key === key ? clearCircuit() : loadCircuit(key)
+        }
+        onCustomConcept={(wordsA, wordsB) =>
+          loadCircuit("custom", { a: wordsA, b: wordsB })
+        }
+        onClearCircuit={clearCircuit}
+      />
 
       <HelpModal 
         isOpen={helpOpen} 

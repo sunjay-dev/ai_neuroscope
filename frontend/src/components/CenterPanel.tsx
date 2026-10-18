@@ -7,9 +7,11 @@ import {
   Network, 
   Cpu, 
   ChevronLeft, 
-  ChevronRight
+  ChevronRight,
+  Compass,
+  X
 } from "lucide-react";
-import { showTok } from "../constants";
+import { conceptColor, showTok } from "../constants";
 
 interface CenterPanelProps {
   analysis: AnalysisResponse | null;
@@ -22,9 +24,11 @@ interface CenterPanelProps {
   busy: boolean;
   statusMsg: { text: string; isError?: boolean };
   statusNodes: string;
+  scaleMaxLabel: string;
   onSelectToken: (t: number) => void;
   onSelectNode: (t: number, l: number) => void;
   onNavToken: (dir: number) => void;
+  onClearCircuit?: () => void;
 }
 
 export const CenterPanel: React.FC<CenterPanelProps> = ({
@@ -38,42 +42,19 @@ export const CenterPanel: React.FC<CenterPanelProps> = ({
   busy,
   statusMsg,
   statusNodes,
+  scaleMaxLabel,
   onSelectToken,
   onSelectNode,
   onNavToken,
+  onClearCircuit,
 }) => {
   const currentTokenText = (analysis && sel) ? showTok(analysis.tokens[sel.t]) : null;
 
   return (
-    <div className="bg-[#090a0f] flex flex-col overflow-hidden min-w-0 select-none max-[1100px]:min-h-[540px]">
+    <div className="flex-1 bg-[#090a0f] flex flex-col overflow-hidden min-w-0 select-none">
       {/* Center Top Toolbar */}
-      <div className="flex items-center justify-between gap-3 px-5 py-2.5 bg-[#0e111a] border-b border-white/[0.08] shrink-0 max-[1100px]:px-4 max-[1100px]:flex-wrap">
-        {/* Left: Section Indicator */}
-        <div className="flex items-center gap-2.5">
-          <div
-            id="live-dot"
-            className={`w-2 h-2 rounded-full transition-all duration-300 ${
-              busy 
-                ? "bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.8)] pulse-busy" 
-                : live 
-                ? "bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.8)] pulse-live" 
-                : "bg-slate-600"
-            }`}
-          />
-          <div className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-slate-300">
-            <span className="flex items-center justify-center w-4 h-4 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-[10px] text-indigo-400 font-mono">
-              2
-            </span>
-            <span>Network Circuit Flow</span>
-          </div>
-          {analysis && (
-            <span className="text-[11px] font-mono text-slate-500 max-[900px]:hidden">
-              12 Layers
-            </span>
-          )}
-        </div>
-
-        {/* Center: View Switcher Segmented Control */}
+      <div className="flex items-center justify-between gap-3 px-6 py-2.5 bg-[#0e111a] border-b border-white/[0.08] shrink-0 max-[1100px]:px-4 max-[1100px]:flex-wrap">
+        {/* Left: View Switcher */}
         <div 
           id="view-toggle"
           className="flex items-center p-0.5 rounded-lg bg-black/40 border border-white/[0.08]"
@@ -105,6 +86,33 @@ export const CenterPanel: React.FC<CenterPanelProps> = ({
             <span>MLP Neurons</span>
           </button>
         </div>
+
+        {/* Center: Active Circuit Pill (if active) */}
+        {circuit && (
+          <div 
+            className="flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium border animate-in fade-in duration-150"
+            style={{
+              backgroundColor: `color-mix(in srgb, ${conceptColor(circuit.key)} 15%, #141724)`,
+              borderColor: `color-mix(in srgb, ${conceptColor(circuit.key)} 40%, transparent)`,
+              color: conceptColor(circuit.key),
+            }}
+          >
+            <Compass className="w-3.5 h-3.5" />
+            <span>{circuit.data.name} Circuit Active</span>
+            <span className="text-[10px] opacity-75 font-mono">
+              ({circuit.data.heads.length}H · {circuit.data.neurons.length}N)
+            </span>
+            {onClearCircuit && (
+              <button
+                onClick={onClearCircuit}
+                className="w-4 h-4 rounded-full hover:bg-black/40 flex items-center justify-center transition-colors ml-1"
+                title="Clear circuit filter"
+              >
+                <X className="w-3 h-3" />
+              </button>
+            )}
+          </div>
+        )}
 
         {/* Right: Token Navigation */}
         <div className="flex items-center gap-2 text-xs">
@@ -167,9 +175,19 @@ export const CenterPanel: React.FC<CenterPanelProps> = ({
       />
 
       {/* Status Bar */}
-      <div className="px-5 py-2 bg-[#0c0e17] border-t border-white/[0.08] text-xs flex justify-between items-center gap-3 shrink-0 max-[1100px]:px-4">
+      <div className="px-6 py-2 bg-[#0c0e17] border-t border-white/[0.08] text-xs flex justify-between items-center gap-3 shrink-0 max-[1100px]:px-4">
+        {/* Live dot & message */}
         <div className="flex items-center gap-2 truncate">
-          <span className="w-1.5 h-1.5 rounded-full bg-indigo-500/60 shrink-0" />
+          <div
+            id="live-dot"
+            className={`w-2 h-2 rounded-full shrink-0 transition-all duration-300 ${
+              busy 
+                ? "bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.8)] pulse-busy" 
+                : live 
+                ? "bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.8)] pulse-live" 
+                : "bg-slate-600"
+            }`}
+          />
           <span id="status-msg" className="truncate text-slate-400 text-[11px]">
             {statusMsg.isError ? (
               <span className="text-rose-400 font-medium">{statusMsg.text}</span>
@@ -178,9 +196,18 @@ export const CenterPanel: React.FC<CenterPanelProps> = ({
             )}
           </span>
         </div>
-        <span id="status-nodes" className="text-[11px] font-mono text-slate-500 shrink-0">
-          {statusNodes}
-        </span>
+
+        {/* Right side: nodes and scale max */}
+        <div className="flex items-center gap-4 text-[11px] font-mono text-slate-500 shrink-0">
+          <div className="flex items-center gap-1.5 max-[800px]:hidden">
+            <span>Scale:</span>
+            <div className="w-12 h-1.5 rounded-full bg-gradient-to-r from-[#1e2538] via-[#6366f1] via-[#a855f7] to-[#f43f5e]" />
+            <span id="scale-max" className="text-slate-400">{scaleMaxLabel}</span>
+          </div>
+          <span id="status-nodes">
+            {statusNodes}
+          </span>
+        </div>
       </div>
     </div>
   );
