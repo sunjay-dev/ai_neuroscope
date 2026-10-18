@@ -16,6 +16,8 @@ served until startup has completed.
 
 from contextlib import asynccontextmanager
 from pathlib import Path
+import shutil
+import subprocess
 from time import perf_counter
 
 from fastapi import FastAPI
@@ -53,14 +55,47 @@ app.add_middleware(
 # Starlette matches routes in registration order.
 app.include_router(router)
 
+
+class SPAStaticFiles(StaticFiles):
+    """StaticFiles mount with SPA routing fallback to index.html for non-API routes."""
+
+    async def get_response(self, path: str, scope):
+        request_path = scope.get("path", "")
+        if request_path.startswith("/api"):
+            return await super().get_response(path, scope)
+        try:
+            response = await super().get_response(path, scope)
+        except Exception:
+            response = await super().get_response("index.html", scope)
+        if response.status_code == 404:
+            response = await super().get_response("index.html", scope)
+        return response
+
+
 # NOTE: this path only resolves to <repo>/frontend while this file sits
 # directly in backend/ (backend/app.py → .parent.parent == repo root). If this
 # line ever moves into neuroscope/api.py, `.parent.parent` would silently
 # become backend/, the mount would point at a nonexistent backend/frontend
 # directory, and it would fail at startup (not import) — re-anchor on an
 # explicit repo-root path if it moves.
-_frontend_dir = Path(__file__).resolve().parent.parent / "frontend"
-if _frontend_dir.is_dir():
-    # Present in local/single-container dev; absent in the backend-only Docker
-    # image, where nginx serves the frontend and proxies /api/* here instead.
-    app.mount("/", StaticFiles(directory=str(_frontend_dir), html=True), name="frontend")
+_repo_dir = Path(__file__).resolve().parent.parent
+_frontend_dir = _repo_dir / "frontend"
+_dist_dir = _frontend_dir / "dist"
+
+# In case dist is copied directly to /app/dist or repo root dist:
+if not _dist_dir.is_dir() and (_repo_dir / "dist").is_dir():
+    _dist_dir = _repo_dir / "dist"
+
+# If dist does not exist yet in local development, build it if npm is available:
+if not (_dist_dir.is_dir() and (_dist_dir / "index.html").is_file()) and _frontend_dir.is_dir():
+    try:
+        if shutil.which("npm"):
+            print("[neuroscope] building frontend for backend server…", flush=True)
+            subprocess.run(["npm", "run", "build"], cwd=str(_frontend_dir), check=True, capture_output=True)
+    except Exception as exc:
+        print(f"[neuroscope] could not build frontend: {exc}", flush=True)
+
+if _dist_dir.is_dir() and (_dist_dir / "index.html").is_file():
+    app.mount("/", SPAStaticFiles(directory=str(_dist_dir), html=True), name="frontend")
+elif _frontend_dir.is_dir():
+    app.mount("/", SPAStaticFiles(directory=str(_frontend_dir), html=True), name="frontend")

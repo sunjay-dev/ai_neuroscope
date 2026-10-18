@@ -1,8 +1,6 @@
 services:
   backend:
-    build:
-      context: .
-      dockerfile: backend/Dockerfile
+    build: .
     environment:
       - NEUROSCOPE_MODEL=${NEUROSCOPE_MODEL:-gpt2}
       # Compose only forwards variables a service declares, so without this line
@@ -11,24 +9,15 @@ services:
       - NEUROSCOPE_REBUILD_CACHE=${NEUROSCOPE_REBUILD_CACHE:-0}
     volumes:
       - hf-cache:/root/.cache/huggingface
+      - ./frontend/dist:/app/frontend/dist:ro
     ports:
-      - "8000:8000"
+      - "3000:8000"
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/model-info')"]
       interval: 10s
       timeout: 5s
       retries: 20
       start_period: 60s
-
-  frontend:
-    build:
-      context: .
-      dockerfile: frontend/Dockerfile
-    ports:
-      - "3000:80"
-    depends_on:
-      backend:
-        condition: service_healthy
 
 volumes:
   hf-cache:
