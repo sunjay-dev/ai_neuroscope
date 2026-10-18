@@ -2,6 +2,8 @@ import React from "react";
 import { ActiveCircuit, AnalysisResponse, Selection } from "../types";
 import { conceptColor, rampColor, showTok } from "../constants";
 import { Network, Sparkles } from "lucide-react";
+import { Card } from "./ui/card";
+import { Badge } from "./ui/badge";
 
 interface HeadMatrixViewProps {
   analysis: AnalysisResponse | null;
@@ -18,9 +20,9 @@ export const HeadMatrixView: React.FC<HeadMatrixViewProps> = ({
 }) => {
   if (!analysis) {
     return (
-      <div className="flex-1 flex flex-col items-center justify-center p-12 text-center text-slate-500">
-        <Network className="w-12 h-12 text-slate-600 mb-4 animate-pulse" />
-        <h3 className="text-base font-semibold text-slate-300">Awaiting Forward Pass</h3>
+      <div className="flex-1 flex flex-col items-center justify-center p-12 text-center text-slate-500 bg-slate-50">
+        <Network className="w-12 h-12 text-slate-400 mb-4 animate-pulse" />
+        <h3 className="text-base font-semibold text-slate-800">Awaiting Forward Pass</h3>
         <p className="text-xs text-slate-500 max-w-sm mt-1.5 leading-relaxed">
           Enter a prompt and run analysis to inspect all 144 attention heads across the 12 transformer layers.
         </p>
@@ -60,22 +62,22 @@ export const HeadMatrixView: React.FC<HeadMatrixViewProps> = ({
   }
 
   return (
-    <div className="flex-1 flex flex-col overflow-auto bg-[#07080d] p-8 custom-scrollbar select-none">
+    <div className="flex-1 flex flex-col overflow-auto bg-slate-50 p-8 custom-scrollbar select-none">
       {/* Header Info Banner */}
-      <div className="flex items-center justify-between gap-6 pb-5 border-b border-white/[0.08] mb-6 max-w-6xl mx-auto w-full">
+      <div className="flex items-center justify-between gap-6 pb-5 border-b border-slate-200 mb-6 max-w-6xl mx-auto w-full">
         <div>
           <div className="flex items-center gap-3">
-            <h2 className="text-base font-bold text-white flex items-center gap-2">
-              <Network className="w-5 h-5 text-indigo-400" />
+            <h2 className="text-base font-bold text-slate-900 flex items-center gap-2">
+              <Network className="w-5 h-5 text-indigo-600" />
               <span>144 Attention Heads Matrix</span>
             </h2>
-            <span className="text-xs font-mono font-semibold px-2.5 py-1 rounded-lg bg-indigo-500/15 text-indigo-300 border border-indigo-500/30">
+            <Badge variant="outline" className="bg-indigo-50 text-indigo-700 border-indigo-200 text-xs font-mono">
               12 Layers × 12 Heads
-            </span>
+            </Badge>
           </div>
-          <p className="text-xs text-slate-400 mt-1">
+          <p className="text-xs text-slate-600 mt-1">
             Inspecting activation write norms on token{" "}
-            <span className="text-white font-mono font-bold bg-white/[0.08] px-2 py-0.5 rounded-md">
+            <span className="text-slate-900 font-mono font-bold bg-white border border-slate-200 px-2 py-0.5 rounded-md shadow-2xs">
               "{currentToken}"
             </span>{" "}
             (position #{currentT}). Click any head to inspect its attention pattern.
@@ -84,19 +86,19 @@ export const HeadMatrixView: React.FC<HeadMatrixViewProps> = ({
 
         {/* Quick Stats Banner Cards */}
         <div className="flex items-center gap-3 text-xs font-mono">
-          <div className="flex flex-col items-center px-3.5 py-1.5 rounded-xl bg-white/[0.03] border border-white/[0.08]">
-            <span className="text-indigo-300 font-bold text-sm">{countHighZ} / 144</span>
-            <span className="text-[10px] text-slate-400">Heads &gt;2.0σ</span>
-          </div>
-          <div className="flex flex-col items-center px-3.5 py-1.5 rounded-xl bg-white/[0.03] border border-white/[0.08]">
-            <span className="text-amber-300 font-bold text-sm">{countSink}</span>
-            <span className="text-[10px] text-slate-400">Sink Heads</span>
-          </div>
+          <Card className="flex flex-col items-center px-3.5 py-1.5 bg-white border-slate-200 shadow-2xs">
+            <span className="text-indigo-600 font-bold text-sm">{countHighZ} / 144</span>
+            <span className="text-[10px] text-slate-500 font-sans">Heads &gt;2.0σ</span>
+          </Card>
+          <Card className="flex flex-col items-center px-3.5 py-1.5 bg-white border-slate-200 shadow-2xs">
+            <span className="text-amber-600 font-bold text-sm">{countSink}</span>
+            <span className="text-[10px] text-slate-500 font-sans">Sink Heads</span>
+          </Card>
           {circuit && (
-            <div className="flex flex-col items-center px-3.5 py-1.5 rounded-xl bg-sky-500/10 border border-sky-500/30">
-              <span className="text-sky-300 font-bold text-sm">{countCircuit}</span>
-              <span className="text-[10px] text-sky-400">Circuit Heads</span>
-            </div>
+            <Card className="flex flex-col items-center px-3.5 py-1.5 bg-sky-50 border-sky-200 shadow-2xs">
+              <span className="text-sky-700 font-bold text-sm">{countCircuit}</span>
+              <span className="text-[10px] text-sky-600 font-sans">Circuit Heads</span>
+            </Card>
           )}
         </div>
       </div>
@@ -104,10 +106,10 @@ export const HeadMatrixView: React.FC<HeadMatrixViewProps> = ({
       {/* 12x12 Grid Container */}
       <div className="flex-1 flex flex-col max-w-6xl mx-auto w-full min-w-[760px]">
         {/* Column Headers: Head 0 to Head 11 */}
-        <div className="grid grid-cols-[64px_repeat(12,1fr)] gap-2 mb-2 text-center text-xs font-mono text-slate-400">
-          <div className="text-right pr-3 self-center font-semibold text-slate-500">Layer</div>
+        <div className="grid grid-cols-[64px_repeat(12,1fr)] gap-2 mb-2 text-center text-xs font-mono text-slate-500">
+          <div className="text-right pr-3 self-center font-bold text-slate-500">Layer</div>
           {Array.from({ length: numHeads }).map((_, h) => (
-            <div key={h} className="py-1.5 rounded-lg bg-white/[0.03] border border-white/[0.06] text-slate-300 font-semibold">
+            <div key={h} className="py-1.5 rounded-lg bg-white border border-slate-200 text-slate-700 font-bold shadow-2xs">
               H{h}
             </div>
           ))}
@@ -122,12 +124,12 @@ export const HeadMatrixView: React.FC<HeadMatrixViewProps> = ({
               <div
                 key={l}
                 className={`grid grid-cols-[64px_repeat(12,1fr)] gap-2 transition-colors ${
-                  isSelectedLayer ? "bg-indigo-950/25 rounded-2xl p-1" : ""
+                  isSelectedLayer ? "bg-indigo-50/70 border border-indigo-200/60 rounded-2xl p-1" : ""
                 }`}
               >
                 {/* Row Header */}
-                <div className="flex items-center justify-end pr-3.5 text-xs font-mono font-bold text-slate-400">
-                  <span className={isSelectedLayer ? "text-indigo-300 text-sm font-black" : ""}>
+                <div className="flex items-center justify-end pr-3.5 text-xs font-mono font-bold text-slate-500">
+                  <span className={isSelectedLayer ? "text-indigo-700 text-sm font-black" : ""}>
                     L{l}
                   </span>
                 </div>
@@ -146,24 +148,26 @@ export const HeadMatrixView: React.FC<HeadMatrixViewProps> = ({
                   const normFraction = Math.max(0, z) / maxZ;
                   const cellBg = rampColor(normFraction);
 
-                  let borderColor = "border-white/[0.08]";
+                  let borderColor = "border-slate-200";
                   let ringStyle = "";
 
                   if (isSelected) {
-                    borderColor = "border-white ring-2 ring-indigo-400 ring-offset-2 ring-offset-[#07080d] scale-105 z-20 shadow-xl shadow-indigo-500/20";
+                    borderColor = "border-indigo-600 ring-2 ring-indigo-500 ring-offset-2 ring-offset-white scale-105 z-20 shadow-md";
                   } else if (circuitUnit) {
-                    borderColor = "border-sky-400 shadow-md shadow-sky-500/25";
-                    ringStyle = "ring-1.5 ring-sky-400/90";
+                    borderColor = "border-sky-500 shadow-sm";
+                    ringStyle = "ring-1.5 ring-sky-400";
                   }
+
+                  const isHighContrastWhiteText = normFraction > 0.45;
 
                   return (
                     <button
                       key={h}
                       type="button"
                       onClick={() => onSelectHead(l, h)}
-                      className={`group relative h-16 rounded-xl border transition-all duration-150 p-1.5 flex flex-col justify-between text-left cursor-pointer hover:scale-105 hover:z-10 hover:shadow-2xl ${borderColor} ${ringStyle}`}
+                      className={`group relative h-16 rounded-xl border transition-all duration-150 p-1.5 flex flex-col justify-between text-left cursor-pointer hover:scale-105 hover:z-10 hover:shadow-md ${borderColor} ${ringStyle}`}
                       style={{
-                        backgroundColor: normFraction > 0.05 ? cellBg : "rgba(255, 255, 255, 0.02)",
+                        backgroundColor: normFraction > 0.05 ? cellBg : "#ffffff",
                       }}
                       title={`L${l}H${h} on "${currentToken}": ${z >= 0 ? "+" : ""}${z.toFixed(2)}σ | Sink: ${(sink * 100).toFixed(0)}%${
                         label ? ` | Concept: ${label.name}` : ""
@@ -172,25 +176,25 @@ export const HeadMatrixView: React.FC<HeadMatrixViewProps> = ({
                       {/* Top row: Head title & sink indicator */}
                       <div className="flex items-center justify-between w-full">
                         <span className={`text-[11px] font-mono font-bold leading-none ${
-                          isSelected ? "text-white font-extrabold" : normFraction > 0.4 ? "text-white" : "text-slate-300"
+                          isHighContrastWhiteText ? "text-white" : "text-slate-800"
                         }`}>
                           H{h}
                         </span>
                         {sink >= 0.25 && (
                           <span
-                            className="w-2 h-2 rounded-full bg-amber-400 shadow-[0_0_6px_rgba(251,191,36,0.8)]"
+                            className="w-2 h-2 rounded-full bg-amber-500 shadow-xs"
                             title={`Attention Sink: ${(sink * 100).toFixed(0)}% to start token`}
                           />
                         )}
                         {circuitUnit && (
-                          <Sparkles className="w-3 h-3 text-sky-300 animate-pulse" />
+                          <Sparkles className="w-3 h-3 text-sky-500 animate-pulse" />
                         )}
                       </div>
 
                       {/* Middle: Activation value */}
                       <div className="text-right">
                         <span className={`text-xs font-mono font-bold ${
-                          normFraction > 0.4 ? "text-white" : z >= 1.5 ? "text-indigo-300" : "text-slate-400"
+                          isHighContrastWhiteText ? "text-white" : z >= 1.5 ? "text-indigo-700" : "text-slate-500"
                         }`}>
                           {z >= 0 ? "+" : ""}{z.toFixed(1)}σ
                         </span>
@@ -199,7 +203,7 @@ export const HeadMatrixView: React.FC<HeadMatrixViewProps> = ({
                       {/* Bottom tag: Concept or specialization */}
                       {label ? (
                         <div
-                          className="text-[9px] font-semibold truncate px-1.5 py-0.5 rounded-md text-white shadow-sm"
+                          className="text-[9px] font-semibold truncate px-1.5 py-0.5 rounded-md text-white shadow-xs"
                           style={{
                             backgroundColor: conceptColor(label.name.toLowerCase()),
                           }}

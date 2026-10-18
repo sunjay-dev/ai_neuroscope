@@ -417,7 +417,7 @@ export const App: React.FC = () => {
     : `${scaleMaxVal.toFixed(1)}σ+`;
 
   return (
-    <div className="h-full flex flex-col overflow-hidden bg-[#07080d] text-slate-100 font-sans antialiased">
+    <div className="h-full flex flex-col overflow-hidden bg-slate-50 text-slate-900 font-sans antialiased">
       {/* Studio Top Command Deck */}
       <Header 
         info={modelInfo} 
@@ -438,7 +438,7 @@ export const App: React.FC = () => {
       />
 
       {/* Main Spacious Workbench */}
-      <main className="flex flex-1 min-h-0 overflow-hidden max-[1100px]:flex-col max-[1100px]:overflow-visible">
+      <main className="flex flex-1 min-h-0 overflow-hidden max-[1100px]:flex-col max-[1100px]:overflow-visible bg-slate-100/60">
         {/* Center Panel (Hosts Flow, 144 Heads Matrix, Predictions, or Concept Studio) */}
         <CenterPanel
           activeTab={activeTab}
