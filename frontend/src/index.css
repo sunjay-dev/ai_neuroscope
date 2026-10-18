@@ -34,11 +34,10 @@
   --text-dim: #94a3b8;
 }
 
-*, *::before, *::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+/* NOTE: no global * { margin: 0; padding: 0 } reset here — Tailwind v4's
+   preflight (in @layer base) already resets margins/padding. An unlayered
+   `*` reset would beat every @layer utilities rule (p-*, m-*, space-*)
+   in the cascade and zero out all spacing across the app. */
 
 html, body, #root {
   height: 100%;

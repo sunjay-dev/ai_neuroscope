@@ -179,11 +179,11 @@ export const NetworkSvg: React.FC<NetworkSvgProps> = ({
             return (
               <rect
                 key={`col-${l}`}
-                x={x - COL_W / 2 + 6}
-                y={15}
-                width={COL_W - 12}
-                height={H - 25}
-                rx={6}
+                x={x - COL_W / 2 + 8}
+                y={18}
+                width={COL_W - 16}
+                height={H - 32}
+                rx={8}
                 fill={isHoveredLayer ? "#eef2ff" : "#f8fafc"}
                 stroke={isHoveredLayer ? "#c7d2fe" : "transparent"}
                 strokeWidth={1}
@@ -196,10 +196,10 @@ export const NetworkSvg: React.FC<NetworkSvgProps> = ({
         <g id="layer-labels">
           <text
             x={LABEL_X}
-            y={24}
+            y={28}
             textAnchor="end"
             fill="#94a3b8"
-            fontSize={10}
+            fontSize={11}
             fontFamily="'JetBrains Mono', monospace"
             fontWeight={600}
           >
@@ -211,10 +211,10 @@ export const NetworkSvg: React.FC<NetworkSvgProps> = ({
               <g key={`lhdr-${l}`}>
                 <text
                   x={X0 + l * COL_W}
-                  y={22}
+                  y={26}
                   textAnchor="middle"
                   fill={isSelL ? "#4338ca" : "#64748b"}
-                  fontSize={11}
+                  fontSize={12.5}
                   fontWeight={isSelL ? 800 : 700}
                   fontFamily="'JetBrains Mono', monospace"
                 >
@@ -222,10 +222,10 @@ export const NetworkSvg: React.FC<NetworkSvgProps> = ({
                 </text>
                 <text
                   x={X0 + l * COL_W}
-                  y={32}
+                  y={38}
                   textAnchor="middle"
                   fill={isSelL ? "#6366f1" : "#94a3b8"}
-                  fontSize={8.5}
+                  fontSize={9.5}
                   fontWeight={600}
                   fontFamily="'Inter', sans-serif"
                 >
@@ -245,10 +245,10 @@ export const NetworkSvg: React.FC<NetworkSvgProps> = ({
                 <text
                   key={`tok-${t}`}
                   x={LABEL_X}
-                  y={yOf(t) + 4}
+                  y={yOf(t) + 5}
                   textAnchor="end"
                   fill={isSel ? "#1e1b4b" : "#475569"}
-                  fontSize={isSel ? 13 : 11.5}
+                  fontSize={isSel ? 14.5 : 13}
                   fontWeight={isSel ? 800 : 500}
                   fontFamily="'JetBrains Mono', monospace"
                   className="cursor-pointer transition-all duration-150"
@@ -266,7 +266,7 @@ export const NetworkSvg: React.FC<NetworkSvgProps> = ({
             a.tokens.map((_, t) => (
               <line
                 key={`rail-${t}`}
-                x1={X0 - 15}
+                x1={X0 - 18}
                 y1={yOf(t)}
                 x2={W - 40}
                 y2={yOf(t)}
@@ -386,7 +386,7 @@ export const NetworkSvg: React.FC<NetworkSvgProps> = ({
                 const val = info?.value ?? 0;
                 const normFraction = Math.max(0, val) / vmax;
 
-                let r = view === "head" ? 6.5 : 5.5;
+                let r = view === "head" ? 8 : 7;
                 let fill = isRevealed ? rampColor(normFraction) : "#f1f5f9";
                 let stroke = "#cbd5e1";
                 let strokeWidth = 1;
@@ -432,7 +432,7 @@ export const NetworkSvg: React.FC<NetworkSvgProps> = ({
                         <circle
                           cx={cx}
                           cy={cy}
-                          r={13}
+                          r={15}
                           fill="rgba(79, 70, 229, 0.12)"
                           stroke="#4f46e5"
                           strokeWidth={2}
@@ -458,7 +458,7 @@ export const NetworkSvg: React.FC<NetworkSvgProps> = ({
                     <circle
                       cx={cx}
                       cy={cy}
-                      r={16}
+                      r={22}
                       fill="transparent"
                       className="cursor-pointer"
                       onMouseEnter={(e) => handleMouseEnterNode(e, t, l)}

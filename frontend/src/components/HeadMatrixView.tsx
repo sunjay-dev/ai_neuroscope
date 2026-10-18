@@ -62,9 +62,9 @@ export const HeadMatrixView: React.FC<HeadMatrixViewProps> = ({
   }
 
   return (
-    <div className="flex-1 flex flex-col overflow-auto bg-slate-50 p-8 custom-scrollbar select-none">
+    <div className="flex-1 flex flex-col overflow-auto bg-slate-50 p-10 custom-scrollbar select-none">
       {/* Header Info Banner */}
-      <div className="flex items-center justify-between gap-6 pb-5 border-b border-slate-200 mb-6 max-w-6xl mx-auto w-full">
+      <div className="flex items-center justify-between gap-6 pb-6 border-b border-slate-200 mb-8 max-w-6xl mx-auto w-full">
         <div>
           <div className="flex items-center gap-3">
             <h2 className="text-base font-bold text-slate-900 flex items-center gap-2">
@@ -104,27 +104,27 @@ export const HeadMatrixView: React.FC<HeadMatrixViewProps> = ({
       </div>
 
       {/* 12x12 Grid Container */}
-      <div className="flex-1 flex flex-col max-w-6xl mx-auto w-full min-w-[760px]">
+      <div className="flex-1 flex flex-col max-w-6xl mx-auto w-full min-w-[820px]">
         {/* Column Headers: Head 0 to Head 11 */}
-        <div className="grid grid-cols-[64px_repeat(12,1fr)] gap-2 mb-2 text-center text-xs font-mono text-slate-500">
+        <div className="grid grid-cols-[64px_repeat(12,1fr)] gap-2.5 mb-2.5 text-center text-xs font-mono text-slate-500">
           <div className="text-right pr-3 self-center font-bold text-slate-500">Layer</div>
           {Array.from({ length: numHeads }).map((_, h) => (
-            <div key={h} className="py-1.5 rounded-lg bg-white border border-slate-200 text-slate-700 font-bold shadow-2xs">
+            <div key={h} className="py-2 rounded-lg bg-white border border-slate-200 text-slate-700 font-bold shadow-2xs">
               H{h}
             </div>
           ))}
         </div>
 
         {/* Rows: Layer 0 to Layer 11 */}
-        <div className="space-y-2">
+        <div className="space-y-2.5">
           {Array.from({ length: numLayers }).map((_, l) => {
             const isSelectedLayer = sel?.kind === "head" && sel?.layer === l;
 
             return (
               <div
                 key={l}
-                className={`grid grid-cols-[64px_repeat(12,1fr)] gap-2 transition-colors ${
-                  isSelectedLayer ? "bg-indigo-50/70 border border-indigo-200/60 rounded-2xl p-1" : ""
+                className={`grid grid-cols-[64px_repeat(12,1fr)] gap-2.5 transition-colors ${
+                  isSelectedLayer ? "bg-indigo-50/70 border border-indigo-200/60 rounded-2xl p-1.5" : ""
                 }`}
               >
                 {/* Row Header */}
@@ -165,7 +165,7 @@ export const HeadMatrixView: React.FC<HeadMatrixViewProps> = ({
                       key={h}
                       type="button"
                       onClick={() => onSelectHead(l, h)}
-                      className={`group relative h-16 rounded-xl border transition-all duration-150 p-1.5 flex flex-col justify-between text-left cursor-pointer hover:scale-105 hover:z-10 hover:shadow-md ${borderColor} ${ringStyle}`}
+                      className={`group relative h-[76px] rounded-xl border transition-all duration-150 p-2 flex flex-col justify-between text-left cursor-pointer hover:scale-105 hover:z-10 hover:shadow-md ${borderColor} ${ringStyle}`}
                       style={{
                         backgroundColor: normFraction > 0.05 ? cellBg : "#ffffff",
                       }}

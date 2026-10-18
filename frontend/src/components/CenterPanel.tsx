@@ -71,17 +71,17 @@ export const CenterPanel: React.FC<CenterPanelProps> = ({
     <div className="flex-1 bg-slate-50 flex flex-col overflow-hidden min-w-0 select-none">
       {/* If in Flow Web tab, show the Flow Canvas Toolbar */}
       {activeTab === "flow" && (
-        <div className="flex items-center justify-between gap-4 px-6 py-2.5 bg-white border-b border-slate-200 shrink-0 max-[1100px]:px-4 max-[1100px]:flex-wrap shadow-2xs">
+        <div className="flex items-center justify-between gap-5 px-8 py-3.5 bg-white border-b border-slate-200 shrink-0 max-[1100px]:px-5 max-[1100px]:flex-wrap shadow-2xs">
           {/* Left: View Switcher (Attn Heads vs MLP Neurons) */}
           <div 
             id="view-toggle"
-            className="flex items-center p-1 rounded-xl bg-slate-100 border border-slate-200 shadow-inner"
+            className="flex items-center p-1.5 rounded-xl bg-slate-100 border border-slate-200 shadow-inner"
           >
             <button
               type="button"
               data-view="head"
               onClick={() => setView("head")}
-              className={`flex items-center gap-2 text-xs font-semibold px-3.5 py-1.5 rounded-lg transition-all cursor-pointer ${
+              className={`flex items-center gap-2 text-xs font-semibold px-4 py-2 rounded-lg transition-all cursor-pointer ${
                 view === "head"
                   ? "bg-white text-indigo-600 shadow-xs border border-slate-200/60 font-bold"
                   : "text-slate-600 hover:text-slate-900"
@@ -94,7 +94,7 @@ export const CenterPanel: React.FC<CenterPanelProps> = ({
               type="button"
               data-view="neuron"
               onClick={() => setView("neuron")}
-              className={`flex items-center gap-2 text-xs font-semibold px-3.5 py-1.5 rounded-lg transition-all cursor-pointer ${
+              className={`flex items-center gap-2 text-xs font-semibold px-4 py-2 rounded-lg transition-all cursor-pointer ${
                 view === "neuron"
                   ? "bg-white text-indigo-600 shadow-xs border border-slate-200/60 font-bold"
                   : "text-slate-600 hover:text-slate-900"
@@ -229,7 +229,7 @@ export const CenterPanel: React.FC<CenterPanelProps> = ({
       )}
 
       {/* Persistent Status Bar */}
-      <div className="px-6 py-2.5 bg-white border-t border-slate-200 text-xs flex justify-between items-center gap-4 shrink-0 max-[1100px]:px-4 shadow-2xs">
+      <div className="px-8 py-3.5 bg-white border-t border-slate-200 text-xs flex justify-between items-center gap-5 shrink-0 max-[1100px]:px-5 shadow-2xs">
         {/* Live dot & message */}
         <div className="flex items-center gap-2.5 truncate">
           <div
