@@ -9,7 +9,9 @@ services:
       - NEUROSCOPE_REBUILD_CACHE=${NEUROSCOPE_REBUILD_CACHE:-0}
     volumes:
       - hf-cache:/root/.cache/huggingface
-      - ./frontend/dist:/app/frontend/dist:ro
+      # No ./frontend/dist bind mount: the image bakes the built frontend in
+      # (COPY --from=frontend-builder). Mounting a host dist/ shadowed it and
+      # served 404s whenever that directory was empty or stale.
     ports:
       - "3000:8000"
     healthcheck:
