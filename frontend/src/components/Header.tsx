@@ -214,7 +214,7 @@ export const Header: React.FC<HeaderProps> = ({
 
       {/* Primary Prompt Command Bar */}
       <div className="px-8 pb-4 pt-2 flex items-center gap-4 max-[1100px]:px-5">
-        <div className="flex-1 h-12 flex items-center gap-3 bg-slate-50 border border-slate-200 rounded-xl px-4 py-1 focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-500/20 focus-within:bg-white transition-all shadow-2xs">
+        <div className="flex-1 h-12 flex items-center gap-3 bg-slate-50 border border-slate-200 rounded-xl px-4 py-1 focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-500/20 focus-within:bg-white transition-colors shadow-2xs">
           <input
             id="input-text"
             type="text"

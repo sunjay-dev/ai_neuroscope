@@ -165,7 +165,7 @@ export const HeadMatrixView: React.FC<HeadMatrixViewProps> = ({
                       key={h}
                       type="button"
                       onClick={() => onSelectHead(l, h)}
-                      className={`group relative h-[76px] rounded-xl border transition-all duration-150 p-2 flex flex-col justify-between text-left cursor-pointer hover:scale-105 hover:z-10 hover:shadow-md ${borderColor} ${ringStyle}`}
+                      className={`group relative h-[76px] rounded-xl border transition duration-150 p-2 flex flex-col justify-between text-left cursor-pointer hover:scale-105 hover:z-10 hover:shadow-md ${borderColor} ${ringStyle}`}
                       style={{
                         backgroundColor: normFraction > 0.05 ? cellBg : "#ffffff",
                       }}

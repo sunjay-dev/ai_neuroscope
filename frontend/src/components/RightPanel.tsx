@@ -137,7 +137,7 @@ export const RightPanel: React.FC<RightPanelProps> = ({
               <button
                 key={h}
                 type="button"
-                className={`h-7 rounded-md cursor-pointer text-[10px] font-mono flex items-center justify-center border transition-all ${
+                className={`h-7 rounded-md cursor-pointer text-[10px] font-mono flex items-center justify-center border transition-colors ${
                   h === sel.index ? "border-indigo-600 ring-2 ring-indigo-500/30 font-bold scale-105 z-10 shadow-xs" : "border-slate-200 hover:border-slate-400"
                 }`}
                 title={`Head ${h}: ${(v >= 0 ? "+" : "") + v.toFixed(2)}σ`}
@@ -168,7 +168,7 @@ export const RightPanel: React.FC<RightPanelProps> = ({
               <button
                 key={n.neuron}
                 type="button"
-                className={`px-2.5 py-1 rounded-md text-xs font-mono border transition-all cursor-pointer ${
+                className={`px-2.5 py-1 rounded-md text-xs font-mono border transition-colors cursor-pointer ${
                   n.neuron === sel.index
                     ? "bg-indigo-50 text-indigo-700 border-indigo-300 font-bold shadow-2xs"
                     : "bg-white border-slate-200 text-slate-700 hover:text-slate-900 hover:border-slate-300"
@@ -276,7 +276,7 @@ export const RightPanel: React.FC<RightPanelProps> = ({
             <div className="h-2 bg-slate-200 rounded-full overflow-hidden">
               <div
                 id="act-fill"
-                className="h-full bg-gradient-to-r from-indigo-500 to-rose-500 rounded-full transition-all duration-300"
+                className="h-full bg-gradient-to-r from-indigo-500 to-rose-500 rounded-full transition-[width] duration-300"
                 style={{
                   width: `${z === null ? 0 : Math.max(0, Math.min(z / 8, 1)) * 100}%`,
                 }}
@@ -354,7 +354,7 @@ export const RightPanel: React.FC<RightPanelProps> = ({
                 sel.kind === "head" ? (
                   <div className="p-5 rounded-xl bg-slate-50 border border-slate-200 space-y-3.5">
                     <div className="flex items-center justify-between text-xs font-mono uppercase tracking-wider text-slate-600 font-semibold">
-                      <span>Attention Targets (where it looks)</span>
+                      <span>Attention Targets</span>
                       <span className="text-slate-400">Weight</span>
                     </div>
                     {(() => {
@@ -374,7 +374,7 @@ export const RightPanel: React.FC<RightPanelProps> = ({
                               </span>
                               <div className="flex-1 h-2 bg-slate-200 rounded-full overflow-hidden">
                                 <div
-                                  className="h-full rounded-full transition-all duration-300"
+                                  className="h-full rounded-full transition-[width] duration-300"
                                   style={{
                                     width: `${Math.max(3, Math.min(100, x.w * 100)).toFixed(0)}%`,
                                     backgroundColor: BAR_COLORS[i % BAR_COLORS.length],
@@ -413,7 +413,7 @@ export const RightPanel: React.FC<RightPanelProps> = ({
                             </span>
                             <div className="flex-1 h-2 bg-slate-200 rounded-full overflow-hidden">
                               <div
-                                className="h-full rounded-full transition-all duration-300"
+                                className="h-full rounded-full transition-[width] duration-300"
                                 style={{
                                   width: `${Math.max(3, Math.min(100, pct)).toFixed(0)}%`,
                                   backgroundColor: isCurrent ? "#4f46e5" : "#94a3b8",
@@ -478,7 +478,7 @@ export const RightPanel: React.FC<RightPanelProps> = ({
                         </span>
                         <div className="flex-1 h-2 bg-slate-200 rounded-full overflow-hidden">
                           <div
-                            className="h-full rounded-full transition-all duration-300"
+                            className="h-full rounded-full transition-[width] duration-300"
                             style={{
                               width: `${Math.max(3, Math.min(100, (c.score / 4) * 100)).toFixed(0)}%`,
                               backgroundColor: BAR_COLORS[i % BAR_COLORS.length],
@@ -533,7 +533,7 @@ export const RightPanel: React.FC<RightPanelProps> = ({
                       </span>
                       <div className="flex-1 h-2 bg-slate-200 rounded-full overflow-hidden relative before:content-[''] before:absolute before:left-1/2 before:top-0 before:bottom-0 before:w-[1px] before:bg-slate-400">
                         <div
-                          className="absolute top-0 h-full rounded-full transition-all duration-300"
+                          className="absolute top-0 h-full rounded-full transition-[width] duration-300"
                           style={{
                             left: `${left}%`,
                             width: `${Math.max(3, pct)}%`,
@@ -569,7 +569,7 @@ export const RightPanel: React.FC<RightPanelProps> = ({
                     </span>
                     <div className="flex-1 h-2 bg-slate-200 rounded-full overflow-hidden">
                       <div
-                        className="h-full rounded-full transition-all duration-300"
+                        className="h-full rounded-full transition-[width] duration-300"
                         style={{
                           width: `${Math.max(3, Math.min(100, p.p * 100)).toFixed(0)}%`,
                           backgroundColor: BAR_COLORS[i % BAR_COLORS.length],
