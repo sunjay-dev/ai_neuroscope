@@ -68,10 +68,10 @@ export const HeadMatrixView: React.FC<HeadMatrixViewProps> = ({
         <div>
           <div className="flex items-center gap-3">
             <h2 className="text-base font-bold text-slate-900 flex items-center gap-2">
-              <Network className="w-5 h-5 text-indigo-600" />
+              <Network className="w-5 h-5 text-violet-600" />
               <span>144 Attention Heads Matrix</span>
             </h2>
-            <Badge variant="outline" className="bg-indigo-50 text-indigo-700 border-indigo-200 text-xs font-mono">
+            <Badge variant="outline" className="bg-violet-50 text-violet-700 border-violet-200 text-xs font-mono">
               12 Layers × 12 Heads
             </Badge>
           </div>
@@ -87,7 +87,7 @@ export const HeadMatrixView: React.FC<HeadMatrixViewProps> = ({
         {/* Quick Stats Banner Cards */}
         <div className="flex items-center gap-3 text-xs font-mono">
           <Card className="flex flex-col items-center px-3.5 py-1.5 bg-white border-slate-200 shadow-2xs">
-            <span className="text-indigo-600 font-bold text-sm">{countHighZ} / 144</span>
+            <span className="text-violet-600 font-bold text-sm">{countHighZ} / 144</span>
             <span className="text-[10px] text-slate-500 font-sans">Heads &gt;2.0σ</span>
           </Card>
           <Card className="flex flex-col items-center px-3.5 py-1.5 bg-white border-slate-200 shadow-2xs">
@@ -124,12 +124,12 @@ export const HeadMatrixView: React.FC<HeadMatrixViewProps> = ({
               <div
                 key={l}
                 className={`grid grid-cols-[64px_repeat(12,1fr)] gap-2.5 transition-colors ${
-                  isSelectedLayer ? "bg-indigo-50/70 border border-indigo-200/60 rounded-2xl p-1.5" : ""
+                  isSelectedLayer ? "bg-violet-50/70 border border-violet-200/60 rounded-2xl p-1.5" : ""
                 }`}
               >
                 {/* Row Header */}
                 <div className="flex items-center justify-end pr-3.5 text-xs font-mono font-bold text-slate-500">
-                  <span className={isSelectedLayer ? "text-indigo-700 text-sm font-black" : ""}>
+                  <span className={isSelectedLayer ? "text-violet-700 text-sm font-black" : ""}>
                     L{l}
                   </span>
                 </div>
@@ -152,7 +152,7 @@ export const HeadMatrixView: React.FC<HeadMatrixViewProps> = ({
                   let ringStyle = "";
 
                   if (isSelected) {
-                    borderColor = "border-indigo-600 ring-2 ring-indigo-500 ring-offset-2 ring-offset-white scale-105 z-20 shadow-md";
+                    borderColor = "border-violet-600 ring-2 ring-violet-500 ring-offset-2 ring-offset-white scale-105 z-20 shadow-md";
                   } else if (circuitUnit) {
                     borderColor = "border-sky-500 shadow-sm";
                     ringStyle = "ring-1.5 ring-sky-400";
@@ -194,7 +194,7 @@ export const HeadMatrixView: React.FC<HeadMatrixViewProps> = ({
                       {/* Middle: Activation value */}
                       <div className="text-right">
                         <span className={`text-xs font-mono font-bold ${
-                          isHighContrastWhiteText ? "text-white" : z >= 1.5 ? "text-indigo-700" : "text-slate-500"
+                          isHighContrastWhiteText ? "text-white" : z >= 1.5 ? "text-violet-700" : "text-slate-500"
                         }`}>
                           {z >= 0 ? "+" : ""}{z.toFixed(1)}σ
                         </span>

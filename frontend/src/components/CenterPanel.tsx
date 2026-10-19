@@ -83,7 +83,7 @@ export const CenterPanel: React.FC<CenterPanelProps> = ({
               onClick={() => setView("head")}
               className={`flex items-center gap-2 text-xs font-semibold px-4 py-2 rounded-lg transition-colors cursor-pointer ${
                 view === "head"
-                  ? "bg-white text-indigo-600 shadow-xs border border-slate-200/60 font-bold"
+                  ? "bg-white text-violet-600 shadow-xs border border-slate-200/60 font-bold"
                   : "text-slate-600 hover:text-slate-900"
               }`}
             >
@@ -96,7 +96,7 @@ export const CenterPanel: React.FC<CenterPanelProps> = ({
               onClick={() => setView("neuron")}
               className={`flex items-center gap-2 text-xs font-semibold px-4 py-2 rounded-lg transition-colors cursor-pointer ${
                 view === "neuron"
-                  ? "bg-white text-indigo-600 shadow-xs border border-slate-200/60 font-bold"
+                  ? "bg-white text-violet-600 shadow-xs border border-slate-200/60 font-bold"
                   : "text-slate-600 hover:text-slate-900"
               }`}
             >
@@ -134,7 +134,7 @@ export const CenterPanel: React.FC<CenterPanelProps> = ({
           <div className="flex items-center gap-2.5 text-xs">
             <div className="flex items-center gap-2 bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-xl text-xs font-mono shadow-2xs">
               <span className="text-slate-500">Token:</span>
-              <span id="token-idx" className="text-indigo-600 font-bold">
+              <span id="token-idx" className="text-violet-600 font-bold">
                 {analysis && sel ? `${sel.t + 1} / ${analysis.tokens.length}` : "—"}
               </span>
               {currentTokenText && (

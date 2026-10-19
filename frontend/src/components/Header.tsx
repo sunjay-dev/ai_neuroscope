@@ -104,7 +104,7 @@ export const Header: React.FC<HeaderProps> = ({
             onClick={() => onTabChange("flow")}
             className="flex items-center gap-1.5"
           >
-            <Network className="w-3.5 h-3.5 text-indigo-600" />
+            <Network className="w-3.5 h-3.5 text-violet-600" />
             <span>Circuit Flow</span>
           </TabsTrigger>
 
@@ -113,7 +113,7 @@ export const Header: React.FC<HeaderProps> = ({
             onClick={() => onTabChange("heads")}
             className="flex items-center gap-1.5"
           >
-            <Grid className="w-3.5 h-3.5 text-indigo-600" />
+            <Grid className="w-3.5 h-3.5 text-violet-600" />
             <span>144 Heads Matrix</span>
           </TabsTrigger>
 
@@ -122,7 +122,7 @@ export const Header: React.FC<HeaderProps> = ({
             onClick={() => onTabChange("predictions")}
             className="flex items-center gap-1.5"
           >
-            <TrendingUp className="w-3.5 h-3.5 text-indigo-600" />
+            <TrendingUp className="w-3.5 h-3.5 text-violet-600" />
             <span>Predictions &amp; Entropy</span>
           </TabsTrigger>
 
@@ -131,10 +131,10 @@ export const Header: React.FC<HeaderProps> = ({
             onClick={() => onTabChange("circuits")}
             className="flex items-center gap-1.5"
           >
-            <Compass className="w-3.5 h-3.5 text-indigo-600" />
+            <Compass className="w-3.5 h-3.5 text-violet-600" />
             <span>Concept Circuits</span>
             {circuit && (
-              <span className="w-2 h-2 rounded-full bg-indigo-600 ml-0.5" />
+              <span className="w-2 h-2 rounded-full bg-violet-600 ml-0.5" />
             )}
           </TabsTrigger>
         </TabsList>
@@ -143,13 +143,13 @@ export const Header: React.FC<HeaderProps> = ({
         <div className="flex items-center gap-2 text-xs">
           {/* Active circuit chip in header */}
           {circuit && (
-            <Badge variant="outline" className="flex items-center gap-1.5 bg-indigo-50 border-indigo-200 text-indigo-700 py-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-indigo-600" />
+            <Badge variant="outline" className="flex items-center gap-1.5 bg-violet-50 border-violet-200 text-violet-700 py-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-violet-600" />
               <span>{circuit.data.name}</span>
               <button
                 id="clear-circuit"
                 onClick={onClearCircuit}
-                className="hover:text-indigo-900 transition-colors ml-1 cursor-pointer"
+                className="hover:text-violet-900 transition-colors ml-1 cursor-pointer"
                 title="Clear circuit filter"
                 aria-label="Clear active circuit"
               >
@@ -214,7 +214,7 @@ export const Header: React.FC<HeaderProps> = ({
 
       {/* Primary Prompt Command Bar */}
       <div className="px-8 pb-4 pt-2 flex items-center gap-4 max-[1100px]:px-5">
-        <div className="flex-1 h-12 flex items-center gap-3 bg-slate-50 border border-slate-200 rounded-xl px-4 py-1 focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-500/20 focus-within:bg-white transition-colors shadow-2xs">
+        <div className="flex-1 h-12 flex items-center gap-3 bg-slate-50 border border-slate-200 rounded-xl px-4 py-1 focus-within:border-violet-500 focus-within:ring-2 focus-within:ring-violet-500/20 focus-within:bg-white transition-colors shadow-2xs">
           <input
             id="input-text"
             type="text"
@@ -263,7 +263,7 @@ export const Header: React.FC<HeaderProps> = ({
                     }}
                   >
                     <span className="text-sm">{p.icon}</span>
-                    <span className="truncate group-hover:text-indigo-600 font-medium transition-colors">{p.label}</span>
+                    <span className="truncate group-hover:text-violet-600 font-medium transition-colors">{p.label}</span>
                   </button>
                 ))}
               </div>
@@ -283,7 +283,7 @@ export const Header: React.FC<HeaderProps> = ({
           <div 
             onClick={() => setLive(!live)}
             className={`w-7 h-4 flex items-center rounded-full p-0.5 transition-colors duration-200 ease-in-out ${
-              live ? "bg-indigo-600 justify-end" : "bg-slate-200 justify-start"
+              live ? "bg-violet-600 justify-end" : "bg-slate-200 justify-start"
             }`}
           >
             <div className="w-3 h-3 rounded-full bg-white shadow-xs" />
@@ -309,7 +309,7 @@ export const Header: React.FC<HeaderProps> = ({
             <>
               <Play className="w-3.5 h-3.5 fill-current" />
               <span>Analyze</span>
-              <kbd className="text-[10px] font-mono opacity-80 bg-indigo-700/60 px-1.5 py-0.5 rounded ml-0.5">↵</kbd>
+              <kbd className="text-[10px] font-mono opacity-80 bg-violet-700/60 px-1.5 py-0.5 rounded ml-0.5">↵</kbd>
             </>
           )}
         </Button>

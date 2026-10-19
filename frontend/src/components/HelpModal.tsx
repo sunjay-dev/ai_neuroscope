@@ -19,7 +19,7 @@ export const HelpModal: React.FC<HelpModalProps> = ({ isOpen, onClose }) => {
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4.5 border-b border-slate-200 bg-slate-50/70">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-indigo-50 border border-indigo-200 flex items-center justify-center text-indigo-600 shadow-2xs">
+            <div className="w-9 h-9 rounded-xl bg-violet-50 border border-violet-200 flex items-center justify-center text-violet-600 shadow-2xs">
               <HelpCircle className="w-5 h-5" />
             </div>
             <div>
@@ -37,7 +37,7 @@ export const HelpModal: React.FC<HelpModalProps> = ({ isOpen, onClose }) => {
           {/* Section: Overview */}
           <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2 shadow-2xs">
             <div className="flex items-center gap-2 font-bold text-slate-900 text-sm">
-              <Sparkles className="w-4 h-4 text-indigo-600" />
+              <Sparkles className="w-4 h-4 text-violet-600" />
               <span>What is AI Neuroscope?</span>
             </div>
             <p className="text-slate-600 text-xs leading-relaxed">
@@ -75,7 +75,7 @@ export const HelpModal: React.FC<HelpModalProps> = ({ isOpen, onClose }) => {
             </div>
             <div className="grid grid-cols-2 gap-3.5 max-[600px]:grid-cols-1">
               <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 shadow-2xs">
-                <div className="font-mono font-bold text-indigo-700 mb-1 text-xs">σ (Standard Deviations)</div>
+                <div className="font-mono font-bold text-violet-700 mb-1 text-xs">σ (Standard Deviations)</div>
                 <p className="text-slate-600 text-xs leading-relaxed">
                   Z-scored against calibration baseline text. A value of <code className="text-slate-900 font-mono bg-white border border-slate-200 px-1 py-0.5 rounded shadow-2xs">+3.0σ</code> means this unit is firing 3 standard deviations above its typical activity.
                 </p>

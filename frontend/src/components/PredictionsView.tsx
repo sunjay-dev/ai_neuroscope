@@ -76,7 +76,7 @@ export const PredictionsView: React.FC<PredictionsViewProps> = ({
               onClick={() => onSelectToken(t)}
               className={`p-6 rounded-2xl border transition duration-200 cursor-pointer ${
                 isSelected
-                  ? "bg-indigo-50/70 border-indigo-400 ring-2 ring-indigo-400/40 shadow-md"
+                  ? "bg-violet-50/70 border-violet-400 ring-2 ring-violet-400/40 shadow-md"
                   : "bg-white border-slate-200 hover:border-slate-300 hover:shadow-md shadow-2xs"
               }`}
             >
@@ -118,7 +118,7 @@ export const PredictionsView: React.FC<PredictionsViewProps> = ({
                   </div>
                   <div className="flex items-center gap-1.5 bg-slate-100 px-3 py-1 rounded-xl border border-slate-200 text-xs text-slate-700 shadow-inner">
                     <span className="text-slate-500 font-medium font-sans">H:</span>
-                    <span className="text-indigo-700 font-extrabold">{entropy.toFixed(2)}</span>
+                    <span className="text-violet-700 font-extrabold">{entropy.toFixed(2)}</span>
                     <span className="text-[10px] text-slate-500 font-sans">bits</span>
                   </div>
                 </div>

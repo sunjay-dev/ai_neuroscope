@@ -146,9 +146,9 @@ export const TokenRow: React.FC<TokenRowProps> = ({
               data-idx={i}
               className={`group relative flex items-center gap-2 px-3 py-1.5 rounded-lg text-[13px] font-mono transition duration-150 shrink-0 border cursor-pointer ${
                 isSelected
-                  ? "bg-indigo-600 text-white font-bold border-indigo-600 shadow-xs ring-2 ring-indigo-500/30 scale-[1.02] z-10"
+                  ? "bg-violet-600 text-white font-bold border-violet-600 shadow-xs ring-2 ring-violet-500/30 scale-[1.02] z-10"
                   : isTinted
-                  ? "hover:border-indigo-400 hover:bg-slate-50"
+                  ? "hover:border-violet-400 hover:bg-slate-50"
                   : "bg-white border-slate-200 text-slate-800 hover:border-slate-300 hover:bg-slate-50 shadow-2xs"
               }`}
               style={isSelected ? undefined : inlineStyle}
@@ -156,7 +156,7 @@ export const TokenRow: React.FC<TokenRowProps> = ({
               onClick={() => onSelectToken(i)}
             >
               <span className={`text-[11px] font-medium transition-colors ${
-                isSelected ? "text-indigo-200" : "text-slate-400 group-hover:text-slate-600"
+                isSelected ? "text-violet-200" : "text-slate-400 group-hover:text-slate-600"
               }`}>
                 #{i}
               </span>
@@ -170,7 +170,7 @@ export const TokenRow: React.FC<TokenRowProps> = ({
                 />
               )}
               {isSelected && (
-                <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-indigo-600 rotate-45 shadow-2xs" />
+                <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-violet-600 rotate-45 shadow-2xs" />
               )}
             </button>
           );

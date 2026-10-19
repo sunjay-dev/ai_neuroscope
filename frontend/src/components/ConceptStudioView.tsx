@@ -51,7 +51,7 @@ export const ConceptStudioView: React.FC<ConceptStudioViewProps> = ({
       <div className="flex items-center justify-between pb-6 border-b border-slate-200 mb-10 max-w-6xl mx-auto w-full">
         <div>
           <h2 className="text-base font-bold text-slate-900 flex items-center gap-2">
-            <Compass className="w-5 h-5 text-indigo-600" />
+            <Compass className="w-5 h-5 text-violet-600" />
             <span>Concept Circuits &amp; Contrastive Probing Studio</span>
           </h2>
           <p className="text-xs text-slate-600 mt-1">
@@ -90,9 +90,9 @@ export const ConceptStudioView: React.FC<ConceptStudioViewProps> = ({
                   onSelectConcept(c.key);
                 }
               }}
-              className={`p-7 rounded-2xl border transition-colors duration-200 cursor-pointer flex flex-col justify-between focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 ${
+              className={`p-7 rounded-2xl border transition-colors duration-200 cursor-pointer flex flex-col justify-between focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:ring-offset-2 ${
                 isActive
-                  ? "bg-indigo-50/70 border-indigo-500 ring-2 ring-indigo-400 shadow-md scale-[1.01]"
+                  ? "bg-violet-50/70 border-violet-500 ring-2 ring-violet-400 shadow-md scale-[1.01]"
                   : "bg-white border-slate-200 hover:border-slate-300 hover:shadow-md shadow-2xs"
               }`}
             >
@@ -152,7 +152,7 @@ export const ConceptStudioView: React.FC<ConceptStudioViewProps> = ({
       {/* Custom Contrastive Probe Section */}
       <div className="max-w-6xl mx-auto w-full p-8 rounded-2xl bg-white border border-slate-200 shadow-sm">
         <div className="flex items-center gap-2.5 mb-2.5">
-          <Sparkles className="w-5 h-5 text-indigo-600" />
+          <Sparkles className="w-5 h-5 text-violet-600" />
           <h3 className="text-sm font-bold text-slate-900">Custom Contrastive Probe Studio</h3>
         </div>
         <p className="text-xs text-slate-600 mb-6 max-w-2xl leading-relaxed">
@@ -169,7 +169,7 @@ export const ConceptStudioView: React.FC<ConceptStudioViewProps> = ({
                 value={wordsA}
                 onChange={(e) => setWordsA(e.target.value)}
                 placeholder="doctor, surgeon, engineer, scientist, professor"
-                className="w-full h-28 p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-900 placeholder:text-slate-400 font-mono focus:outline-none focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-100 transition-colors shadow-inner resize-none"
+                className="w-full h-28 p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-900 placeholder:text-slate-400 font-mono focus:outline-none focus:border-violet-500 focus:bg-white focus:ring-2 focus:ring-violet-100 transition-colors shadow-inner resize-none"
               />
             </div>
             <div className="space-y-2">
@@ -180,7 +180,7 @@ export const ConceptStudioView: React.FC<ConceptStudioViewProps> = ({
                 value={wordsB}
                 onChange={(e) => setWordsB(e.target.value)}
                 placeholder="table, chair, pencil, stone, window, clock"
-                className="w-full h-28 p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-900 placeholder:text-slate-400 font-mono focus:outline-none focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-100 transition-colors shadow-inner resize-none"
+                className="w-full h-28 p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-900 placeholder:text-slate-400 font-mono focus:outline-none focus:border-violet-500 focus:bg-white focus:ring-2 focus:ring-violet-100 transition-colors shadow-inner resize-none"
               />
             </div>
           </div>

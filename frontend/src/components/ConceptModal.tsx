@@ -57,7 +57,7 @@ export const ConceptModal: React.FC<ConceptModalProps> = ({
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-white/[0.08] bg-white/[0.02]">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400">
+            <div className="w-8 h-8 rounded-lg bg-violet-500/10 border border-violet-500/20 flex items-center justify-center text-violet-400">
               <Compass className="w-4 h-4" />
             </div>
             <div>
@@ -91,7 +91,7 @@ export const ConceptModal: React.FC<ConceptModalProps> = ({
             type="button"
             className={`py-2.5 px-3 text-xs font-medium border-b-2 transition-colors cursor-pointer ${
               activeTab === "catalog"
-                ? "border-indigo-500 text-indigo-300 font-semibold"
+                ? "border-violet-500 text-violet-300 font-semibold"
                 : "border-transparent text-slate-400 hover:text-slate-200"
             }`}
             onClick={() => setActiveTab("catalog")}
@@ -102,7 +102,7 @@ export const ConceptModal: React.FC<ConceptModalProps> = ({
             type="button"
             className={`py-2.5 px-3 text-xs font-medium border-b-2 transition-colors cursor-pointer ${
               activeTab === "custom"
-                ? "border-indigo-500 text-indigo-300 font-semibold"
+                ? "border-violet-500 text-violet-300 font-semibold"
                 : "border-transparent text-slate-400 hover:text-slate-200"
             }`}
             onClick={() => setActiveTab("custom")}
@@ -153,7 +153,7 @@ export const ConceptModal: React.FC<ConceptModalProps> = ({
                           <span className="text-xs font-semibold text-slate-100">{c.name}</span>
                         </div>
                         {isActive && (
-                          <span className="text-[10px] font-mono font-medium px-1.5 py-0.2 rounded bg-indigo-500/20 text-indigo-300">
+                          <span className="text-[10px] font-mono font-medium px-1.5 py-0.2 rounded bg-violet-500/20 text-violet-300">
                             Active
                           </span>
                         )}
@@ -196,7 +196,7 @@ export const ConceptModal: React.FC<ConceptModalProps> = ({
                     placeholder="e.g. cat, dog, horse, lion"
                     value={wordsA}
                     onChange={(e) => setWordsA(e.target.value)}
-                    className="w-full bg-black/40 border border-white/[0.08] rounded-md px-3 py-2 text-xs text-slate-100 placeholder:text-slate-500 focus:border-indigo-500/80 focus:outline-none transition-colors"
+                    className="w-full bg-black/40 border border-white/[0.08] rounded-md px-3 py-2 text-xs text-slate-100 placeholder:text-slate-500 focus:border-violet-500/80 focus:outline-none transition-colors"
                   />
                   <span className="text-[10px] text-slate-500">Comma-separated tokens for the positive feature</span>
                 </div>
@@ -211,7 +211,7 @@ export const ConceptModal: React.FC<ConceptModalProps> = ({
                     placeholder="e.g. car, bus, train, truck"
                     value={wordsB}
                     onChange={(e) => setWordsB(e.target.value)}
-                    className="w-full bg-black/40 border border-white/[0.08] rounded-md px-3 py-2 text-xs text-slate-100 placeholder:text-slate-500 focus:border-indigo-500/80 focus:outline-none transition-colors"
+                    className="w-full bg-black/40 border border-white/[0.08] rounded-md px-3 py-2 text-xs text-slate-100 placeholder:text-slate-500 focus:border-violet-500/80 focus:outline-none transition-colors"
                   />
                   <span className="text-[10px] text-slate-500">Comma-separated tokens for the contrast baseline</span>
                 </div>

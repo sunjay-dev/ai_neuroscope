@@ -87,7 +87,7 @@ export const RightPanel: React.FC<RightPanelProps> = ({
       >
         <div className="flex items-center justify-between pb-5 border-b border-slate-200">
           <div className="flex items-center gap-2.5 text-xs font-bold uppercase tracking-wider text-slate-800">
-            <span className="flex items-center justify-center w-5 h-5 rounded-full bg-indigo-50 border border-indigo-200 text-xs text-indigo-600 font-mono font-bold">
+            <span className="flex items-center justify-center w-5 h-5 rounded-full bg-violet-50 border border-violet-200 text-xs text-violet-600 font-mono font-bold">
               3
             </span>
             <span>Unit Inspector</span>
@@ -100,7 +100,7 @@ export const RightPanel: React.FC<RightPanelProps> = ({
         </div>
         <div id="details" className="my-auto flex flex-col items-center justify-center text-center p-8 space-y-4">
           <div className="w-14 h-14 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-center text-slate-400 shadow-2xs">
-            <Compass className="w-7 h-7 text-indigo-500 animate-pulse" />
+            <Compass className="w-7 h-7 text-violet-500 animate-pulse" />
           </div>
           <div className="space-y-1.5">
             <h3 className="text-sm font-semibold text-slate-900">No Unit Selected</h3>
@@ -138,7 +138,7 @@ export const RightPanel: React.FC<RightPanelProps> = ({
                 key={h}
                 type="button"
                 className={`h-7 rounded-md cursor-pointer text-[10px] font-mono flex items-center justify-center border transition-colors ${
-                  h === sel.index ? "border-indigo-600 ring-2 ring-indigo-500/30 font-bold scale-105 z-10 shadow-xs" : "border-slate-200 hover:border-slate-400"
+                  h === sel.index ? "border-violet-600 ring-2 ring-violet-500/30 font-bold scale-105 z-10 shadow-xs" : "border-slate-200 hover:border-slate-400"
                 }`}
                 title={`Head ${h}: ${(v >= 0 ? "+" : "") + v.toFixed(2)}σ`}
                 style={{
@@ -170,7 +170,7 @@ export const RightPanel: React.FC<RightPanelProps> = ({
                 type="button"
                 className={`px-2.5 py-1 rounded-md text-xs font-mono border transition-colors cursor-pointer ${
                   n.neuron === sel.index
-                    ? "bg-indigo-50 text-indigo-700 border-indigo-300 font-bold shadow-2xs"
+                    ? "bg-violet-50 text-violet-700 border-violet-300 font-bold shadow-2xs"
                     : "bg-white border-slate-200 text-slate-700 hover:text-slate-900 hover:border-slate-300"
                 }`}
                 onClick={() =>
@@ -253,7 +253,7 @@ export const RightPanel: React.FC<RightPanelProps> = ({
             <div>
               <h2 className="text-sm font-bold text-slate-900 flex items-center gap-2">
                 {sel.kind === "head" ? (
-                  <Network className="w-4 h-4 text-indigo-600 shrink-0" />
+                  <Network className="w-4 h-4 text-violet-600 shrink-0" />
                 ) : (
                   <Cpu className="w-4 h-4 text-purple-600 shrink-0" />
                 )}
@@ -264,7 +264,7 @@ export const RightPanel: React.FC<RightPanelProps> = ({
               </p>
             </div>
             <div className="text-right">
-              <div id="act-num" className="text-lg font-mono font-black text-indigo-600">
+              <div id="act-num" className="text-lg font-mono font-black text-violet-600">
                 {z === null ? "—" : `${z >= 0 ? "+" : ""}${z.toFixed(2)}σ`}
               </div>
               <span className="text-[10px] font-mono text-slate-400 uppercase font-semibold">Activation</span>
@@ -305,7 +305,7 @@ export const RightPanel: React.FC<RightPanelProps> = ({
               }}
             >
               <div className="font-bold text-slate-900 flex items-center gap-1.5 mb-1">
-                <Sparkles className="w-3.5 h-3.5 text-indigo-600 shrink-0" />
+                <Sparkles className="w-3.5 h-3.5 text-violet-600 shrink-0" />
                 <span>{r.concept.name} Detected → {r.concept.side} ({r.concept.z.toFixed(1)}σ)</span>
               </div>
               <p className="text-slate-600 text-xs">
@@ -343,7 +343,7 @@ export const RightPanel: React.FC<RightPanelProps> = ({
             <div id="unit-async">
               {loadingUnit ? (
                 <div className="p-6 rounded-xl bg-slate-50 border border-slate-200 text-center text-xs text-slate-500 space-y-2.5">
-                  <div className="w-5 h-5 rounded-full border-2 border-indigo-600/30 border-t-indigo-600 animate-spin mx-auto" />
+                  <div className="w-5 h-5 rounded-full border-2 border-violet-600/30 border-t-violet-600 animate-spin mx-auto" />
                   <span>Loading attention flow…</span>
                 </div>
               ) : unitError ? (
@@ -408,7 +408,7 @@ export const RightPanel: React.FC<RightPanelProps> = ({
                         const isCurrent = j === sel.t;
                         return (
                           <div key={j} className="flex items-center gap-2.5 text-xs font-mono">
-                            <span className={`min-w-[75px] max-w-[95px] truncate ${isCurrent ? "text-indigo-600 font-bold" : "text-slate-600"}`}>
+                            <span className={`min-w-[75px] max-w-[95px] truncate ${isCurrent ? "text-violet-600 font-bold" : "text-slate-600"}`}>
                               "{showTok(a.tokens[j])}"
                             </span>
                             <div className="flex-1 h-2 bg-slate-200 rounded-full overflow-hidden">
@@ -416,11 +416,11 @@ export const RightPanel: React.FC<RightPanelProps> = ({
                                 className="h-full rounded-full transition-[width] duration-300"
                                 style={{
                                   width: `${Math.max(3, Math.min(100, pct)).toFixed(0)}%`,
-                                  backgroundColor: isCurrent ? "#4f46e5" : "#94a3b8",
+                                  backgroundColor: isCurrent ? "#7c3aed" : "#94a3b8",
                                 }}
                               />
                             </div>
-                            <span className={`min-w-[40px] text-right font-bold ${isCurrent ? "text-indigo-600" : "text-slate-500"}`}>
+                            <span className={`min-w-[40px] text-right font-bold ${isCurrent ? "text-violet-600" : "text-slate-500"}`}>
                               {v.toFixed(1)}σ
                             </span>
                           </div>
@@ -449,7 +449,7 @@ export const RightPanel: React.FC<RightPanelProps> = ({
                       if (label) {
                         return (
                           <div>
-                            <span className="font-bold text-indigo-600 text-sm">
+                            <span className="font-bold text-violet-600 text-sm">
                               {label.name} → {label.side}
                             </span>
                             <p className="text-slate-600 mt-1 text-xs leading-relaxed">
@@ -506,7 +506,7 @@ export const RightPanel: React.FC<RightPanelProps> = ({
                           className="px-2.5 py-1 rounded-md bg-white border border-slate-200 text-xs font-mono text-slate-800 shadow-2xs"
                         >
                           <span className="font-bold">{w.word}</span>{" "}
-                          <span className="text-indigo-600 font-semibold">{w.z.toFixed(1)}σ</span>
+                          <span className="text-violet-600 font-semibold">{w.z.toFixed(1)}σ</span>
                         </span>
                       ))}
                     </div>

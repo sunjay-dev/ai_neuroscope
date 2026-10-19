@@ -209,7 +209,7 @@ export const NetworkSvg: React.FC<NetworkSvgProps> = ({
                   x={X0 + l * COL_W}
                   y={26}
                   textAnchor="middle"
-                  fill={isSelL ? "#4338ca" : "#64748b"}
+                  fill={isSelL ? "#6d28d9" : "#64748b"}
                   fontSize={12.5}
                   fontWeight={isSelL ? 800 : 700}
                   fontFamily="'JetBrains Mono', monospace"
@@ -220,7 +220,7 @@ export const NetworkSvg: React.FC<NetworkSvgProps> = ({
                   x={X0 + l * COL_W}
                   y={38}
                   textAnchor="middle"
-                  fill={isSelL ? "#6366f1" : "#94a3b8"}
+                  fill={isSelL ? "#8b5cf6" : "#94a3b8"}
                   fontSize={9.5}
                   fontWeight={600}
                   fontFamily="'Inter', sans-serif"
@@ -301,7 +301,7 @@ export const NetworkSvg: React.FC<NetworkSvgProps> = ({
                         key={`attn-${l}-${t}-${srcT}`}
                         d={`M ${x1} ${y1} C ${x1 + dx} ${y1}, ${x2 - dx} ${y2}, ${x2} ${y2}`}
                         fill="none"
-                        stroke="#4f46e5"
+                        stroke="#7c3aed"
                         strokeWidth={Math.max(1.5, w * 5)}
                         strokeOpacity={Math.min(0.9, w + 0.2)}
                         strokeLinecap="round"
@@ -430,14 +430,14 @@ export const NetworkSvg: React.FC<NetworkSvgProps> = ({
                           cy={cy}
                           r={15}
                           fill="rgba(79, 70, 229, 0.12)"
-                          stroke="#4f46e5"
+                          stroke="#7c3aed"
                           strokeWidth={2}
                         />
                         <circle
                           cx={cx}
                           cy={cy}
                           r={6}
-                          fill="#4f46e5"
+                          fill="#7c3aed"
                           stroke="#fff"
                           strokeWidth={1.5}
                         />
@@ -486,7 +486,7 @@ export const NetworkSvg: React.FC<NetworkSvgProps> = ({
           <span className="font-bold text-slate-900" id="tt-title">
             {tooltip.title}
           </span>
-          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-indigo-50 text-indigo-700 uppercase font-semibold border border-indigo-200">
+          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-violet-50 text-violet-700 uppercase font-semibold border border-violet-200">
             {tooltip.kind}
           </span>
         </div>
@@ -498,7 +498,7 @@ export const NetworkSvg: React.FC<NetworkSvgProps> = ({
 
         <div className="flex items-center justify-between text-slate-500 text-xs" id="tt-activation">
           <span>Activation:</span>
-          <span className="text-indigo-600 font-mono font-bold">{tooltip.activation}</span>
+          <span className="text-violet-600 font-mono font-bold">{tooltip.activation}</span>
         </div>
 
         <div
