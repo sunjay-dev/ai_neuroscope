@@ -255,7 +255,7 @@ export const CenterPanel: React.FC<CenterPanelProps> = ({
         <div className="flex items-center gap-4 text-xs font-mono text-slate-500 shrink-0">
           <div className="flex items-center gap-2 max-[800px]:hidden">
             <span>Scale:</span>
-            <div className="w-16 h-2 rounded-full bg-gradient-to-r from-slate-200 via-indigo-400 via-purple-400 to-rose-500 border border-slate-200" />
+            <div className="w-16 h-2 rounded-full bg-primary border border-slate-200" />
             <span id="scale-max" className="text-slate-700 font-semibold">{scaleMaxLabel}</span>
           </div>
           <span id="status-nodes" className="bg-slate-100 text-slate-700 px-2.5 py-0.5 rounded-md border border-slate-200 shadow-2xs font-medium">

@@ -165,10 +165,6 @@ export const NetworkSvg: React.FC<NetworkSvgProps> = ({
               <feMergeNode in="SourceGraphic" />
             </feMerge>
           </filter>
-          <linearGradient id="flow-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="#818cf8" stopOpacity="0.8" />
-            <stop offset="100%" stopColor="#4f46e5" stopOpacity="1" />
-          </linearGradient>
         </defs>
 
         {/* Layer Column Guide Panels */}

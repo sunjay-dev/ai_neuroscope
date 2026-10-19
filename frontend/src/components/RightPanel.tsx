@@ -276,7 +276,7 @@ export const RightPanel: React.FC<RightPanelProps> = ({
             <div className="h-2 bg-slate-200 rounded-full overflow-hidden">
               <div
                 id="act-fill"
-                className="h-full bg-gradient-to-r from-indigo-500 to-rose-500 rounded-full transition-[width] duration-300"
+                className="h-full bg-primary rounded-full transition-[width] duration-300"
                 style={{
                   width: `${z === null ? 0 : Math.max(0, Math.min(z / 8, 1)) * 100}%`,
                 }}

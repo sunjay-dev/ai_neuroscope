@@ -34,6 +34,13 @@
   --text-dim: #94a3b8;
 }
 
+/* THE single accent color for the app. Use `bg-primary` / `text-primary`
+   instead of gradients — one anchor hue, no purple-to-pink fills. */
+@theme inline {
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+}
+
 /* NOTE: no global * { margin: 0; padding: 0 } reset here — Tailwind v4's
    preflight (in @layer base) already resets margins/padding. An unlayered
    `*` reset would beat every @layer utilities rule (p-*, m-*, space-*)
