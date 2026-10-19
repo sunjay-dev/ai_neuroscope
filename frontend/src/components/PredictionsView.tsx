@@ -74,7 +74,7 @@ export const PredictionsView: React.FC<PredictionsViewProps> = ({
             <div
               key={t}
               onClick={() => onSelectToken(t)}
-              className={`p-6 rounded-2xl border transition-all duration-200 cursor-pointer ${
+              className={`p-6 rounded-2xl border transition duration-200 cursor-pointer ${
                 isSelected
                   ? "bg-indigo-50/70 border-indigo-400 ring-2 ring-indigo-400/40 shadow-md"
                   : "bg-white border-slate-200 hover:border-slate-300 hover:shadow-md shadow-2xs"
@@ -138,7 +138,7 @@ export const PredictionsView: React.FC<PredictionsViewProps> = ({
                     </div>
                     <div className="h-2 bg-slate-100 rounded-full overflow-hidden border border-slate-200">
                       <div
-                        className="h-full rounded-full transition-all duration-300"
+                        className="h-full rounded-full transition-[width] duration-300"
                         style={{
                           width: `${Math.max(3, p.p * 100)}%`,
                           backgroundColor: BAR_COLORS[idx % BAR_COLORS.length],

@@ -127,7 +127,7 @@ export const ConceptModal: React.FC<ConceptModalProps> = ({
                     <button
                       key={c.key}
                       type="button"
-                      className={`flex flex-col text-left p-3 rounded-lg border transition-all cursor-pointer ${
+                      className={`flex flex-col text-left p-3 rounded-lg border transition-colors cursor-pointer ${
                         isActive
                           ? "bg-white/[0.06] shadow-md ring-1"
                           : "bg-white/[0.02] border-white/[0.06] hover:bg-white/[0.05] hover:border-white/[0.15]"

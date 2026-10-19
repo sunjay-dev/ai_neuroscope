@@ -144,7 +144,7 @@ export const TokenRow: React.FC<TokenRowProps> = ({
               key={i}
               type="button"
               data-idx={i}
-              className={`group relative flex items-center gap-2 px-3 py-1.5 rounded-lg text-[13px] font-mono transition-all duration-150 shrink-0 border cursor-pointer ${
+              className={`group relative flex items-center gap-2 px-3 py-1.5 rounded-lg text-[13px] font-mono transition duration-150 shrink-0 border cursor-pointer ${
                 isSelected
                   ? "bg-indigo-600 text-white font-bold border-indigo-600 shadow-xs ring-2 ring-indigo-500/30 scale-[1.02] z-10"
                   : isTinted

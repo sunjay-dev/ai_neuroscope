@@ -81,7 +81,7 @@ export const CenterPanel: React.FC<CenterPanelProps> = ({
               type="button"
               data-view="head"
               onClick={() => setView("head")}
-              className={`flex items-center gap-2 text-xs font-semibold px-4 py-2 rounded-lg transition-all cursor-pointer ${
+              className={`flex items-center gap-2 text-xs font-semibold px-4 py-2 rounded-lg transition-colors cursor-pointer ${
                 view === "head"
                   ? "bg-white text-indigo-600 shadow-xs border border-slate-200/60 font-bold"
                   : "text-slate-600 hover:text-slate-900"
@@ -94,7 +94,7 @@ export const CenterPanel: React.FC<CenterPanelProps> = ({
               type="button"
               data-view="neuron"
               onClick={() => setView("neuron")}
-              className={`flex items-center gap-2 text-xs font-semibold px-4 py-2 rounded-lg transition-all cursor-pointer ${
+              className={`flex items-center gap-2 text-xs font-semibold px-4 py-2 rounded-lg transition-colors cursor-pointer ${
                 view === "neuron"
                   ? "bg-white text-indigo-600 shadow-xs border border-slate-200/60 font-bold"
                   : "text-slate-600 hover:text-slate-900"
@@ -234,7 +234,7 @@ export const CenterPanel: React.FC<CenterPanelProps> = ({
         <div className="flex items-center gap-2.5 truncate">
           <div
             id="live-dot"
-            className={`w-2.5 h-2.5 rounded-full shrink-0 transition-all duration-300 ${
+            className={`w-2.5 h-2.5 rounded-full shrink-0 transition-colors duration-300 ${
               busy 
                 ? "bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.6)] pulse-busy" 
                 : live 

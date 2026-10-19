@@ -79,8 +79,18 @@ export const ConceptStudioView: React.FC<ConceptStudioViewProps> = ({
           return (
             <div
               key={c.key}
+              role="button"
+              tabIndex={0}
+              aria-pressed={isActive}
               onClick={() => onSelectConcept(c.key)}
-              className={`p-7 rounded-2xl border transition-all duration-200 cursor-pointer flex flex-col justify-between ${
+              onKeyDown={(e) => {
+                if (e.target !== e.currentTarget) return;
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  onSelectConcept(c.key);
+                }
+              }}
+              className={`p-7 rounded-2xl border transition-colors duration-200 cursor-pointer flex flex-col justify-between focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 ${
                 isActive
                   ? "bg-indigo-50/70 border-indigo-500 ring-2 ring-indigo-400 shadow-md scale-[1.01]"
                   : "bg-white border-slate-200 hover:border-slate-300 hover:shadow-md shadow-2xs"
@@ -159,7 +169,7 @@ export const ConceptStudioView: React.FC<ConceptStudioViewProps> = ({
                 value={wordsA}
                 onChange={(e) => setWordsA(e.target.value)}
                 placeholder="doctor, surgeon, engineer, scientist, professor"
-                className="w-full h-28 p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-900 placeholder:text-slate-400 font-mono focus:outline-none focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-100 transition-all shadow-inner resize-none"
+                className="w-full h-28 p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-900 placeholder:text-slate-400 font-mono focus:outline-none focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-100 transition-colors shadow-inner resize-none"
               />
             </div>
             <div className="space-y-2">
@@ -170,7 +180,7 @@ export const ConceptStudioView: React.FC<ConceptStudioViewProps> = ({
                 value={wordsB}
                 onChange={(e) => setWordsB(e.target.value)}
                 placeholder="table, chair, pencil, stone, window, clock"
-                className="w-full h-28 p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-900 placeholder:text-slate-400 font-mono focus:outline-none focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-100 transition-all shadow-inner resize-none"
+                className="w-full h-28 p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-900 placeholder:text-slate-400 font-mono focus:outline-none focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-100 transition-colors shadow-inner resize-none"
               />
             </div>
           </div>

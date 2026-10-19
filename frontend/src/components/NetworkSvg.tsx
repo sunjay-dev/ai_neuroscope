@@ -251,7 +251,7 @@ export const NetworkSvg: React.FC<NetworkSvgProps> = ({
                   fontSize={isSel ? 14.5 : 13}
                   fontWeight={isSel ? 800 : 500}
                   fontFamily="'JetBrains Mono', monospace"
-                  className="cursor-pointer transition-all duration-150"
+                  className="cursor-pointer transition duration-150"
                   onClick={() => onSelectToken(t)}
                 >
                   {showTok(tok)}
@@ -481,7 +481,7 @@ export const NetworkSvg: React.FC<NetworkSvgProps> = ({
       {/* Floating Precision Tooltip */}
       <div
         id="neuron-tooltip"
-        className={`absolute bg-white/95 backdrop-blur-md border border-slate-200 rounded-xl p-3.5 text-xs pointer-events-none transition-all duration-150 z-20 min-w-[220px] max-w-[290px] shadow-xl text-slate-800 space-y-2 ${
+        className={`absolute bg-white/95 backdrop-blur-md border border-slate-200 rounded-xl p-3.5 text-xs pointer-events-none transition-opacity duration-150 z-20 min-w-[220px] max-w-[290px] shadow-xl text-slate-800 space-y-2 ${
           tooltip.visible ? "opacity-100 scale-100" : "opacity-0 scale-95"
         }`}
         style={{ left: `${tooltip.x}px`, top: `${tooltip.y}px` }}
