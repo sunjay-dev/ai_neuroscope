@@ -196,7 +196,7 @@ export const NetworkSvg: React.FC<NetworkSvgProps> = ({
             textAnchor="end"
             fill="#94a3b8"
             fontSize={11}
-            fontFamily="'JetBrains Mono', monospace"
+            fontFamily="'Inter', sans-serif"
             fontWeight={600}
           >
             TOKENS &darr;
@@ -212,7 +212,7 @@ export const NetworkSvg: React.FC<NetworkSvgProps> = ({
                   fill={isSelL ? "#6d28d9" : "#64748b"}
                   fontSize={12.5}
                   fontWeight={isSelL ? 800 : 700}
-                  fontFamily="'JetBrains Mono', monospace"
+                  fontFamily="'Inter', sans-serif"
                 >
                   L{l}
                 </text>
@@ -246,7 +246,7 @@ export const NetworkSvg: React.FC<NetworkSvgProps> = ({
                   fill={isSel ? "#1e1b4b" : "#475569"}
                   fontSize={isSel ? 14.5 : 13}
                   fontWeight={isSel ? 800 : 500}
-                  fontFamily="'JetBrains Mono', monospace"
+                  fontFamily="'Inter', sans-serif"
                   className="cursor-pointer transition duration-150"
                   onClick={() => onSelectToken(t)}
                 >
@@ -486,19 +486,19 @@ export const NetworkSvg: React.FC<NetworkSvgProps> = ({
           <span className="font-bold text-slate-900" id="tt-title">
             {tooltip.title}
           </span>
-          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-violet-50 text-violet-700 uppercase font-semibold border border-violet-200">
+          <span className="text-[10px] px-2 py-0.5 rounded bg-violet-50 text-violet-700 uppercase font-semibold border border-violet-200">
             {tooltip.kind}
           </span>
         </div>
 
         <div className="flex items-center justify-between text-slate-500 text-xs" id="tt-token">
           <span>Token Context:</span>
-          <span className="text-slate-800 font-mono font-bold">{tooltip.token}</span>
+          <span className="text-slate-800 font-bold">{tooltip.token}</span>
         </div>
 
         <div className="flex items-center justify-between text-slate-500 text-xs" id="tt-activation">
           <span>Activation:</span>
-          <span className="text-violet-600 font-mono font-bold">{tooltip.activation}</span>
+          <span className="text-violet-600 font-bold">{tooltip.activation}</span>
         </div>
 
         <div

@@ -71,13 +71,13 @@ export const HeadMatrixView: React.FC<HeadMatrixViewProps> = ({
               <Network className="w-5 h-5 text-violet-600" />
               <span>144 Attention Heads Matrix</span>
             </h2>
-            <Badge variant="outline" className="bg-violet-50 text-violet-700 border-violet-200 text-xs font-mono">
+            <Badge variant="outline" className="bg-violet-50 text-violet-700 border-violet-200 text-xs">
               12 Layers × 12 Heads
             </Badge>
           </div>
           <p className="text-xs text-slate-600 mt-1">
             Inspecting activation write norms on token{" "}
-            <span className="text-slate-900 font-mono font-bold bg-white border border-slate-200 px-2 py-0.5 rounded-md shadow-2xs">
+            <span className="text-slate-900 font-bold bg-white border border-slate-200 px-2 py-0.5 rounded-md shadow-2xs">
               "{currentToken}"
             </span>{" "}
             (position #{currentT}). Click any head to inspect its attention pattern.
@@ -85,7 +85,7 @@ export const HeadMatrixView: React.FC<HeadMatrixViewProps> = ({
         </div>
 
         {/* Quick Stats Banner Cards */}
-        <div className="flex items-center gap-3 text-xs font-mono">
+        <div className="flex items-center gap-3 text-xs">
           <Card className="flex flex-col items-center px-3.5 py-1.5 bg-white border-slate-200 shadow-2xs">
             <span className="text-violet-600 font-bold text-sm">{countHighZ} / 144</span>
             <span className="text-[10px] text-slate-500 font-sans">Heads &gt;2.0σ</span>
@@ -106,7 +106,7 @@ export const HeadMatrixView: React.FC<HeadMatrixViewProps> = ({
       {/* 12x12 Grid Container */}
       <div className="flex-1 flex flex-col max-w-6xl mx-auto w-full min-w-[820px]">
         {/* Column Headers: Head 0 to Head 11 */}
-        <div className="grid grid-cols-[64px_repeat(12,1fr)] gap-2.5 mb-2.5 text-center text-xs font-mono text-slate-500">
+        <div className="grid grid-cols-[64px_repeat(12,1fr)] gap-2.5 mb-2.5 text-center text-xs text-slate-500">
           <div className="text-right pr-3 self-center font-bold text-slate-500">Layer</div>
           {Array.from({ length: numHeads }).map((_, h) => (
             <div key={h} className="py-2 rounded-lg bg-white border border-slate-200 text-slate-700 font-bold shadow-2xs">
@@ -128,7 +128,7 @@ export const HeadMatrixView: React.FC<HeadMatrixViewProps> = ({
                 }`}
               >
                 {/* Row Header */}
-                <div className="flex items-center justify-end pr-3.5 text-xs font-mono font-bold text-slate-500">
+                <div className="flex items-center justify-end pr-3.5 text-xs font-bold text-slate-500">
                   <span className={isSelectedLayer ? "text-violet-700 text-sm font-black" : ""}>
                     L{l}
                   </span>
@@ -175,7 +175,7 @@ export const HeadMatrixView: React.FC<HeadMatrixViewProps> = ({
                     >
                       {/* Top row: Head title & sink indicator */}
                       <div className="flex items-center justify-between w-full">
-                        <span className={`text-[11px] font-mono font-bold leading-none ${
+                        <span className={`text-[11px] font-bold leading-none ${
                           isHighContrastWhiteText ? "text-white" : "text-slate-800"
                         }`}>
                           H{h}
@@ -193,7 +193,7 @@ export const HeadMatrixView: React.FC<HeadMatrixViewProps> = ({
 
                       {/* Middle: Activation value */}
                       <div className="text-right">
-                        <span className={`text-xs font-mono font-bold ${
+                        <span className={`text-xs font-bold tabular-nums ${
                           isHighContrastWhiteText ? "text-white" : z >= 1.5 ? "text-violet-700" : "text-slate-500"
                         }`}>
                           {z >= 0 ? "+" : ""}{z.toFixed(1)}σ

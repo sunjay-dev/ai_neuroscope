@@ -117,7 +117,7 @@ export const CenterPanel: React.FC<CenterPanelProps> = ({
             >
               <Compass className="w-3.5 h-3.5" />
               <span className="font-semibold">{circuit.data.name} Circuit Active</span>
-              <span className="text-[11px] opacity-80 font-mono">
+              <span className="text-[11px] opacity-80">
                 ({circuit.data.heads.length}H · {circuit.data.neurons.length}N)
               </span>
               <button
@@ -132,13 +132,13 @@ export const CenterPanel: React.FC<CenterPanelProps> = ({
 
           {/* Right: Token Context Indicator */}
           <div className="flex items-center gap-2.5 text-xs">
-            <div className="flex items-center gap-2 bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-xl text-xs font-mono shadow-2xs">
+            <div className="flex items-center gap-2 bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-xl text-xs shadow-2xs">
               <span className="text-slate-500">Token:</span>
               <span id="token-idx" className="text-violet-600 font-bold">
                 {analysis && sel ? `${sel.t + 1} / ${analysis.tokens.length}` : "—"}
               </span>
               {currentTokenText && (
-                <span className="text-slate-900 bg-white border border-slate-200 px-1.5 py-0.5 rounded-md font-mono font-bold truncate max-w-[110px] shadow-2xs">
+                <span className="text-slate-900 bg-white border border-slate-200 px-1.5 py-0.5 rounded-md font-bold truncate max-w-[110px] shadow-2xs">
                   "{currentTokenText}"
                 </span>
               )}
@@ -252,7 +252,7 @@ export const CenterPanel: React.FC<CenterPanelProps> = ({
         </div>
 
         {/* Right side: nodes and scale max */}
-        <div className="flex items-center gap-4 text-xs font-mono text-slate-500 shrink-0">
+        <div className="flex items-center gap-4 text-xs text-slate-500 shrink-0">
           <div className="flex items-center gap-2 max-[800px]:hidden">
             <span>Scale:</span>
             <div className="w-16 h-2 rounded-full bg-primary border border-slate-200" />

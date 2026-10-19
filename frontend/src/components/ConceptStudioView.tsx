@@ -106,14 +106,14 @@ export const ConceptStudioView: React.FC<ConceptStudioViewProps> = ({
                     <h3 className="text-sm font-bold text-slate-900">{c.name}</h3>
                   </div>
                   {isActive && (
-                    <Badge variant="outline" className="flex items-center gap-1 text-xs font-mono font-bold text-sky-700 bg-sky-50 border-sky-300">
+                    <Badge variant="outline" className="flex items-center gap-1 text-xs font-bold text-sky-700 bg-sky-50 border-sky-300">
                       <Check className="w-3 h-3" />
                       Active Filter
                     </Badge>
                   )}
                 </div>
 
-                <div className="text-xs font-mono text-slate-500 mb-4">
+                <div className="text-xs text-slate-500 mb-4">
                   {c.binary ? (
                     <span>
                       {c.side_a} <span className="text-slate-400">↔</span> {c.side_b}
@@ -129,7 +129,7 @@ export const ConceptStudioView: React.FC<ConceptStudioViewProps> = ({
                   {c.examples.map((ex, i) => (
                     <span
                       key={i}
-                      className="text-xs font-mono px-2 py-1 rounded-md bg-slate-50 border border-slate-200 text-slate-700 shadow-2xs"
+                      className="text-xs px-2 py-1 rounded-md bg-slate-50 border border-slate-200 text-slate-700 shadow-2xs"
                     >
                       {ex}
                     </span>
@@ -169,7 +169,7 @@ export const ConceptStudioView: React.FC<ConceptStudioViewProps> = ({
                 value={wordsA}
                 onChange={(e) => setWordsA(e.target.value)}
                 placeholder="doctor, surgeon, engineer, scientist, professor"
-                className="w-full h-28 p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-900 placeholder:text-slate-400 font-mono focus:outline-none focus:border-violet-500 focus:bg-white focus:ring-2 focus:ring-violet-100 transition-colors shadow-inner resize-none"
+                className="w-full h-28 p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-violet-500 focus:bg-white focus:ring-2 focus:ring-violet-100 transition-colors shadow-inner resize-none"
               />
             </div>
             <div className="space-y-2">
@@ -180,7 +180,7 @@ export const ConceptStudioView: React.FC<ConceptStudioViewProps> = ({
                 value={wordsB}
                 onChange={(e) => setWordsB(e.target.value)}
                 placeholder="table, chair, pencil, stone, window, clock"
-                className="w-full h-28 p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-900 placeholder:text-slate-400 font-mono focus:outline-none focus:border-violet-500 focus:bg-white focus:ring-2 focus:ring-violet-100 transition-colors shadow-inner resize-none"
+                className="w-full h-28 p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-violet-500 focus:bg-white focus:ring-2 focus:ring-violet-100 transition-colors shadow-inner resize-none"
               />
             </div>
           </div>

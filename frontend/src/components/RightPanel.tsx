@@ -87,7 +87,7 @@ export const RightPanel: React.FC<RightPanelProps> = ({
       >
         <div className="flex items-center justify-between pb-5 border-b border-slate-200">
           <div className="flex items-center gap-2.5 text-xs font-bold uppercase tracking-wider text-slate-800">
-            <span className="flex items-center justify-center w-5 h-5 rounded-full bg-violet-50 border border-violet-200 text-xs text-violet-600 font-mono font-bold">
+            <span className="flex items-center justify-center w-5 h-5 rounded-full bg-violet-50 border border-violet-200 text-xs text-violet-600 font-bold">
               3
             </span>
             <span>Unit Inspector</span>
@@ -125,7 +125,7 @@ export const RightPanel: React.FC<RightPanelProps> = ({
       const vmax = Math.max(3, ...vals);
       return (
         <div className="space-y-3 p-5 rounded-xl bg-slate-50 border border-slate-200">
-          <div className="flex items-center justify-between text-xs font-mono uppercase tracking-wider text-slate-600 font-semibold">
+          <div className="flex items-center justify-between text-xs uppercase tracking-wider text-slate-600 font-semibold">
             <span>Layer {sel.layer} Heads on "{tok}"</span>
             <span className="text-slate-400">{a.num_heads} units</span>
           </div>
@@ -137,7 +137,7 @@ export const RightPanel: React.FC<RightPanelProps> = ({
               <button
                 key={h}
                 type="button"
-                className={`h-7 rounded-md cursor-pointer text-[10px] font-mono flex items-center justify-center border transition-colors ${
+                className={`h-7 rounded-md cursor-pointer text-[10px] flex items-center justify-center border transition-colors ${
                   h === sel.index ? "border-violet-600 ring-2 ring-violet-500/30 font-bold scale-105 z-10 shadow-xs" : "border-slate-200 hover:border-slate-400"
                 }`}
                 title={`Head ${h}: ${(v >= 0 ? "+" : "") + v.toFixed(2)}σ`}
@@ -159,7 +159,7 @@ export const RightPanel: React.FC<RightPanelProps> = ({
       const tops = a.neuron_top[sel.layer]?.[sel.t] || [];
       return (
         <div className="space-y-3 p-5 rounded-xl bg-slate-50 border border-slate-200">
-          <div className="flex items-center justify-between text-xs font-mono uppercase tracking-wider text-slate-600 font-semibold">
+          <div className="flex items-center justify-between text-xs uppercase tracking-wider text-slate-600 font-semibold">
             <span>Top Layer {sel.layer} Neurons on "{tok}"</span>
             <span className="text-slate-400">{tops.length} ranked</span>
           </div>
@@ -168,7 +168,7 @@ export const RightPanel: React.FC<RightPanelProps> = ({
               <button
                 key={n.neuron}
                 type="button"
-                className={`px-2.5 py-1 rounded-md text-xs font-mono border transition-colors cursor-pointer ${
+                className={`px-2.5 py-1 rounded-md text-xs border transition-colors cursor-pointer ${
                   n.neuron === sel.index
                     ? "bg-violet-50 text-violet-700 border-violet-300 font-bold shadow-2xs"
                     : "bg-white border-slate-200 text-slate-700 hover:text-slate-900 hover:border-slate-300"
@@ -210,7 +210,7 @@ export const RightPanel: React.FC<RightPanelProps> = ({
           <span className="text-xs font-bold uppercase tracking-wider text-slate-900">
             Unit Inspector
           </span>
-          <Badge variant="outline" className="uppercase font-mono text-[10px]">
+          <Badge variant="outline" className="uppercase text-[10px]">
             {sel.kind}
           </Badge>
         </div>
@@ -260,14 +260,14 @@ export const RightPanel: React.FC<RightPanelProps> = ({
                 <span>{unitName(sel.kind, sel.layer, sel.index)}</span>
               </h2>
               <p className="text-xs text-slate-500 mt-1">
-                On token <span className="text-slate-900 font-mono font-bold bg-white border border-slate-200 px-1.5 py-0.5 rounded">"{tok}"</span> (#{sel.t + 1})
+                On token <span className="text-slate-900 font-bold bg-white border border-slate-200 px-1.5 py-0.5 rounded">"{tok}"</span> (#{sel.t + 1})
               </p>
             </div>
             <div className="text-right">
-              <div id="act-num" className="text-lg font-mono font-black text-violet-600">
+              <div id="act-num" className="text-lg font-black text-violet-600">
                 {z === null ? "—" : `${z >= 0 ? "+" : ""}${z.toFixed(2)}σ`}
               </div>
-              <span className="text-[10px] font-mono text-slate-400 uppercase font-semibold">Activation</span>
+              <span className="text-[10px] text-slate-400 uppercase font-semibold">Activation</span>
             </div>
           </div>
 
@@ -282,7 +282,7 @@ export const RightPanel: React.FC<RightPanelProps> = ({
                 }}
               />
             </div>
-            <div className="flex justify-between text-[10px] font-mono text-slate-400">
+            <div className="flex justify-between text-[10px] text-slate-400">
               <span>0.0σ</span>
               <span>4.0σ</span>
               <span>8.0σ+</span>
@@ -353,7 +353,7 @@ export const RightPanel: React.FC<RightPanelProps> = ({
               ) : unitData ? (
                 sel.kind === "head" ? (
                   <div className="p-5 rounded-xl bg-slate-50 border border-slate-200 space-y-3.5">
-                    <div className="flex items-center justify-between text-xs font-mono uppercase tracking-wider text-slate-600 font-semibold">
+                    <div className="flex items-center justify-between text-xs uppercase tracking-wider text-slate-600 font-semibold">
                       <span>Attention Targets</span>
                       <span className="text-slate-400">Weight</span>
                     </div>
@@ -368,7 +368,7 @@ export const RightPanel: React.FC<RightPanelProps> = ({
                       return (
                         <div className="space-y-2 pt-1">
                           {ranked.map((x, i) => (
-                            <div key={x.j} className="flex items-center gap-2.5 text-xs font-mono">
+                            <div key={x.j} className="flex items-center gap-2.5 text-xs">
                               <span className="text-slate-800 min-w-[75px] max-w-[95px] truncate font-medium">
                                 "{showTok(a.tokens[x.j])}"
                               </span>
@@ -381,7 +381,7 @@ export const RightPanel: React.FC<RightPanelProps> = ({
                                   }}
                                 />
                               </div>
-                              <span className="text-slate-600 min-w-[40px] text-right font-bold">
+                              <span className="text-slate-600 min-w-[40px] text-right font-bold tabular-nums">
                                 {(x.w * 100).toFixed(0)}%
                               </span>
                             </div>
@@ -397,7 +397,7 @@ export const RightPanel: React.FC<RightPanelProps> = ({
                   </div>
                 ) : (
                   <div className="p-5 rounded-xl bg-slate-50 border border-slate-200 space-y-3.5">
-                    <div className="flex items-center justify-between text-xs font-mono uppercase tracking-wider text-slate-600 font-semibold">
+                    <div className="flex items-center justify-between text-xs uppercase tracking-wider text-slate-600 font-semibold">
                       <span>Neuron Sentence Trajectory</span>
                       <span className="text-slate-400">σ</span>
                     </div>
@@ -407,7 +407,7 @@ export const RightPanel: React.FC<RightPanelProps> = ({
                         const pct = (Math.max(0, v) / vmax) * 100;
                         const isCurrent = j === sel.t;
                         return (
-                          <div key={j} className="flex items-center gap-2.5 text-xs font-mono">
+                          <div key={j} className="flex items-center gap-2.5 text-xs">
                             <span className={`min-w-[75px] max-w-[95px] truncate ${isCurrent ? "text-violet-600 font-bold" : "text-slate-600"}`}>
                               "{showTok(a.tokens[j])}"
                             </span>
@@ -420,7 +420,7 @@ export const RightPanel: React.FC<RightPanelProps> = ({
                                 }}
                               />
                             </div>
-                            <span className={`min-w-[40px] text-right font-bold ${isCurrent ? "text-violet-600" : "text-slate-500"}`}>
+                            <span className={`min-w-[40px] text-right font-bold tabular-nums ${isCurrent ? "text-violet-600" : "text-slate-500"}`}>
                               {v.toFixed(1)}σ
                             </span>
                           </div>
@@ -440,7 +440,7 @@ export const RightPanel: React.FC<RightPanelProps> = ({
             {unitData && (
               <>
                 <div className="p-5 rounded-xl bg-slate-50 border border-slate-200 space-y-3.5">
-                  <div className="text-xs font-mono uppercase tracking-wider text-slate-600 font-semibold">
+                  <div className="text-xs uppercase tracking-wider text-slate-600 font-semibold">
                     Dominant Concept Feature
                   </div>
                   <div className="p-3 rounded-lg bg-white border border-slate-200 text-xs text-slate-700 leading-relaxed shadow-2xs">
@@ -472,7 +472,7 @@ export const RightPanel: React.FC<RightPanelProps> = ({
                   {/* Concept breakdown */}
                   <div className="space-y-2 pt-2">
                     {unitData.concepts.slice(0, 5).map((c, i) => (
-                      <div key={c.key} className="flex items-center gap-2.5 text-xs font-mono">
+                      <div key={c.key} className="flex items-center gap-2.5 text-xs">
                         <span className="text-slate-700 min-w-[75px] max-w-[95px] truncate font-medium">
                           {c.name}
                         </span>
@@ -485,7 +485,7 @@ export const RightPanel: React.FC<RightPanelProps> = ({
                             }}
                           />
                         </div>
-                        <span className="text-slate-600 min-w-[40px] text-right font-bold">
+                        <span className="text-slate-600 min-w-[40px] text-right font-bold tabular-nums">
                           d={c.d.toFixed(1)}
                         </span>
                       </div>
@@ -496,14 +496,14 @@ export const RightPanel: React.FC<RightPanelProps> = ({
                 {/* Probed words */}
                 {unitData.top_words && unitData.top_words.length > 0 && (
                   <div className="p-5 rounded-xl bg-slate-50 border border-slate-200 space-y-3.5">
-                    <div className="text-xs font-mono uppercase tracking-wider text-slate-600 font-semibold">
+                    <div className="text-xs uppercase tracking-wider text-slate-600 font-semibold">
                       Probed Calibration Words
                     </div>
                     <div className="flex flex-wrap gap-1.5">
                       {unitData.top_words.map((w) => (
                         <span
                           key={w.word}
-                          className="px-2.5 py-1 rounded-md bg-white border border-slate-200 text-xs font-mono text-slate-800 shadow-2xs"
+                          className="px-2.5 py-1 rounded-md bg-white border border-slate-200 text-xs text-slate-800 shadow-2xs"
                         >
                           <span className="font-bold">{w.word}</span>{" "}
                           <span className="text-violet-600 font-semibold">{w.z.toFixed(1)}σ</span>
@@ -517,7 +517,7 @@ export const RightPanel: React.FC<RightPanelProps> = ({
 
             {/* Overall Concept Readout on token */}
             <div className="p-5 rounded-xl bg-slate-50 border border-slate-200 space-y-3.5">
-              <div className="flex items-center justify-between text-xs font-mono uppercase tracking-wider text-slate-600 font-semibold">
+              <div className="flex items-center justify-between text-xs uppercase tracking-wider text-slate-600 font-semibold">
                 <span>Token Concept Read-out</span>
                 <span className="text-slate-400">Z-score</span>
               </div>
@@ -527,7 +527,7 @@ export const RightPanel: React.FC<RightPanelProps> = ({
                   const pct = Math.min(Math.abs(v) / maxAbs, 1) * 50;
                   const left = v >= 0 ? 50 : 50 - pct;
                   return (
-                    <div key={key} className="flex items-center gap-2.5 text-xs font-mono">
+                    <div key={key} className="flex items-center gap-2.5 text-xs">
                       <span className="text-slate-700 min-w-[75px] max-w-[95px] truncate font-medium">
                         {meta?.name}
                       </span>
@@ -541,7 +541,7 @@ export const RightPanel: React.FC<RightPanelProps> = ({
                           }}
                         />
                       </div>
-                      <span className="text-slate-600 min-w-[40px] text-right font-bold">
+                      <span className="text-slate-600 min-w-[40px] text-right font-bold tabular-nums">
                         {v > 0 ? "+" : ""}{v.toFixed(1)}σ
                       </span>
                     </div>
@@ -557,13 +557,13 @@ export const RightPanel: React.FC<RightPanelProps> = ({
           <div className="space-y-5">
             {/* Next Word Prediction distribution */}
             <div className="p-5 rounded-xl bg-slate-50 border border-slate-200 space-y-3.5">
-              <div className="flex items-center justify-between text-xs font-mono uppercase tracking-wider text-slate-600 font-semibold">
+              <div className="flex items-center justify-between text-xs uppercase tracking-wider text-slate-600 font-semibold">
                 <span>Next-Word Prediction after "{tok}"</span>
                 <span className="text-slate-400">Prob</span>
               </div>
               <div className="space-y-2 pt-1">
                 {preds.map((p, i) => (
-                  <div key={i} className="flex items-center gap-2.5 text-xs font-mono">
+                  <div key={i} className="flex items-center gap-2.5 text-xs">
                     <span className="text-slate-800 min-w-[75px] max-w-[95px] truncate font-medium">
                       "{showTok(p.token)}"
                     </span>
@@ -576,7 +576,7 @@ export const RightPanel: React.FC<RightPanelProps> = ({
                         }}
                       />
                     </div>
-                    <span className="text-slate-600 min-w-[40px] text-right font-bold">
+                    <span className="text-slate-600 min-w-[40px] text-right font-bold tabular-nums">
                       {(p.p * 100).toFixed(0)}%
                     </span>
                   </div>
@@ -587,14 +587,14 @@ export const RightPanel: React.FC<RightPanelProps> = ({
             {/* Promotes (for neurons) */}
             {unitData?.promotes && unitData.promotes.length > 0 && (
               <div className="p-5 rounded-xl bg-slate-50 border border-slate-200 space-y-3.5">
-                <div className="text-xs font-mono uppercase tracking-wider text-slate-600 font-semibold">
+                <div className="text-xs uppercase tracking-wider text-slate-600 font-semibold">
                   Neuron Promotes Next-Word Logits
                 </div>
                 <div className="flex flex-wrap gap-1.5">
                   {unitData.promotes.map((p, idx) => (
                     <span
                       key={idx}
-                      className="px-2.5 py-1 rounded-md bg-emerald-50 border border-emerald-200 text-xs font-mono text-emerald-800 font-semibold shadow-2xs"
+                      className="px-2.5 py-1 rounded-md bg-emerald-50 border border-emerald-200 text-xs text-emerald-800 font-semibold shadow-2xs"
                     >
                       {showTok(p)}
                     </span>

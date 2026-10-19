@@ -41,7 +41,7 @@ export const TokenRow: React.FC<TokenRowProps> = ({
         id="token-row"
         className="flex items-center px-6 py-2.5 bg-slate-50 border-b border-slate-200 shrink-0"
       >
-        <span className="text-slate-400 text-xs font-mono">
+        <span className="text-slate-400 text-xs">
           Awaiting input forward pass…
         </span>
       </div>
@@ -96,7 +96,7 @@ export const TokenRow: React.FC<TokenRowProps> = ({
         )}
       </div>
 
-      <span className="text-xs font-mono uppercase tracking-wider text-slate-500 font-semibold shrink-0">
+      <span className="text-xs uppercase tracking-wider text-slate-500 font-semibold shrink-0">
         Tokens:
       </span>
 
@@ -144,7 +144,7 @@ export const TokenRow: React.FC<TokenRowProps> = ({
               key={i}
               type="button"
               data-idx={i}
-              className={`group relative flex items-center gap-2 px-3 py-1.5 rounded-lg text-[13px] font-mono transition duration-150 shrink-0 border cursor-pointer ${
+              className={`group relative flex items-center gap-2 px-3 py-1.5 rounded-lg text-[13px] transition duration-150 shrink-0 border cursor-pointer ${
                 isSelected
                   ? "bg-violet-600 text-white font-bold border-violet-600 shadow-xs ring-2 ring-violet-500/30 scale-[1.02] z-10"
                   : isTinted

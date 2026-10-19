@@ -53,10 +53,10 @@ export const PredictionsView: React.FC<PredictionsViewProps> = ({
           </p>
         </div>
 
-        <div className="flex items-center gap-3 text-xs font-mono text-slate-600">
+        <div className="flex items-center gap-3 text-xs text-slate-600">
           <Card className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-xl border-slate-200 shadow-2xs">
             <span className="text-slate-500 font-sans">Total Tokens:</span>
-            <span className="text-emerald-700 font-bold text-sm font-mono">{analysis.tokens.length}</span>
+            <span className="text-emerald-700 font-bold text-sm">{analysis.tokens.length}</span>
           </Card>
         </div>
       </div>
@@ -83,10 +83,10 @@ export const PredictionsView: React.FC<PredictionsViewProps> = ({
               <div className="flex items-center justify-between gap-4 mb-4">
                 {/* Token Label */}
                 <div className="flex items-center gap-2.5">
-                  <span className="text-xs font-mono px-2.5 py-1 rounded-lg bg-slate-100 border border-slate-200 text-slate-600 font-bold">
+                  <span className="text-xs px-2.5 py-1 rounded-lg bg-slate-100 border border-slate-200 text-slate-600 font-bold">
                     #{t}
                   </span>
-                  <span className="text-sm font-mono font-bold text-slate-900 bg-slate-50 border border-slate-200 px-2.5 py-1 rounded-xl shadow-2xs">
+                  <span className="text-sm font-bold text-slate-900 bg-slate-50 border border-slate-200 px-2.5 py-1 rounded-xl shadow-2xs">
                     "{showTok(tok)}"
                   </span>
 
@@ -109,7 +109,7 @@ export const PredictionsView: React.FC<PredictionsViewProps> = ({
                 </div>
 
                 {/* Right: Entropy Gauge */}
-                <div className="flex items-center gap-3.5 text-xs font-mono">
+                <div className="flex items-center gap-3.5 text-xs">
                   <div className="flex items-center gap-2 text-slate-600">
                     <span className="text-[10px] uppercase font-bold text-slate-500 font-sans">Top Forecast:</span>
                     <span className="text-emerald-800 font-bold text-xs bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
@@ -128,11 +128,11 @@ export const PredictionsView: React.FC<PredictionsViewProps> = ({
               <div className="grid grid-cols-5 gap-4 pt-4 border-t border-slate-100">
                 {preds.map((p, idx) => (
                   <div key={idx} className="space-y-1.5">
-                    <div className="flex items-center justify-between text-xs font-mono">
+                    <div className="flex items-center justify-between text-xs">
                       <span className="text-slate-800 font-semibold truncate max-w-[90px]" title={p.token}>
                         "{showTok(p.token)}"
                       </span>
-                      <span className="text-slate-500 font-bold">
+                      <span className="text-slate-500 font-bold tabular-nums">
                         {(p.p * 100).toFixed(1)}%
                       </span>
                     </div>

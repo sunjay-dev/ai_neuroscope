@@ -91,7 +91,7 @@ export const Header: React.FC<HeaderProps> = ({
             <h1 className="text-[15px] font-bold tracking-tight text-slate-900 m-0">
               AI Neuroscope
             </h1>
-            <Badge variant="secondary" className="text-[11px] py-0 px-2 font-mono text-slate-600">
+            <Badge variant="secondary" className="text-[11px] py-0 px-2 text-slate-600">
               GPT-2
             </Badge>
           </div>
@@ -161,7 +161,7 @@ export const Header: React.FC<HeaderProps> = ({
           {/* Model Status Pill */}
           <div 
             id="model-badge" 
-            className="flex items-center gap-2 px-2.5 py-1 rounded-md bg-slate-50 border border-slate-200 text-xs font-mono max-[1100px]:hidden text-slate-700"
+            className="flex items-center gap-2 px-2.5 py-1 rounded-md bg-slate-50 border border-slate-200 text-xs max-[1100px]:hidden text-slate-700"
           >
             {error ? (
               <>
@@ -231,7 +231,7 @@ export const Header: React.FC<HeaderProps> = ({
             className="flex-1 bg-transparent text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none font-sans"
           />
 
-          <span className="text-xs font-mono text-slate-400 bg-white border border-slate-200 px-2 py-0.5 rounded shrink-0">
+          <span className="text-xs text-slate-400 bg-white border border-slate-200 px-2 py-0.5 rounded shrink-0">
             <span id="char-num">{text.length}</span>/512
           </span>
 
@@ -248,7 +248,7 @@ export const Header: React.FC<HeaderProps> = ({
 
             {presetOpen && (
               <div className="absolute right-0 top-full mt-1.5 w-72 bg-white border border-slate-200 rounded-lg shadow-lg p-1.5 z-50 space-y-0.5 animate-in fade-in duration-100">
-                <div className="px-2.5 py-1 text-[11px] font-mono uppercase tracking-wider text-slate-400">
+                <div className="px-2.5 py-1 text-[11px] uppercase tracking-wider text-slate-400">
                   Example Prompts
                 </div>
                 {PRESETS.map((p) => (
@@ -309,7 +309,7 @@ export const Header: React.FC<HeaderProps> = ({
             <>
               <Play className="w-3.5 h-3.5 fill-current" />
               <span>Analyze</span>
-              <kbd className="text-[10px] font-mono opacity-80 bg-violet-700/60 px-1.5 py-0.5 rounded ml-0.5">↵</kbd>
+              <kbd className="text-[10px] opacity-80 bg-violet-700/60 px-1.5 py-0.5 rounded ml-0.5">↵</kbd>
             </>
           )}
         </Button>

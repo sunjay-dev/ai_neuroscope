@@ -153,7 +153,7 @@ export const ConceptModal: React.FC<ConceptModalProps> = ({
                           <span className="text-xs font-semibold text-slate-100">{c.name}</span>
                         </div>
                         {isActive && (
-                          <span className="text-[10px] font-mono font-medium px-1.5 py-0.2 rounded bg-violet-500/20 text-violet-300">
+                          <span className="text-[10px] font-medium px-1.5 py-0.2 rounded bg-violet-500/20 text-violet-300">
                             Active
                           </span>
                         )}
@@ -161,7 +161,7 @@ export const ConceptModal: React.FC<ConceptModalProps> = ({
 
                       <div className="text-[11px] text-slate-400 mt-0.5">
                         {c.binary ? (
-                          <span className="font-mono text-[10px] text-slate-300">
+                          <span className="text-[10px] text-slate-300">
                             {c.side_a} ↔ {c.side_b}
                           </span>
                         ) : (

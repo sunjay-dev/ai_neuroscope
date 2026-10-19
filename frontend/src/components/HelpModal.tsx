@@ -75,13 +75,13 @@ export const HelpModal: React.FC<HelpModalProps> = ({ isOpen, onClose }) => {
             </div>
             <div className="grid grid-cols-2 gap-3.5 max-[600px]:grid-cols-1">
               <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 shadow-2xs">
-                <div className="font-mono font-bold text-violet-700 mb-1 text-xs">σ (Standard Deviations)</div>
+                <div className="font-bold text-violet-700 mb-1 text-xs">σ (Standard Deviations)</div>
                 <p className="text-slate-600 text-xs leading-relaxed">
-                  Z-scored against calibration baseline text. A value of <code className="text-slate-900 font-mono bg-white border border-slate-200 px-1 py-0.5 rounded shadow-2xs">+3.0σ</code> means this unit is firing 3 standard deviations above its typical activity.
+                  Z-scored against calibration baseline text. A value of <code className="text-slate-900 bg-white border border-slate-200 px-1 py-0.5 rounded shadow-2xs">+3.0σ</code> means this unit is firing 3 standard deviations above its typical activity.
                 </p>
               </div>
               <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 shadow-2xs">
-                <div className="font-mono font-bold text-emerald-700 mb-1 text-xs">Cohen's d (Effect Size)</div>
+                <div className="font-bold text-emerald-700 mb-1 text-xs">Cohen's d (Effect Size)</div>
                 <p className="text-slate-600 text-xs leading-relaxed">
                   Selectivity score on contrastive probe pairs. |d| &ge; 2.0 indicates strong, isolated concept selectivity (e.g. royalty, gender, sarcasm).
                 </p>
@@ -95,21 +95,21 @@ export const HelpModal: React.FC<HelpModalProps> = ({ isOpen, onClose }) => {
               <Command className="w-4 h-4 text-amber-600" />
               <span>Keyboard Navigation &amp; Hotkeys</span>
             </div>
-            <div className="grid grid-cols-2 gap-2 text-xs font-mono">
+            <div className="grid grid-cols-2 gap-2 text-xs">
               <div className="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 border border-slate-200 shadow-2xs">
                 <span className="text-slate-600 font-sans">Step Token</span>
-                <div className="flex gap-1 font-mono">
+                <div className="flex gap-1">
                   <kbd className="px-1.5 py-0.5 rounded bg-white border border-slate-300 text-slate-800 text-[11px] shadow-2xs">←</kbd>
                   <kbd className="px-1.5 py-0.5 rounded bg-white border border-slate-300 text-slate-800 text-[11px] shadow-2xs">→</kbd>
                 </div>
               </div>
               <div className="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 border border-slate-200 shadow-2xs">
                 <span className="text-slate-600 font-sans">Play / Pause Step</span>
-                <kbd className="px-2 py-0.5 rounded bg-white border border-slate-300 text-slate-800 text-[11px] shadow-2xs font-mono">Space</kbd>
+                <kbd className="px-2 py-0.5 rounded bg-white border border-slate-300 text-slate-800 text-[11px] shadow-2xs">Space</kbd>
               </div>
               <div className="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 border border-slate-200 shadow-2xs">
                 <span className="text-slate-600 font-sans">Switch Views</span>
-                <div className="flex gap-1 font-mono">
+                <div className="flex gap-1">
                   <kbd className="px-1.5 py-0.5 rounded bg-white border border-slate-300 text-slate-800 text-[11px] shadow-2xs">1</kbd>
                   <kbd className="px-1.5 py-0.5 rounded bg-white border border-slate-300 text-slate-800 text-[11px] shadow-2xs">2</kbd>
                   <kbd className="px-1.5 py-0.5 rounded bg-white border border-slate-300 text-slate-800 text-[11px] shadow-2xs">3</kbd>
@@ -118,7 +118,7 @@ export const HelpModal: React.FC<HelpModalProps> = ({ isOpen, onClose }) => {
               </div>
               <div className="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 border border-slate-200 shadow-2xs">
                 <span className="text-slate-600 font-sans">Toggle Inspector</span>
-                <kbd className="px-2 py-0.5 rounded bg-white border border-slate-300 text-slate-800 text-[11px] shadow-2xs font-mono">I</kbd>
+                <kbd className="px-2 py-0.5 rounded bg-white border border-slate-300 text-slate-800 text-[11px] shadow-2xs">I</kbd>
               </div>
             </div>
           </div>

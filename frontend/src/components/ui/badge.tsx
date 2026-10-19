@@ -19,9 +19,9 @@ function Badge({ className, variant = "default", ...props }: BadgeProps) {
         variant === "outline" &&
           "border-slate-200 text-slate-800 bg-white shadow-2xs",
         variant === "concept" &&
-          "rounded-md px-2 py-0.5 text-xs font-mono font-medium",
+          "rounded-md px-2 py-0.5 text-xs font-medium",
         variant === "status" &&
-          "rounded-full px-2.5 py-0.5 text-xs bg-emerald-50 text-emerald-700 border-emerald-200 font-mono",
+          "rounded-full px-2.5 py-0.5 text-xs bg-emerald-50 text-emerald-700 border-emerald-200",
         variant === "active" &&
           "rounded-full px-2.5 py-0.5 text-xs font-semibold bg-violet-50 text-violet-700 border-violet-200 shadow-xs",
         className
